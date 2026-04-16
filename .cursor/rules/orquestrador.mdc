@@ -25,9 +25,9 @@ Voce e o Gerente de Projeto e Tech Lead deste portfolio. Quando o usuario traz u
 
 ```
 1. Psicologo UX  → define guidelines em design/
-2. Expert HTML   → estrutura semantica em src/*.html
-3. Expert CSS    → estilizacao em src/css/
-4. Expert JS     → interatividade em src/js/
+2. Expert HTML   → estrutura semantica em *.html (raiz do repo)
+3. Expert CSS    → estilizacao em css/
+4. Expert JS     → interatividade em js/
 ```
 
 Cada etapa DEVE ser concluida antes de iniciar a proxima. O HTML depende das guidelines do UX. O CSS depende da estrutura HTML. O JS depende de ambos.

@@ -25,15 +25,15 @@ Um portfólio profissional estilo LinkTree, focado em um desenvolvedor Mainframe
 
 ### 3.3 Estrutura de diretórios
 
+O site estático fica na **raiz do repositório** (compatível com GitHub Pages em `/`).
+
 ```
 Portifólio/
 ├── index.html                # Página principal (LinkTree)
 ├── mainframe-lab.html        # Vitrine dos programas Mainframe
 ├── curriculo.html            # Currículo profissional
 ├── certificacoes.html        # Certificações
-├── script.js                 # JS da página principal
-├── i18n.js                   # JS do sistema principal
-├── workspace.code-workspace  # Configuração do VS Code
+├── favicon.svg
 ├── css/
 │   ├── tokens.css            # Design tokens (variáveis CSS)
 │   ├── style.css             # Estilos globais + index
@@ -42,17 +42,15 @@ Portifólio/
 │   ├── mainframe-lab-reference.css # Tabelas de referência do Lab
 │   ├── certificacoes.css     # Estilos das certificações
 │   └── curriculo.css         # Estilos do currículo
+├── js/
+│   ├── script.js             # JS da página principal
+│   ├── i18n.js               # Internacionalização
+│   └── ...                   # Demais módulos
 ├── assets/
-│   └── profile.jpg           # Foto do avatar (512x512)
-├── certificacoes/
-│   └── *.pdf                 # PDFs de certificados
-└── mainframe-lab/
-    ├── cobol/                # 13 arquivos .cbl
-    ├── jcl/                  # 22 arquivos .jcl (base e relative)
-    ├── dx/                   # 31 arquivos .cbl
-    ├── dcl/                  # 13 arquivos .cbl
-    ├── asm/                  # 13 arquivos .cbl
-    └── ...                   # Outros arquivos do laboratório
+│   ├── images/               # Imagens (ex.: profile.jpg)
+│   └── fonts/
+├── mainframe/                # Artefatos mainframe (showcase / referência)
+└── design/                   # Diretrizes UX e decisões
 ```
 
 ### 3.4 Ordem de carregamento CSS (TODAS as páginas)

@@ -18,7 +18,7 @@ Voce e o Meta-Agente deste projeto. Sua funcao e garantir que cada agente (Curso
 
 **NAO FAZ:**
 - NUNCA escreve HTML, CSS, JavaScript, COBOL, HLASM, JCL ou SQL
-- NUNCA modifica arquivos em `src/`, `mainframe/` ou qualquer codigo de producao
+- NUNCA modifica arquivos HTML/CSS/JS na raiz do repo, `mainframe/` ou qualquer codigo de producao
 - Sua unica saida sao arquivos `.mdc` em `.cursor/rules/` e documentos em `design/`
 
 ## ENTRADAS
