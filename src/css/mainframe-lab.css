@@ -1,0 +1,1603 @@
+/*
+ * MAINFRAME LAB - Component Styles & Page-Specific Tokens
+ * IMPORTED AFTER tokens.css and style.css.
+ * Mobile-first. No !important. No IDs for styling.
+ */
+
+/*
+ * 1. DESIGN TOKENS - Mainframe Lab
+ * Prefix --lab- to avoid collision with global tokens.
+ * Reference existing tokens whenever possible.
+ */
+
+:root {
+  /* --- LAYOUT --- */
+
+  --lab-container-max: 960px;
+  --lab-section-gap: var(--space-12); /* 48px */
+  --lab-card-gap: var(--space-4); /* 16px */
+  --lab-card-grid-gap: var(--space-6); /* 24px */
+  --lab-table-gap: var(--space-12); /* 48px */
+  --lab-card-desc-lines: 2;
+
+  /* --- STICKY NAV --- */
+
+  --lab-nav-bg: rgba(13, 23, 42, 0.85);
+  --lab-nav-blur: blur(16px);
+  --lab-nav-border: rgba(148, 163, 184, 0.1);
+  --lab-nav-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --lab-nav-height: 56px;
+  --lab-nav-z: 50;
+
+  /* --- TABS - Inactive --- */
+
+  --lab-tab-bg: rgba(30, 41, 59, 0.4);
+  --lab-tab-text: var(--color-text-secondary); /* #94A3B8 */
+  --lab-tab-border: rgba(148, 163, 184, 0.1);
+
+  /* --- TABS - Active --- */
+
+  --lab-tab-active-bg: rgba(74, 144, 217, 0.15);
+  --lab-tab-active-text: var(--color-primary); /* #4A90D9 */
+  --lab-tab-active-border: var(--color-primary);
+  --lab-tab-indicator-height: 2px;
+  --lab-tab-indicator-color: var(--color-primary);
+
+  /* --- TABS - Hover --- */
+
+  --lab-tab-hover-bg: rgba(74, 144, 217, 0.08);
+  --lab-tab-hover-text: var(--color-text-primary); /* #E2E8F0 */
+
+  /* --- TABS - Reference (Von Restorff) --- */
+
+  --lab-tab-ref-active-bg: rgba(240, 165, 0, 0.12);
+  --lab-tab-ref-active-text: var(--color-accent); /* #F0A500 */
+  --lab-tab-ref-active-border: var(--color-accent);
+
+  /* --- COMPLEXITY BADGES --- */
+
+  /* Basic */
+  --lab-badge-basic-bg: rgba(16, 185, 129, 0.12);
+  --lab-badge-basic-text: #10b981;
+  --lab-badge-basic-border: rgba(16, 185, 129, 0.25);
+
+  /* Intermediate */
+  --lab-badge-inter-bg: rgba(240, 165, 0, 0.1);
+  --lab-badge-inter-text: #f0a500;
+  --lab-badge-inter-border: rgba(240, 165, 0, 0.2);
+
+  /* Advanced */
+  --lab-badge-adv-bg: rgba(139, 92, 246, 0.12);
+  --lab-badge-adv-text: #8b5cf6;
+  --lab-badge-adv-border: rgba(139, 92, 246, 0.25);
+
+  /* --- STATUS BADGES --- */
+
+  --lab-status-available-bg: rgba(16, 185, 129, 0.12);
+  --lab-status-available-text: var(--color-success); /* #10B981 */
+  --lab-status-available-border: rgba(16, 185, 129, 0.3);
+
+  --lab-status-dev-bg: rgba(148, 163, 184, 0.08);
+  --lab-status-dev-text: var(--color-text-secondary); /* #94A3B8 */
+  --lab-status-dev-border: rgba(148, 163, 184, 0.15);
+
+  /* --- TABLES --- */
+
+  --lab-table-header-bg: rgba(74, 144, 217, 0.1);
+  --lab-table-header-text: var(--color-text-primary);
+  --lab-table-header-border: rgba(74, 144, 217, 0.25);
+
+  --lab-table-row-even: rgba(148, 163, 184, 0.04);
+  --lab-table-row-hover: rgba(74, 144, 217, 0.08);
+  --lab-table-row-selected: rgba(74, 144, 217, 0.12);
+  --lab-table-row-border: rgba(148, 163, 184, 0.08);
+
+  /* Severity Left-borders (3px) */
+  --lab-severity-success: var(--color-success); /* #10B981 */
+  --lab-severity-warning: #f0a500;
+  --lab-severity-error: #ef4444;
+  --lab-severity-critical: #7f1d1d;
+  --lab-severity-info: var(--color-text-secondary); /* #94A3B8 */
+
+  /* Inline Code */
+  --lab-code-bg: rgba(74, 144, 217, 0.1);
+  --lab-code-text: #87cefa;
+
+  /* --- SEARCH --- */
+
+  --lab-search-bg: rgba(30, 41, 59, 0.6);
+  --lab-search-border: rgba(148, 163, 184, 0.15);
+  --lab-search-focus-border: rgba(74, 144, 217, 0.5);
+  --lab-search-text: var(--color-text-primary);
+  --lab-search-placeholder: #64748b;
+  --lab-search-icon: var(--color-text-secondary);
+  --lab-search-icon-focus: var(--color-primary);
+  --lab-search-focus-glow: 0 0 8px rgba(74, 144, 217, 0.15);
+
+  /* --- STATS BAR --- */
+
+  --lab-stats-border: rgba(148, 163, 184, 0.1);
+  --lab-stats-divider: rgba(148, 163, 184, 0.15);
+  --lab-stats-number-color: var(--color-text-primary);
+  --lab-stats-label-color: var(--color-text-secondary);
+
+  /* --- COPY BUTTON --- */
+
+  --lab-copy-size: 32px;
+  --lab-copy-icon: var(--color-text-secondary);
+  --lab-copy-hover-icon: var(--color-text-primary);
+  --lab-copy-hover-bg: rgba(74, 144, 217, 0.1);
+  --lab-copy-success-icon: var(--color-success);
+  --lab-copy-success-bg: rgba(16, 185, 129, 0.15);
+
+  /* --- SCROLL TO TOP --- */
+
+  --lab-scroll-top-size: 44px;
+  --lab-scroll-top-bg: rgba(30, 41, 59, 0.8);
+  --lab-scroll-top-hover-bg: rgba(74, 144, 217, 0.2);
+  --lab-scroll-top-border: rgba(148, 163, 184, 0.15);
+  --lab-scroll-top-icon: var(--color-text-secondary);
+  --lab-scroll-top-hover-icon: var(--color-primary);
+  --lab-scroll-top-z: 25;
+
+  /* --- TRANSITIONS --- */
+
+  --lab-transition-tab: 250ms var(--ease-default);
+  --lab-transition-tab-indicator: 300ms var(--ease-out-expo);
+  --lab-transition-content-fade: 200ms var(--ease-default);
+
+  /* Card reveal - first visit (fade + translateY, staggered) */
+  --lab-transition-card-stagger: 80ms; /* ↑ de 40ms - perceptible rhythm without delay */
+  --lab-transition-card-reveal-duration: 400ms; /* ↓ de 500ms - UX Psychology recommendation */
+  --lab-transition-card-reveal-ease: var(--ease-out-expo);
+  --lab-transition-card-reveal-offset: 20px;
+
+  /* Card reentry - revisit / tab switch (fade-only, no stagger) */
+  --lab-transition-card-reentry-duration: 150ms;
+  --lab-transition-card-reentry-ease: var(--ease-default);
+  --lab-transition-card-reentry-opacity-start: 0.85;
+
+  --lab-transition-table-row: 160ms var(--ease-default);
+  --lab-transition-filter-exit: 200ms var(--ease-default);
+  --lab-transition-filter-enter: 300ms var(--ease-out-expo);
+  --lab-transition-copy-feedback: 1500ms;
+  --lab-transition-scroll-top: 300ms var(--ease-spring);
+  --lab-transition-stat-countup: 1200ms var(--ease-out-expo);
+
+  /* --- DIAGNOSTIC PANELS (Accordion Reference) --- */
+
+  --lab-diag-panel-bg: rgba(13, 23, 42, 0.5);
+  --lab-diag-cause-bg: rgba(30, 41, 59, 0.4);
+  --lab-diag-cause-border: var(--color-border);
+  --lab-diag-resolve-color: var(--color-primary);
+  --lab-diag-tip-bg: rgba(74, 144, 217, 0.06);
+  --lab-diag-tip-border: var(--color-primary);
+  --lab-diag-expand-duration: 300ms;
+  --lab-diag-collapse-duration: 200ms;
+  --lab-diag-chevron-size: 16px;
+  --lab-diag-chevron-color: var(--color-text-secondary);
+  --lab-diag-chevron-active: var(--color-primary);
+}
+
+/* -------------------------------------------------------------------------- */
+/* */
+/* 2. PAGE LAYOUT                                                            */
+/* */
+/* -------------------------------------------------------------------------- */
+
+.lab-container {
+  position: relative;
+  z-index: var(--z-card);
+  max-width: var(--lab-container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding-mobile);
+  padding-block: var(--space-8) var(--space-12);
+}
+
+.lab-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lab-section-gap);
+}
+
+.lab-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* -------------------------------------------------------------------------- */
+/* */
+/* 3. BREADCRUMB                                                             */
+/* */
+/* -------------------------------------------------------------------------- */
+
+.lab-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+}
+
+.lab-breadcrumb-link {
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(74, 144, 217, 0.4);
+  transition:
+    color var(--transition-hover),
+    text-decoration-color var(--transition-hover);
+}
+
+.lab-breadcrumb-link:hover {
+  color: var(--color-text-primary);
+}
+
+.lab-breadcrumb-separator {
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+  user-select: none;
+}
+
+.lab-breadcrumb-current {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. PAGE HEADER                                                           */
+/* -------------------------------------------------------------------------- */
+
+.lab-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-block-end: var(--space-8);
+}
+
+.lab-header-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-h1);
+  letter-spacing: var(--letter-spacing-headline);
+  color: var(--color-text-primary);
+}
+
+.lab-header-desc {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-text-secondary);
+  max-width: 60ch;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5. STATS BAR                                                             */
+/* -------------------------------------------------------------------------- */
+
+.lab-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  border: 1px solid var(--lab-stats-border);
+}
+
+.lab-stat,
+.lab-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.lab-stat + .lab-stat,
+.lab-stat-card + .lab-stat-card {
+  padding-inline-start: var(--space-6);
+  border-inline-start: 1px solid var(--lab-stats-divider);
+}
+
+.lab-stat-number {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-h3);
+  color: var(--lab-stats-number-color);
+}
+
+.lab-stat-label {
+  font-size: var(--font-size-badge);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-badge);
+  letter-spacing: var(--letter-spacing-badge);
+  text-transform: uppercase;
+  color: var(--lab-stats-label-color);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. STICKY NAV                                                            */
+/* -------------------------------------------------------------------------- */
+
+.lab-nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  background: var(--lab-nav-bg);
+  -webkit-backdrop-filter: var(--lab-nav-blur);
+  backdrop-filter: var(--lab-nav-blur);
+  border-bottom: 1px solid var(--lab-nav-border);
+  box-shadow: var(--lab-nav-shadow);
+  min-height: var(--lab-nav-height);
+}
+
+@supports not (
+  (-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))
+) {
+  .lab-nav {
+    background: rgba(13, 23, 42, 0.95);
+  }
+}
+
+.lab-nav-inner {
+  max-width: var(--lab-container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding-mobile);
+  display: flex;
+  align-items: center;
+  min-height: var(--lab-nav-height);
+}
+
+/* -------------------------------------------------------------------------- */
+
+.lab-tabs {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+}
+
+.lab-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.lab-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--lab-tab-bg);
+  color: var(--lab-tab-text);
+  border: 1px solid var(--lab-tab-border);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-small);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background var(--lab-transition-tab),
+    color var(--lab-transition-tab),
+    border-color var(--lab-transition-tab);
+}
+
+.lab-tab::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--lab-tab-indicator-height);
+  background: transparent;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: background var(--lab-transition-tab-indicator);
+}
+
+/* Hover */
+.lab-tab:hover {
+  background: var(--lab-tab-hover-bg);
+  color: var(--lab-tab-hover-text);
+}
+
+/* Active */
+.lab-tab[aria-selected="true"] {
+  background: var(--lab-tab-active-bg);
+  color: var(--lab-tab-active-text);
+  border-color: var(--lab-tab-active-border);
+}
+
+.lab-tab[aria-selected="true"]::after {
+  background: var(--lab-tab-indicator-color);
+}
+
+/* Von Restorff - Reference Tab */
+.lab-tab--ref[aria-selected="true"] {
+  background: var(--lab-tab-ref-active-bg);
+  color: var(--lab-tab-ref-active-text);
+  border-color: var(--lab-tab-ref-active-border);
+}
+
+.lab-tab--ref[aria-selected="true"]::after {
+  background: var(--lab-tab-ref-active-border);
+}
+
+/* Tab Icon */
+.lab-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.lab-tab-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Tab count badge */
+.lab-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: var(--space-1);
+  border-radius: var(--radius-full);
+  background: rgba(148, 163, 184, 0.12);
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  color: inherit;
+}
+
+/* -------------------------------------------------------------------------- */
+/* */
+/* 8. TAB PANELS / CONTENT AREA                                              */
+/* */
+/* -------------------------------------------------------------------------- */
+
+.lab-tabpanel {
+  outline: none;
+}
+
+.lab-tabpanel[hidden] {
+  display: none;
+}
+
+/* Fade-in for panel content */
+.lab-tabpanel-enter {
+  animation: lab-content-fade-in var(--lab-transition-filter-enter) both;
+}
+
+@keyframes lab-content-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Exit animation class (applied via JS before hidden) */
+.lab-tabpanel-exit {
+  animation: lab-content-fade-out var(--lab-transition-filter-exit) both;
+}
+
+@keyframes lab-content-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 9. SECTION HEADERS (inside code tab)                                      */
+/* -------------------------------------------------------------------------- */
+
+.lab-section-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-h3);
+  letter-spacing: var(--letter-spacing-headline);
+  color: var(--color-text-primary);
+  margin-block-end: var(--space-1);
+}
+
+.lab-section-desc {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-text-secondary);
+  margin-block-end: var(--space-6);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10. PROGRAM CARDS                                                         */
+/* -------------------------------------------------------------------------- */
+
+.lab-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--lab-card-grid-gap);
+}
+
+.lab-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lab-card-gap);
+  padding: var(--space-5) var(--space-5);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-border);
+  border-radius: var(--glass-radius);
+  transition:
+    border-color var(--transition-hover),
+    box-shadow var(--transition-glow),
+    transform var(--transition-scale);
+}
+
+@supports not (
+  (-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))
+) {
+  .lab-card {
+    background: rgba(30, 41, 59, 0.95);
+  }
+}
+
+.lab-card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+/* Card reveal animation - first visit */
+.lab-card-reveal {
+  opacity: 0;
+  transform: translateY(var(--lab-transition-card-reveal-offset));
+  transition:
+    opacity var(--lab-transition-card-reveal-duration)
+      var(--lab-transition-card-reveal-ease),
+    transform var(--lab-transition-card-reveal-duration)
+      var(--lab-transition-card-reveal-ease);
+}
+
+.lab-card-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Card reentry animation - revisit / tab switch (fade-only, no stagger) */
+.lab-card-reentry {
+  opacity: var(--lab-transition-card-reentry-opacity-start);
+  transform: none;
+  transition: opacity var(--lab-transition-card-reentry-duration)
+    var(--lab-transition-card-reentry-ease);
+  transition-delay: 0ms;
+}
+
+.lab-card-reentry.is-visible {
+  opacity: 1;
+}
+
+/* Card header */
+.lab-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.lab-card-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.lab-card-name {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-h3);
+  letter-spacing: var(--letter-spacing-headline);
+  color: var(--color-text-primary);
+}
+
+.lab-card-program-id {
+  font-family: "Cascadia Code", "Fira Code", "JetBrains Mono", monospace;
+  font-size: var(--font-size-badge);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-badge);
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+  background: var(--lab-code-bg);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+/* Card description - clamped to N lines */
+.lab-card-desc {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-body);
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: var(--lab-card-desc-lines);
+  line-clamp: var(--lab-card-desc-lines);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Complexity badges */
+.lab-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-badge);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-badge);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.lab-badge-basic {
+  background: var(--lab-badge-basic-bg);
+  color: var(--lab-badge-basic-text);
+  border-color: var(--lab-badge-basic-border);
+}
+
+.lab-badge-intermediate {
+  background: var(--lab-badge-inter-bg);
+  color: var(--lab-badge-inter-text);
+  border-color: var(--lab-badge-inter-border);
+}
+
+.lab-badge-advanced {
+  background: var(--lab-badge-adv-bg);
+  color: var(--lab-badge-adv-text);
+  border-color: var(--lab-badge-adv-border);
+}
+
+/* Card header (row layout) */
+.lab-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.lab-card-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* Card footer */
+.lab-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: auto;
+}
+
+/* Card Link (future) */
+.lab-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(74, 144, 217, 0.1);
+  color: var(--color-primary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-small);
+  text-decoration: none;
+  transition:
+    background var(--transition-hover),
+    color var(--transition-hover);
+}
+
+.lab-card-link:hover {
+  background: rgba(74, 144, 217, 0.2);
+  color: var(--color-text-primary);
+}
+
+.lab-card-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10b. CARD SOURCE CODE VIEWER                                              */
+/* -------------------------------------------------------------------------- */
+
+.lab-card-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid rgba(74, 144, 217, 0.25);
+  border-radius: var(--radius-md);
+  background: rgba(74, 144, 217, 0.08);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: var(--font-size-badge);
+  line-height: var(--line-height-small);
+  cursor: pointer;
+  transition:
+    background var(--transition-hover),
+    border-color var(--transition-hover);
+}
+
+.lab-card-toggle:hover {
+  background: rgba(74, 144, 217, 0.15);
+  border-color: rgba(74, 144, 217, 0.4);
+}
+
+.lab-card-toggle-icon {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.25s ease;
+}
+
+.lab-card-toggle[aria-expanded="true"] .lab-card-toggle-icon {
+  transform: rotate(180deg);
+}
+
+.lab-card-source {
+  border-top: 1px solid var(--color-border);
+  padding-block-start: var(--space-4);
+  animation: lab-source-reveal 0.3s ease;
+}
+
+@keyframes lab-source-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Source tabs (Base Displacement / Relative Address) */
+.lab-card-source-tabs {
+  display: flex;
+  gap: var(--space-1);
+  margin-block-end: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  padding-block-end: 0;
+}
+
+.lab-card-source-tab {
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--font-size-badge);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition:
+    color var(--transition-hover),
+    border-color var(--transition-hover);
+}
+
+.lab-card-source-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.lab-card-source-tab.is-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* Discrete indicator on Relative Address tab - perceptible but not dominant */
+.lab-card-source-tab-highlight:not(.is-active) {
+  color: var(--color-text-secondary);
+  position: relative;
+}
+
+.lab-card-source-tab-highlight:not(.is-active)::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+  margin-left: 6px;
+  vertical-align: middle;
+  opacity: 0.8;
+}
+
+.lab-card-source-tab-highlight:not(.is-active):hover {
+  color: #e2e8f0;
+}
+
+.lab-card-source-tab-highlight.is-active {
+  color: #38bdf8;
+  border-bottom-color: #38bdf8;
+}
+
+.lab-card-source-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--space-3);
+}
+
+.lab-card-source-filename {
+  font-family: "Cascadia Code", "Fira Code", "JetBrains Mono", monospace;
+  font-size: var(--font-size-badge);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  background: var(--lab-code-bg);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.lab-card-source-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: var(--radius-sm);
+  background: rgba(30, 41, 59, 0.6);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--font-size-badge);
+  cursor: pointer;
+  transition:
+    background var(--transition-hover),
+    color var(--transition-hover);
+}
+
+.lab-card-source-copy:hover {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--color-text-primary);
+}
+
+.lab-card-source-copy svg {
+  width: 14px;
+  height: 14px;
+}
+
+.lab-copy-label {
+  line-height: 1;
+}
+
+.lab-card-source-pre {
+  margin: 0;
+  padding: var(--space-4);
+  background: rgba(13, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lab-card-source-pre code {
+  display: block;
+  font-family: "Cascadia Code", "Fira Code", "JetBrains Mono", monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #94a3b8;
+  white-space: pre;
+  tab-size: 8;
+}
+
+/* --- Syntax Highlighting (dark theme, palette-aligned) --- */
+.hl-comment {
+  color: #6b7280;
+  font-style: italic;
+} /* gray-500 */
+.hl-keyword {
+  color: #60a5fa;
+  font-weight: 700;
+} /* blue-400 */
+.hl-division {
+  color: #818cf8;
+  font-weight: 700;
+} /* indigo-400 */
+.hl-string {
+  color: #fbbf24;
+} /* amber-400 */
+.hl-number {
+  color: #c084fc;
+} /* purple-400 */
+.hl-exec {
+  color: #2dd4bf;
+  font-weight: 600;
+} /* teal-400 */
+.hl-label {
+  color: #f472b6;
+} /* pink-400 */
+.hl-jcl-stmt {
+  color: #60a5fa;
+  font-weight: 700;
+} /* blue-400 */
+.hl-jcl-dd {
+  color: #10b981;
+  font-weight: 600;
+} /* emerald-400 */
+.hl-jcl-parm {
+  color: #f59e0b;
+} /* orange-400 */
+.hl-asm-op {
+  color: #60a5fa;
+  font-weight: 600;
+} /* blue-400 */
+.hl-asm-reg {
+  color: #f472b6;
+  font-weight: 600;
+} /* pink-400 */
+.hl-asm-lbl {
+  color: #34d399;
+  font-weight: 600;
+} /* emerald-400 */
+.hl-pic {
+  color: #fb923c;
+} /* orange-400 */
+
+/* ------------------------------------------------------------------------- */
+/* 18. SCROLL-TO-TOP                                                          */
+/* ------------------------------------------------------------------------- */
+
+.lab-scroll-top {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  z-index: var(--lab-scroll-top-z);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--lab-scroll-top-size);
+  height: var(--lab-scroll-top-size);
+  padding: 0;
+  background: var(--lab-scroll-top-bg);
+  -webkit-backdrop-filter: blur(var(--lab-nav-blur));
+  backdrop-filter: blur(var(--lab-nav-blur));
+  border: 1px solid var(--lab-scroll-top-border);
+  border-radius: var(--radius-full);
+  color: var(--lab-scroll-top-icon);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px);
+  transition:
+    opacity var(--lab-transition-scroll-top),
+    visibility var(--lab-transition-scroll-top),
+    transform var(--lab-transition-scroll-top),
+    color var(--transition-hover),
+    background var(--transition-hover);
+}
+
+@supports not (
+  (-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))
+) {
+  .lab-scroll-top {
+    background: rgba(30, 41, 59, 0.95);
+  }
+}
+
+.lab-scroll-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.lab-scroll-top:hover {
+  background: var(--lab-scroll-top-hover-bg);
+  color: var(--lab-scroll-top-hover-icon);
+}
+
+.lab-scroll-top svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ------------------------------------------------------------------------- */
+/* 19. FILTER ANIMATION (show/hide de cards)                                */
+/* ------------------------------------------------------------------------- */
+
+.lab-filter-exit {
+  animation: lab-filter-out var(--lab-transition-filter-exit) both;
+}
+
+.lab-filter-enter {
+  animation: lab-filter-in var(--lab-transition-filter-enter) both;
+}
+
+@keyframes lab-filter-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes lab-filter-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* 20. EMPTY STATE                                                            */
+/* ------------------------------------------------------------------------- */
+
+.lab-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+}
+
+.lab-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+}
+
+.lab-empty-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.lab-empty-text {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-text-secondary);
+}
+
+/* ------------------------------------------------------------------------- */
+/* 21. BACK LINK                                                            */
+/* ------------------------------------------------------------------------- */
+
+.lab-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  border: 1px solid rgba(74, 144, 217, 0.25);
+  background: rgba(74, 144, 217, 0.05);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-small);
+  text-decoration: none;
+  margin-bottom: var(--space-3);
+  transition:
+    color var(--transition-hover),
+    background var(--transition-hover),
+    border-color var(--transition-hover),
+    transform 0.15s ease-out;
+}
+
+.lab-back-link:hover {
+  color: var(--color-text-primary);
+  background: rgba(74, 144, 217, 0.13);
+  border-color: rgba(74, 144, 217, 0.4);
+  transform: translateX(-2px);
+}
+
+.lab-back-link:active {
+  transform: translateX(-1px);
+}
+
+.lab-back-link svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.15s ease-out;
+}
+
+.lab-back-link:hover svg {
+  transform: translateX(-2px);
+}
+
+/* ------------------------------------------------------------------------- */
+/* 22. FOCUS STYLES (acessibilidade)                                        */
+/* ------------------------------------------------------------------------- */
+
+.lab-tab:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: calc(var(--focus-ring-offset) * -1);
+}
+
+.lab-search-input:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.lab-copy-btn:focus-visible,
+.lab-scroll-top:focus-visible,
+.lab-search-clear:focus-visible,
+.lab-card-link:focus-visible,
+.lab-back-link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+button.lab-tech-badge:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ------------------------------------------------------------------------- */
+/* 23. CARD STAGGER (delays via CSS custom property + JS)                   */
+/* Aplica somente no reveal (first visit); reentry ignora stagger.         */
+/* ------------------------------------------------------------------------- */
+
+.lab-card-reveal:not(.lab-card-reentry) {
+  transition-delay: calc(
+    var(--lab-card-index, 0) * var(--lab-transition-card-stagger)
+  );
+}
+
+/* ------------------------------------------------------------------------- */
+/* 24. RESPONSIVE - 640px (sm)                                              */
+/* ------------------------------------------------------------------------- */
+
+@media (min-width: 640px) {
+  .lab-container {
+    padding-inline: var(--container-padding-desktop);
+  }
+
+  .lab-nav-inner {
+    padding-inline: var(--container-padding-desktop);
+  }
+
+  .lab-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lab-stats {
+    gap: var(--space-8);
+  }
+
+  .lab-stat + .lab-stat,
+  .lab-stat-card + .lab-stat-card {
+    padding-inline-start: var(--space-8);
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* 25. RESPONSIVE - 768px (md)                                              */
+/* ------------------------------------------------------------------------- */
+
+@media (min-width: 768px) {
+  .lab-header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-8);
+  }
+
+  .lab-header-desc {
+    max-width: 50ch;
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* 26. RESPONSIVE - 1024px (lg)                                              */
+/* ------------------------------------------------------------------------- */
+
+@media (min-width: 1024px) {
+  .lab-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .lab-tab {
+    padding: var(--space-3) var(--space-3);
+  }
+}
+.lab-status--available {
+  background: var(--lab-status-available-bg);
+  color: var(--lab-status-available-text);
+  border-color: var(--lab-status-available-border);
+}
+
+.lab-status--dev {
+  background: var(--lab-status-dev-bg);
+  color: var(--lab-status-dev-text);
+  border-color: var(--lab-status-dev-border);
+}
+
+.lab-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.lab-status--available .lab-status-dot {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 13. TECH BADGES (Technology tags on cards)                                */
+/* -------------------------------------------------------------------------- */
+
+.lab-tech-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--badge-padding-block) var(--badge-padding-inline);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-badge);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: rgba(148, 163, 184, 0.05);
+  line-height: var(--line-height-badge);
+  letter-spacing: var(--letter-spacing-badge);
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: default;
+  transition: border-color var(--transition-hover);
+}
+
+.lab-tech-badge:hover {
+  border-color: var(--color-border-hover);
+}
+
+a.lab-tech-badge,
+button.lab-tech-badge {
+  cursor: pointer;
+}
+
+a.lab-tech-badge:hover,
+button.lab-tech-badge:hover {
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-hover);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 14. SEARCH BOX                                                            */
+/* -------------------------------------------------------------------------- */
+
+.lab-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.lab-search-label {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.lab-search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lab-search-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  padding-inline-start: var(--space-10);
+  background: var(--lab-search-bg);
+  color: var(--lab-search-text);
+  border: 1px solid var(--lab-search-border);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+  outline: none;
+  transition:
+    border-color var(--transition-focus),
+    box-shadow var(--transition-focus);
+}
+
+.lab-search-input::placeholder {
+  color: var(--lab-search-placeholder);
+}
+
+.lab-search-input:focus {
+  border-color: var(--lab-search-focus-border);
+  box-shadow: var(--lab-search-focus-glow);
+}
+
+.lab-search-icon {
+  position: absolute;
+  left: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--lab-search-icon);
+  pointer-events: none;
+  transition: color var(--transition-focus);
+}
+
+.lab-search-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.lab-search-input:focus ~ .lab-search-icon,
+.lab-search-field:focus-within .lab-search-icon {
+  color: var(--lab-search-icon-focus);
+}
+
+/* Clear button inside search — uses HTML hidden attribute */
+.lab-search-clear {
+  position: absolute;
+  right: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--lab-copy-size);
+  height: var(--lab-copy-size);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  opacity: 1;
+  transition:
+    opacity var(--transition-hover),
+    color var(--transition-hover);
+}
+
+.lab-search-clear:hover {
+  color: var(--color-text-primary);
+  background: var(--lab-copy-hover-bg);
+}
+
+.lab-search-clear svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Search enter - highlight first result */
+@keyframes lab-search-highlight-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(74, 144, 217, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(74, 144, 217, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 144, 217, 0);
+  }
+}
+
+.lab-search-highlight {
+  animation: lab-search-highlight-pulse 750ms ease-out 2;
+  outline: 2px solid rgba(74, 144, 217, 0.5);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+tr.lab-search-highlight {
+  outline: none;
+  border-radius: 0;
+}
+
+tr.lab-search-highlight > td {
+  background: rgba(74, 144, 217, 0.1);
+}
+
+/* ------------------------------------------------------------------------- */
+/* RESPONSIVE - 768px (md)                                                  */
+/* ------------------------------------------------------------------------- */
+
+@media (min-width: 768px) {
+  .lab-header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-8);
+  }
+
+  .lab-header-desc {
+    max-width: 50ch;
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* 26. RESPONSIVE - 1024px (lg)                                              */
+/* ------------------------------------------------------------------------- */
+
+@media (min-width: 1024px) {
+  .lab-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .lab-tab {
+    padding: var(--space-3) var(--space-3);
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* 27. PRINT STYLES                                                        */
+/* ------------------------------------------------------------------------- */
+
+@media print {
+  .lab-nav,
+  .lab-scroll-top,
+  .lab-search,
+  .lab-copy-btn,
+  .lab-back-link,
+  .lab-stats,
+  .lab-hero-layer,
+  .cursor-glow,
+  #particles-canvas {
+    display: none;
+  }
+
+  body {
+    background: white;
+    color: #1a1a1a;
+  }
+
+  .lab-container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .lab-main {
+    gap: 3rem;
+  }
+
+  .lab-card {
+    background: #f8fafc;
+    border-color: #ccc;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    page-break-inside: avoid;
+  }
+
+  .lab-card-name,
+  .lab-section-title {
+    color: #1a1a1a;
+  }
+
+  .lab-card-desc,
+  .lab-section-desc,
+  .lab-card-program-id {
+    color: #444;
+  }
+
+  .lab-badge,
+  .lab-status,
+  .lab-tech-badge {
+    border-color: #aaa;
+    background: #eee;
+    color: #333;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .lab-code {
+    background: #eee;
+    color: #1a1a1a;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .lab-header-title {
+    color: #1a1a1a;
+  }
+
+  .lab-card-link::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #666;
+  }
+
+  .lab-tabpanel[hidden] {
+    display: block;
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* 28. REDUCED MOTION                                                       */
+/* ------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-card-reveal,
+  .lab-card-reentry {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .lab-tabpanel-enter,
+  .lab-tabpanel-exit {
+    animation: none;
+    opacity: 1;
+  }
+
+  .lab-filter-exit,
+  .lab-filter-enter {
+    animation: none;
+  }
+
+  .lab-scroll-top {
+    transition: opacity 0s, visibility 0s;
+    transform: none;
+  }
+
+  .lab-scroll-top.is-visible {
+    transform: none;
+  }
+
+  .lab-tab {
+    transition: none;
+  }
+
+  .lab-tab::after {
+    transition: none;
+  }
+
+  .lab-card {
+    transition: none;
+  }
+
+  .lab-copy-btn {
+    transition: none;
+  }
+
+  .lab-search-input {
+    transition: none;
+  }
+
+  .lab-status--available .lab-status-dot {
+    animation: none;
+  }
+
+  .lab-search-highlight {
+    animation: none;
+  }
+}

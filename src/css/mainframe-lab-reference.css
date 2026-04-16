@@ -1,0 +1,719 @@
+/* ==========================================================================
+   REFERENCE TABLES - Tabelas de Referência Rápida
+   File-Status, Abend Codes, SQLCODE, EIBRESP + JCL Tips.
+   Importar após mainframe-lab.css.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. REFERENCE TABLES
+   -------------------------------------------------------------------------- */
+
+.lab-table-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.lab-table-section + .lab-table-section {
+    margin-block-start: var(--lab-table-gap);
+}
+
+.lab-table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--lab-table-row-border);
+}
+
+.lab-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-body);
+}
+
+.lab-table thead {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-card);
+}
+
+.lab-table th {
+    background: var(--lab-table-header-bg);
+    color: var(--lab-table-header-text);
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-small);
+    letter-spacing: var(--letter-spacing-badge);
+    text-transform: uppercase;
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--lab-table-header-border);
+    white-space: nowrap;
+}
+
+.lab-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--lab-table-row-border);
+    color: var(--color-text-primary);
+    vertical-align: top;
+}
+
+/* Zebra striping */
+.lab-table tbody tr:nth-child(even) {
+    background: var(--lab-table-row-even);
+}
+
+/* Row hover */
+.lab-table tbody tr {
+    transition: background var(--lab-transition-table-row);
+}
+
+.lab-table tbody tr:hover {
+    background: var(--lab-table-row-hover);
+}
+
+/* Selected row (via JS) */
+.lab-table tbody tr.is-selected {
+    background: var(--lab-table-row-selected);
+}
+
+/* Remove bottom border from last row */
+.lab-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Severity left-border rows */
+.lab-table-severity--success td:first-child {
+    border-left: 3px solid var(--lab-severity-success);
+}
+
+.lab-table-severity--warning td:first-child {
+    border-left: 3px solid var(--lab-severity-warning);
+}
+
+.lab-table-severity--error td:first-child {
+    border-left: 3px solid var(--lab-severity-error);
+}
+
+.lab-table-severity--critical td:first-child {
+    border-left: 3px solid var(--lab-severity-critical);
+}
+
+.lab-table-severity--info td:first-child {
+    border-left: 3px solid var(--lab-severity-info);
+}
+
+/* Inline code in tables */
+.lab-code {
+    display: inline;
+    padding: 0.125em 0.375em;
+    background: var(--lab-code-bg);
+    color: var(--lab-code-text);
+    font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 0.8125em;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+/* Description column - secondary text */
+.lab-table .lab-table-desc {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-small);
+}
+
+/* No results message inside table section */
+.lab-table-empty {
+    padding: var(--space-8) var(--space-4);
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-small);
+}
+
+/* --------------------------------------------------------------------------
+   2. REFERENCE SECTION ACCORDION
+   Top-level accordion for grouping reference sections.
+   Psychology: Miller's Law (5 items), multiple-open,
+   all-closed default, badges for information scent.
+   -------------------------------------------------------------------------- */
+
+/* Wrapper */
+.lab-ref-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+/* Each group */
+.lab-ref-group {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    transition: border-color var(--transition-hover);
+}
+
+.lab-ref-group:has(.lab-ref-trigger[aria-expanded="true"]) {
+    border-color: var(--color-border-hover);
+}
+
+/* Trigger button (inside h3) */
+.lab-ref-group h3 {
+    margin: 0;
+}
+
+.lab-ref-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-4) var(--space-5);
+    min-height: 56px;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: none;
+    border-left: 3px solid var(--color-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-h3);
+    cursor: pointer;
+    text-align: left;
+    transition: 
+        background var(--transition-hover),
+        border-color var(--transition-hover);
+}
+
+.lab-ref-trigger:hover {
+    background: rgba(74, 144, 217, 0.08);
+}
+
+.lab-ref-trigger:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+}
+
+/* Section icon */
+.lab-ref-trigger-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lab-ref-trigger-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Label - grows to push badge + chevron right */
+.lab-ref-trigger-label {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Badge (item count) */
+.lab-ref-trigger-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: var(--badge-padding-block) var(--badge-padding-inline);
+    border-radius: var(--radius-full);
+    background: rgba(74, 144, 217, 0.10);
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+    font-size: var(--font-size-badge);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-badge);
+    line-height: var(--line-height-badge);
+}
+
+/* Chevron */
+.lab-ref-trigger-chevron {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-secondary);
+    transition: transform 300ms var(--ease-out-expo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lab-ref-trigger-chevron svg {
+    width: 100%;
+    height: 100%;
+}
+
+.lab-ref-trigger[aria-expanded="true"] .lab-ref-trigger-chevron {
+    transform: rotate(180deg);
+}
+
+/* Panel - grid-based height animation */
+.lab-ref-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 300ms var(--ease-out-expo);
+}
+
+.lab-ref-panel.is-open {
+    grid-template-rows: 1fr;
+}
+
+.lab-ref-panel-inner {
+    overflow: hidden;
+}
+
+/* Content inside the panel */
+.lab-ref-panel-inner > .lab-table-section,
+.lab-ref-panel-inner > .lab-tips-grid-wrap {
+    padding: 0 var(--space-5) var(--space-5);
+}
+
+/* nested table-section inside tips-grid-wrap - no extra padding */
+.lab-ref-panel-inner > .lab-tips-grid-wrap > .lab-table-section {
+    padding: 0;
+}
+
+/* Remove old h3/h4 + desc since they're now in the trigger */
+.lab-ref-panel-inner .lab-table-section > .lab-section-title,
+.lab-ref-panel-inner .lab-table-section > .lab-section-desc,
+.lab-ref-panel-inner .lab-tips-grid-wrap .lab-section-title,
+.lab-ref-panel-inner .lab-tips-grid-wrap .lab-section-desc {
+    display: none;
+}
+
+/* Mini-nav (jump links) */
+.lab-ref-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-block-end: var(--space-6);
+}
+
+.lab-ref-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition:
+        background var(--transition-hover),
+        color var(--transition-hover),
+        border-color var(--transition-hover);
+}
+
+.lab-ref-nav-btn:hover {
+    background: rgba(74, 144, 217, 0.08);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-hover);
+}
+
+.lab-ref-nav-btn:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+}
+
+/* --------------------------------------------------------------------------
+   3. DIAGNOSTIC ACCORDION PANELS
+   Progressive Disclosure - expand rows for causes & resolution
+   -------------------------------------------------------------------------- */
+
+/* Expandable row trigger */
+.lab-table tbody tr[aria-expanded] {
+    cursor: pointer;
+}
+
+.lab-table tbody tr[aria-expanded]:hover {
+    background: var(--lab-table-row-hover);
+}
+
+.lab-table tbody tr[aria-expanded="true"] {
+    background: var(--lab-table-row-selected);
+}
+
+.lab-table tbody tr[aria-expanded="true"] td {
+    border-bottom-color: transparent;
+}
+
+/* Chevron toggle */
+.lab-diag-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--lab-diag-chevron-color);
+    cursor: pointer;
+    transition: color var(--transition-hover), transform var(--lab-diag-expand-duration) var(--ease-out-expo);
+}
+
+.lab-diag-toggle svg {
+    width: var(--lab-diag-chevron-size);
+    height: var(--lab-diag-chevron-size);
+}
+
+.lab-diag-toggle:hover {
+    color: var(--lab-diag-chevron-active);
+}
+
+tr[aria-expanded="true"] .lab-diag-toggle {
+    color: var(--lab-diag-chevron-active);
+    transform: rotate(180deg);
+}
+
+/* Diagnostic panel row */
+.lab-diag-row {
+    background: transparent !important;
+}
+
+.lab-diag-row td {
+    padding: 0 !important;
+    border-bottom: 1px solid var(--lab-table-row-border);
+}
+
+.lab-diag-row:last-child td {
+    border-bottom: none;
+}
+
+/* Accordion wrapper - grid-based height animation */
+.lab-diag-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--lab-diag-expand-duration) var(--ease-out-expo);
+}
+
+.lab-diag-row.is-open .lab-diag-wrapper {
+    grid-template-rows: 1fr;
+}
+
+.lab-diag-inner {
+    overflow: hidden;
+}
+
+/* Panel content */
+.lab-diag-panel {
+    padding: var(--space-4) var(--space-5) var(--space-5);
+    background: var(--lab-diag-panel-bg);
+    border-left: 3px solid var(--color-text-secondary);
+    opacity: 0;
+    transition: opacity 200ms 100ms var(--ease-default);
+}
+
+.lab-diag-row.is-open .lab-diag-panel {
+    opacity: 1;
+}
+
+/* Inherit severity border color */
+.lab-table-severity--success + .lab-diag-row .lab-diag-panel { border-left-color: var(--lab-severity-success); }
+.lab-table-severity--warning + .lab-diag-row .lab-diag-panel { border-left-color: var(--lab-severity-warning); }
+.lab-table-severity--error + .lab-diag-row .lab-diag-panel { border-left-color: var(--lab-severity-error); }
+.lab-table-severity--critical + .lab-diag-row .lab-diag-panel { border-left-color: var(--lab-severity-critical); }
+.lab-table-severity--info + .lab-diag-row .lab-diag-panel { border-left-color: var(--lab-severity-info); }
+
+/* Section Label */
+.lab-diag-label {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-badge);
+    margin-bottom: var(--space-3);
+}
+
+/* Cause cards */
+.lab-diag-causes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.lab-diag-cause {
+    background: var(--lab-diag-cause-bg);
+    border: 1px solid var(--lab-diag-cause-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+}
+
+.lab-diag-cause-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+    line-height: var(--line-height-small);
+}
+
+.lab-diag-cause-title svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--color-text-secondary);
+}
+
+.lab-diag-cause-desc {
+    font-size: var(--font-size-small);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-body);
+    margin-top: var(--space-1);
+}
+
+/* Resolve section */
+.lab-diag-resolve-label {
+    font-size: 0.8125rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--lab-diag-resolve-color);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: var(--space-3);
+}
+
+.lab-diag-steps {
+    font-size: var(--font-size-small);
+    color: var(--color-text-primary);
+    line-height: var(--line-height-body);
+    padding-left: var(--space-5);
+    margin-top: var(--space-2);
+}
+
+.lab-diag-steps li {
+    padding-left: var(--space-1);
+}
+
+.lab-diag-steps li + li {
+    margin-top: var(--space-1);
+}
+
+.lab-diag-steps li::marker {
+    color: var(--lab-diag-resolve-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Quick tip */
+.lab-diag-tip {
+    background: var(--lab-diag-tip-bg);
+    border-left: 2px solid var(--lab-diag-tip-border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: var(--space-3) var(--space-4);
+    margin-top: var(--space-4);
+    font-size: var(--font-size-small);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-body);
+}
+
+.lab-diag-tip strong {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+/* Responsive: mobile adjustments */
+@media (max-width: 480px) {
+    .lab-diag-panel {
+        padding: var(--space-3) var(--space-4) var(--space-4);
+    }
+
+    .lab-diag-cause {
+        padding: var(--space-3);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   4. JCL TIPS CARDS
+   -------------------------------------------------------------------------- */
+
+.lab-tips-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--lab-card-grid-gap);
+}
+
+.lab-tip-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--color-border);
+    border-radius: var(--glass-radius);
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .lab-tip-card {
+        background: rgba(30, 41, 59, 0.85);
+    }
+}
+
+.lab-tip-title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-h3);
+    color: var(--color-text-primary);
+}
+
+.lab-tip-content {
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-body);
+    color: var(--color-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   5. SCROLLBAR CUSTOM (para table wrappers)
+   -------------------------------------------------------------------------- */
+
+.lab-table-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.lab-table-wrapper::-webkit-scrollbar-track {
+    background: rgba(148, 163, 184, 0.05);
+    border-radius: var(--radius-full);
+}
+
+.lab-table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.2);
+    border-radius: var(--radius-full);
+}
+
+.lab-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.35);
+}
+
+/* Firefox */
+.lab-table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+}
+
+/* --------------------------------------------------------------------------
+   6. RESPONSIVE - Reference tables & tips
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 640px) {
+    .lab-tips-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .lab-table th,
+    .lab-table td {
+        padding: var(--space-3) var(--space-5);
+    }
+
+    .lab-tips-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .lab-tips-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   7. PRINT - Reference tables & tips
+   -------------------------------------------------------------------------- */
+
+@media print {
+  .lab-table-wrapper {
+    overflow: visible;
+    border-color: #ccc;
+  }
+
+  .lab-table {
+    font-size: 10pt;
+    page-break-inside: avoid;
+  }
+
+  .lab-table th {
+    background: #eee;
+    color: #1a1a1a;
+    border-color: #ccc;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .lab-table td {
+    border-color: #ddd;
+    color: #1a1a1a;
+  }
+
+  .lab-table tbody tr:nth-child(even) {
+    background: #f5f5f5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .lab-table tbody tr:hover {
+    background: transparent;
+  }
+
+  .lab-table-severity--success td:first-child,
+  .lab-table-severity--warning td:first-child,
+  .lab-table-severity--error td:first-child,
+  .lab-table-severity--critical td:first-child,
+  .lab-table-severity--info td:first-child {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .lab-table-section {
+    page-break-before: auto;
+    page-break-after: auto;
+    page-break-inside: avoid;
+  }
+
+  .lab-ref-panel {
+    grid-template-rows: 1fr;
+  }
+
+  .lab-ref-panel-inner {
+    overflow: visible;
+  }
+
+  .lab-ref-trigger-chevron {
+    display: none;
+  }
+}
+    
+    
+    /* --------------------------------------------------------------------------
+       8. REDUCED MOTION - Reference
+       -------------------------------------------------------------------------- */
+    
+    @media (prefers-reduced-motion: reduce) {
+    
+        .lab-table tbody tr {
+            transition: none;
+        }
+    
+        .lab-ref-panel {
+            transition: none;
+        }
+    
+        .lab-ref-trigger-chevron {
+            transition: none;
+        }
+    }

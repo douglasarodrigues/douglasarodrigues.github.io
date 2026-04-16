@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mainframe Lab | Douglas Assumpcao Rodrigues</title>
+  <meta name="description" content="Mainframe Lab - 85 módulos reutilizáveis em COBOL, HLASM, JCL, CICS, DB2, IMS e VSAM. Referência rápida para o desenvolvedor mainframe.">
+  <meta name="author" content="Douglas Assumpcao Rodrigues">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Mainframe Lab | Douglas Assumpcao Rodrigues">
+  <meta property="og:description" content="85 módulos autorais e referência rápida para Mainframe. Veja boas práticas e ferramentas de missão crítica.">
+  <meta property="og:locale" content="pt_BR">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mainframe Lab | Douglas Assumpcao Rodrigues">
+  <meta name="twitter:description" content="85 módulos autorais e referência rápida para Mainframe.">
+
+  <meta name="theme-color" content="#0F172A">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/mainframe-lab.css">
+  <link rel="stylesheet" href="css/mainframe-lab-boot.css">
+  <link rel="stylesheet" href="css/mainframe-lab-reference.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="bg-hero-layer" aria-hidden="true"></div>
+
+  <!-- Boot Screen - JOB Execution Simulation -->
+  <div class="lab-boot-screen" aria-hidden="true">
+    <div class="lab-boot-terminal">
+      <div class="lab-boot-terminal-bar">
+        <span class="lab-boot-terminal-dots"><span></span><span></span><span></span></span>
+        <span class="lab-boot-terminal-title">z/OS V2R5 — JES2 SPOOL DISPLAY — SYS3900</span>
+      </div>
+      <div class="lab-boot-lines" id="boot-lines">
+        <!-- Lines rendered dynamically by JS -->
+      </div>
+      <div class="lab-boot-terminal-bar lab-boot-status-bar">
+        <span class="lab-boot-terminal-title" id="boot-status">AWAITING JOB SUBMISSION...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Navigation -->
+  <nav class="lab-nav" aria-label="Navegação do Mainframe Lab">
+    <div class="lab-nav-inner">
+      <div class="lab-tabs" role="tablist" aria-label="Seções do Mainframe Lab" id="lab-tablist">
+        <!-- Tabs rendered by JS from LAB_PROGRAMS data -->
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content" class="lab-container">
+    <nav class="lab-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html" class="lab-breadcrumb-link">Home</a>
+      <span class="lab-breadcrumb-separator" aria-hidden="true">›</span>
+      <span class="lab-breadcrumb-current" aria-current="page">Mainframe Lab</span>
+    </nav>
+
+    <header class="lab-header">
+      <div>
+        <h1 class="lab-section-title">Mainframe <span class="text-accent">Lab</span></h1>
+        <p class="lab-header-desc">85 módulos reutilizáveis que escrevi, testei e refinei. Navegue pelo código e veja, na prática, ferramentas utilitárias que aceleram o desenvolvimento mainframe.</p>
+      </div>
+    </header>
+
+    <section class="lab-stats" aria-label="Estatísticas do laboratório">
+      <div class="lab-stat-card">
+        <span class="lab-stat-number" id="stat-programs">85</span>
+        <span class="lab-stat-label">Programas</span>
+      </div>
+      <div class="lab-stat-card">
+        <span class="lab-stat-number" id="stat-techs">7</span>
+        <span class="lab-stat-label">Tecnologias</span>
+      </div>
+    </section>
+
+    <section class="lab-search" aria-labelledby="lab-search-title">
+      <label id="lab-search-title" class="lab-search-label" for="lab-search-input">Buscar programas</label>
+      <div class="lab-search-field">
+        <span class="lab-search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <input id="lab-search-input" class="lab-search-input" type="search" placeholder="Buscar por nome, tecnologia ou descrição..." aria-label="Buscar programas do laboratório">
+        <button class="lab-search-clear" type="button" aria-label="Limpar busca" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Technology Panels (rendered by JS) -->
+    <div id="lab-panels-container">
+      <!-- Each tech panel + reference panel rendered here -->
+    </div>
+
+    <p id="lab-no-results" class="lab-table-empty" role="status" aria-live="polite" hidden>Nenhum programa corresponde à busca atual.</p>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Douglas Assumpcao Rodrigues &middot; Mainframe Lab &mdash; Código, referência e precisão.</p>
+  </footer>
+
+  <button type="button" class="lab-scroll-top" aria-label="Voltar ao topo" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <script src="js/lab-programs.js" defer></script>
+  <script src="js/lab-reference.js" defer></script>
+  <script src="js/i18n.js" defer></script>
+  <script src="js/mainframe-lab.js" defer></script>
+  <script src="js/script.js" defer></script>
+</body>
+</html>
