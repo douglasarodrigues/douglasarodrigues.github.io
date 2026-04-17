@@ -11069,17 +11069,38 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : DL/I GU E GN BASICO EM ASSEMBLER
 *            ASMTDLI PARA LEITURA UNICA E SEQUENCIAL
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : IMS/DB (DL/I)
+*----------------------------------------------------------------*
+* CONCEITOS:
+*   - ASMTDLI: INTERFACE DL/I PARA PROGRAMAS EM ASSEMBLER.
+*   - PCB    : PROGRAM COMMUNICATION BLOCK (VEM EM R1 NO ENTRY).
+*   - SSA    : SEGMENT SEARCH ARGUMENT (FILTRO DA BUSCA).
+*   - STATUS : OS 2 PRIMEIROS BYTES DO PCB INDICAM O RESULTADO
+*              (' ' = OK, 'GB' = END-OF-DATABASE).
+*
+* FLUXO:
+*   1. GU SEGROOT(KEYROOT='EMP001') -> OBTEM REGISTRO INICIAL.
+*   2. LOOP GN SEGROOT -> NAVEGA SEQUENCIALMENTE, CONTANDO (R5).
+*   3. ESPERAMOS STATUS 'GB' AO FINAL; QUALQUER OUTRO = ERRO.
+*   4. EMITE TOTAL DE SEGMENTOS LIDOS VIA WTO.
 *================================================================*
 ASMIGN01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* R9 = ENDERECO DO DB PCB (PRIMEIRO PCB PASSADO EM R1).         *
+*---------------------------------------------------------------*
          L     R9,0(R1)             DB PCB ADDRESS
-*
+*---------------------------------------------------------------*
+* MONTA A SSA QUALIFICADA: SEGROOT(KEYROOT = 'EMP001').         *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'GU  '
          MVC   SSA1,BLANKS
          MVC   SSA1(9),=C'SEGROOT '
@@ -11088,39 +11109,51 @@ ASMIGN01 CSECT
          MVC   SSA1+17(2),=C'= '
          MVC   SSA1+19(10),=CL10'EMP001    '
          MVI   SSA1+29,C')'
-*
+*---------------------------------------------------------------*
+* CALL DL/I: GU (GET UNIQUE) PELA CHAVE QUALIFICADA.            *
+*---------------------------------------------------------------*
          CALL  ASMTDLI,(FUNC,R9,IOAREA,SSA1)
 *
          CLC   0(2,R9),=C'  '
-         BNE   STERR
+         BNE   STERR                STATUS<>BRANCO => ERRO
 *
          MVC   WMSG(6),=C'GU OK='
          MVC   WMSG+6(30),IOAREA
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* PREPARA A NAVEGACAO SEQUENCIAL (GN NAO-QUALIFICADO).          *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'GN  '
          MVC   SSA1,BLANKS
          MVC   SSA1(9),=C'SEGROOT '
-         SR    R5,R5
-*
+         SR    R5,R5                R5 = CONTADOR DE SEGMENTOS
+*---------------------------------------------------------------*
+* LOOP GN: INCREMENTA R5 ATE STATUS <> BRANCO.                  *
+*---------------------------------------------------------------*
 GNLOOP   CALL  ASMTDLI,(FUNC,R9,IOAREA,SSA1)
          CLC   0(2,R9),=C'  '
          BNE   GNEND
          LA    R5,1(R5)
          B     GNLOOP
-*
+*---------------------------------------------------------------*
+* FIM DE NAVEGACAO: ESPERAMOS STATUS 'GB' (END-OF-DATABASE).    *
+*---------------------------------------------------------------*
 GNEND    CLC   0(2,R9),=C'GB'
          BNE   STERR
-*
+*---------------------------------------------------------------*
+* MONTA 'GN= nnnn' E EMITE VIA WTO.                             *
+*---------------------------------------------------------------*
          CVD   R5,DWORK
          UNPK  WMSG+4(4),DWORK+6(2)
          OI    WMSG+7,X'F0'
          MVC   WMSG(4),=C'GN= '
          WTO   MF=(E,WTOMSG)
 *
-         SR    R15,R15
+         SR    R15,R15              RC=0
          B     EXIT
-*
+*---------------------------------------------------------------*
+* ROTINA DE ERRO GENERICA: MOSTRA STATUS CODE + RC=8.           *
+*---------------------------------------------------------------*
 STERR    MVC   WMSG(8),=C'DLI ERR='
          MVC   WMSG+8(2),0(R9)
          WTO   MF=(E,WTOMSG)
@@ -11147,17 +11180,29 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : DL/I GU E GN BASICO EM ASSEMBLER
 *            ASMTDLI PARA LEITURA UNICA E SEQUENCIAL
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : IMS/DB (DL/I)
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE, COM TODOS OS DESVIOS DE LOGICA DE
+* PROGRAMA EM FORMATO PC-RELATIVO (JNE, J). OBS: A MACRO CALL
+* ENCAPSULA A LINKAGE COM ASMTDLI.
 *================================================================*
 ASMIGN01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMIGN01         SET BASE (RELATIVE)
+         LARL  R12,ASMIGN01         SET BASE (PC-RELATIVE)
          USING ASMIGN01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* R9 = ENDERECO DO DB PCB.                                      *
+*---------------------------------------------------------------*
          L     R9,0(R1)             DB PCB ADDRESS
-*
+*---------------------------------------------------------------*
+* MONTA SSA QUALIFICADA SEGROOT(KEYROOT='EMP001').              *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'GU  '
          MVC   SSA1,BLANKS
          MVC   SSA1(9),=C'SEGROOT '
@@ -11166,16 +11211,20 @@ ASMIGN01 CSECT
          MVC   SSA1+17(2),=C'= '
          MVC   SSA1+19(10),=CL10'EMP001    '
          MVI   SSA1+29,C')'
-*
+*---------------------------------------------------------------*
+* CHAMADA GU (GET UNIQUE).                                      *
+*---------------------------------------------------------------*
          CALL  ASMTDLI,(FUNC,R9,IOAREA,SSA1)
 *
          CLC   0(2,R9),=C'  '
-         JNE   STERR
+         JNE   STERR                (RELATIVO)
 *
          MVC   WMSG(6),=C'GU OK='
          MVC   WMSG+6(30),IOAREA
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* NAVEGACAO SEQUENCIAL (GN).                                    *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'GN  '
          MVC   SSA1,BLANKS
          MVC   SSA1(9),=C'SEGROOT '
@@ -11183,13 +11232,17 @@ ASMIGN01 CSECT
 *
 GNLOOP   CALL  ASMTDLI,(FUNC,R9,IOAREA,SSA1)
          CLC   0(2,R9),=C'  '
-         JNE   GNEND
+         JNE   GNEND                (RELATIVO)
          LA    R5,1(R5)
-         J     GNLOOP
-*
+         J     GNLOOP               (RELATIVO)
+*---------------------------------------------------------------*
+* FIM DE DB ESPERADO (STATUS 'GB').                             *
+*---------------------------------------------------------------*
 GNEND    CLC   0(2,R9),=C'GB'
-         JNE   STERR
-*
+         JNE   STERR                (RELATIVO)
+*---------------------------------------------------------------*
+* EXIBE CONTAGEM FINAL.                                         *
+*---------------------------------------------------------------*
          CVD   R5,DWORK
          UNPK  WMSG+4(4),DWORK+6(2)
          OI    WMSG+7,X'F0'
@@ -11197,7 +11250,7 @@ GNEND    CLC   0(2,R9),=C'GB'
          WTO   MF=(E,WTOMSG)
 *
          SR    R15,R15
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 *
 STERR    MVC   WMSG(8),=C'DLI ERR='
          MVC   WMSG+8(2),0(R9)
@@ -11235,17 +11288,39 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : NAVEGACAO HIERARQUICA IMS EM ASSEMBLER
 *            GU ROOT -> GNP CHILD -> GNP GRANDCHILD (3 NIVEIS)
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : IMS/DB (DL/I)
+*----------------------------------------------------------------*
+* HIERARQUIA EXEMPLO (3 NIVEIS):
+*
+*   CLIENTE (NUMCLI='CLI00100')           <- RAIZ
+*     |-- CONTA (varias por cliente)       <- FILHA
+*           |-- MOVIMENT (varias por conta)<- NETA
+*
+* FLUXO:
+*   1. GU CLIENTE(NUMCLI=CLI00100) -> POSICIONA NO CLIENTE.
+*   2. LOOP GNP CONTA (R5 = TOTAL DE CONTAS)
+*   3. PARA CADA CONTA, LOOP GNP MOVIMENT (R6 = MOVIMENTOS)
+*   4. STATUS 'GE' (NOT FOUND EM NIVEL INFERIOR) NAO E' ERRO:
+*      SIGNIFICA QUE NAO HA MAIS MOVIMENT NAQUELA CONTA.
+*   5. AO FINAL, EMITE TOTAL DE CONTAS VIA WTO.
 *================================================================*
 ASMIHNV1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* R9 = DB PCB.                                                  *
+*---------------------------------------------------------------*
          L     R9,0(R1)             DB PCB ADDRESS
-*
+*---------------------------------------------------------------*
+* GU QUALIFICADO: POSICIONA NO CLIENTE CLI00100.                *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'GU  '
          MVC   SSA1,BLANKS
          MVC   SSA1(9),=C'CLIENTE '
@@ -11262,33 +11337,43 @@ ASMIHNV1 CSECT
          MVC   WMSG(10),=C'CLIENTE:  '
          MVC   WMSG+10(30),IOAREAP
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* LOOP 1: GNP CONTA (FILHO DO CLIENTE).                         *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'GNP '
          MVC   SSA1,BLANKS
          MVC   SSA1(9),=C'CONTA   '
-         SR    R5,R5
+         SR    R5,R5                CONTADOR DE CONTAS
 *
 LPCONTA  CALL  ASMTDLI,(FUNC,R9,IOAREAF,SSA1)
          CLC   0(2,R9),=C'  '
-         BNE   CNTEND
+         BNE   CNTEND               FIM OU ERRO
 *
          LA    R5,1(R5)
-*
+*---------------------------------------------------------------*
+* LOOP 2: GNP MOVIMENT (FILHO DE CADA CONTA).                   *
+*---------------------------------------------------------------*
          MVC   FUNCN,=CL4'GNP '
          MVC   SSA2,BLANKS
          MVC   SSA2(9),=C'MOVIMENT'
-         SR    R6,R6
+         SR    R6,R6                CONTADOR DE MOVIMENTOS
 *
 LPMOV    CALL  ASMTDLI,(FUNCN,R9,IOAREAN,SSA2)
          CLC   0(2,R9),=C'  '
          BNE   MOVEND
          LA    R6,1(R6)
          B     LPMOV
-*
+*---------------------------------------------------------------*
+* TRATAMENTO DE STATUS APOS LPMOV:                              *
+*   'GE' = FIM DE DEPENDENTES -> VOLTA PARA LPCONTA.            *
+*   OUTRO = ERRO REAL OU FIM GLOBAL -> CNTEND.                  *
+*---------------------------------------------------------------*
 MOVEND   CLC   0(2,R9),=C'GE'
          BE    LPCONTA
          B     CNTEND
-*
+*---------------------------------------------------------------*
+* FIM DE PROCESSAMENTO: EMITE TOTAL DE CONTAS.                  *
+*---------------------------------------------------------------*
 CNTEND   CVD   R5,DWORK
          UNPK  WMSG+8(4),DWORK+6(2)
          OI    WMSG+11,X'F0'
@@ -11328,17 +11413,28 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : NAVEGACAO HIERARQUICA IMS EM ASSEMBLER
 *            GU ROOT -> GNP CHILD -> GNP GRANDCHILD (3 NIVEIS)
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : IMS/DB (DL/I)
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE. OS DESVIOS DE CONTROLE USAM JNE,
+* JE E J (PC-RELATIVO), EVITANDO BRANCH BASE+DESLOCAMENTO.
 *================================================================*
 ASMIHNV1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMIHNV1         SET BASE (RELATIVE)
+         LARL  R12,ASMIHNV1         SET BASE (PC-RELATIVE)
          USING ASMIHNV1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* R9 = DB PCB.                                                  *
+*---------------------------------------------------------------*
          L     R9,0(R1)             DB PCB ADDRESS
-*
+*---------------------------------------------------------------*
+* GU QUALIFICADO PELA CHAVE NUMCLI.                             *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'GU  '
          MVC   SSA1,BLANKS
          MVC   SSA1(9),=C'CLIENTE '
@@ -11350,12 +11446,14 @@ ASMIHNV1 CSECT
 *
          CALL  ASMTDLI,(FUNC,R9,IOAREAP,SSA1)
          CLC   0(2,R9),=C'  '
-         JNE   STERR
+         JNE   STERR                (RELATIVO)
 *
          MVC   WMSG(10),=C'CLIENTE:  '
          MVC   WMSG+10(30),IOAREAP
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* LOOP 1: GNP CONTA.                                            *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'GNP '
          MVC   SSA1,BLANKS
          MVC   SSA1(9),=C'CONTA   '
@@ -11363,10 +11461,12 @@ ASMIHNV1 CSECT
 *
 LPCONTA  CALL  ASMTDLI,(FUNC,R9,IOAREAF,SSA1)
          CLC   0(2,R9),=C'  '
-         JNE   CNTEND
+         JNE   CNTEND               (RELATIVO)
 *
          LA    R5,1(R5)
-*
+*---------------------------------------------------------------*
+* LOOP 2: GNP MOVIMENT.                                         *
+*---------------------------------------------------------------*
          MVC   FUNCN,=CL4'GNP '
          MVC   SSA2,BLANKS
          MVC   SSA2(9),=C'MOVIMENT'
@@ -11374,13 +11474,15 @@ LPCONTA  CALL  ASMTDLI,(FUNC,R9,IOAREAF,SSA1)
 *
 LPMOV    CALL  ASMTDLI,(FUNCN,R9,IOAREAN,SSA2)
          CLC   0(2,R9),=C'  '
-         JNE   MOVEND
+         JNE   MOVEND               (RELATIVO)
          LA    R6,1(R6)
-         J     LPMOV
-*
+         J     LPMOV                (RELATIVO)
+*---------------------------------------------------------------*
+* STATUS 'GE' -> VOLTA PARA PROXIMO GNP CONTA.                  *
+*---------------------------------------------------------------*
 MOVEND   CLC   0(2,R9),=C'GE'
-         JE    LPCONTA
-         J     CNTEND
+         JE    LPCONTA              (RELATIVO)
+         J     CNTEND               (RELATIVO)
 *
 CNTEND   CVD   R5,DWORK
          UNPK  WMSG+8(4),DWORK+6(2)
@@ -11431,46 +11533,82 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : BMP BATCH COM CHECKPOINT/RESTART EM ASSEMBLER
 *            CHKP PERIODICO + XRST PARA RECUPERACAO
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : IMS/DB BMP BATCH
+*----------------------------------------------------------------*
+* CONCEITOS:
+*   - BMP   : BATCH MESSAGE PROCESSING REGION.
+*   - XRST  : EXTENDED RESTART - RECUPERA POSICAO/CONTADORES
+*             SALVOS NO ULTIMO CHKP, CASO O JOB TENHA ABENDADO.
+*   - CHKP  : CHECKPOINT - PERSISTE ESTADO (IOAREA+RSTID) PARA
+*             PERMITIR RESTART POSTERIOR.
+*
+* FLUXO:
+*   1. XRST: SE RESTART, CARREGA R5 COM CONTADOR SALVO;
+*            SE PRIMEIRA EXECUCAO, R5=0.
+*   2. LOOP GN TRANSACT -> INCREMENTA R5.
+*   3. A CADA 512 REGISTROS, SALVA ESTADO E EXECUTA CHKP.
+*   4. STATUS 'QC' (END-OF-MESSAGE) ENCERRA O PROCESSAMENTO.
+*   5. CHKP FINAL E EMISSAO DO TOTAL PROCESSADO.
 *================================================================*
 ASMICHK1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* R9 = IO PCB (USADO PARA CHKP/XRST).                           *
+* R10 = DB PCB (USADO PARA GN).                                 *
+*---------------------------------------------------------------*
          L     R9,0(R1)             IO PCB
          L     R10,4(R1)            DB PCB
-*
+*---------------------------------------------------------------*
+* XRST: TENTA RECUPERAR ESTADO SALVO EM CHKP ANTERIOR.          *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'XRST'
          MVC   IOAREA,BLANKS250
          MVC   RSTID,=CL8'ASMICHK1'
 *
          CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
          CLC   0(2,R9),=C'  '
-         BE    RESTARTED
-*
+         BE    RESTARTED            STATUS OK -> RESTART
+*---------------------------------------------------------------*
+* PRIMEIRA EXECUCAO (NAO RESTART): CONTADOR = 0.                *
+*---------------------------------------------------------------*
          SR    R5,R5
          B     PROCESS
-*
+*---------------------------------------------------------------*
+* RESTART: CARREGA O CONTADOR SALVO (SVCOUNT).                  *
+*---------------------------------------------------------------*
 RESTARTED DS   0H
          L     R5,SVCOUNT
-*
+*---------------------------------------------------------------*
+* PREPARA SSA GENERICA PARA GN TRANSACT.                        *
+*---------------------------------------------------------------*
 PROCESS  MVC   FUNC,=CL4'GN  '
          MVC   SSA1,BLANKS40
          MVC   SSA1(9),=C'TRANSACT'
-*
+*---------------------------------------------------------------*
+* LOOP PRINCIPAL: LE TRANSACOES UMA A UMA (GN).                 *
+*---------------------------------------------------------------*
 MAINLP   CALL  ASMTDLI,(FUNC,R10,IOAREA,SSA1)
          CLC   0(2,R10),=C'  '
-         BNE   ENDPROC
+         BNE   ENDPROC              FIM OU ERRO
 *
-         LA    R5,1(R5)
-*
+         LA    R5,1(R5)             INCREMENTA CONTADOR
+*---------------------------------------------------------------*
+* CHECKPOINT A CADA 512 REGISTROS.                              *
+*---------------------------------------------------------------*
          LR    R6,R5
          N     R6,=F'511'
          BNZ   MAINLP
-*
+*---------------------------------------------------------------*
+* SALVA ESTADO E EMITE CHKP.                                    *
+*---------------------------------------------------------------*
          ST    R5,SVCOUNT
          MVC   FUNC,=CL4'CHKP'
          MVC   RSTID,=CL8'ASMICHK1'
@@ -11479,16 +11617,20 @@ MAINLP   CALL  ASMTDLI,(FUNC,R10,IOAREA,SSA1)
          CLC   0(2,R9),=C'  '
          BNE   CHKERR
 *
-         MVC   FUNC,=CL4'GN  '
+         MVC   FUNC,=CL4'GN  '     RESTAURA FUNCAO PARA GN
          B     MAINLP
-*
+*---------------------------------------------------------------*
+* TERMINO: ESPERAMOS STATUS 'QC' (NO MORE MESSAGES).            *
+*---------------------------------------------------------------*
 ENDPROC  CLC   0(2,R10),=C'QC'
          BNE   STERR
 *
          ST    R5,SVCOUNT
          MVC   FUNC,=CL4'CHKP'
          CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
-*
+*---------------------------------------------------------------*
+* MENSAGEM FINAL: 'PROCESSADOS=nnnnnnnn'.                       *
+*---------------------------------------------------------------*
          CVD   R5,DWORK
          UNPK  WMSG+12(8),DWORK
          OI    WMSG+19,X'F0'
@@ -11497,7 +11639,9 @@ ENDPROC  CLC   0(2,R10),=C'QC'
 *
          SR    R15,R15
          B     EXIT
-*
+*---------------------------------------------------------------*
+* ERROS DE CHKP (RC=12) E DL/I GENERICO (RC=8).                 *
+*---------------------------------------------------------------*
 CHKERR   MVC   WMSG(10),=C'CHKP ERRO='
          MVC   WMSG+10(2),0(R9)
          WTO   MF=(E,WTOMSG)
@@ -11533,45 +11677,62 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : BMP BATCH COM CHECKPOINT/RESTART EM ASSEMBLER
 *            CHKP PERIODICO + XRST PARA RECUPERACAO
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : IMS/DB BMP BATCH
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE; TODOS OS DESVIOS SAO PC-RELATIVOS
+* (JE, JNE, JNZ, J). A LINKAGE COM ASMTDLI FICA NA MACRO CALL.
 *================================================================*
 ASMICHK1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMICHK1         SET BASE (RELATIVE)
+         LARL  R12,ASMICHK1         SET BASE (PC-RELATIVE)
          USING ASMICHK1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* PCBs DE ENTRADA (IO + DB).                                    *
+*---------------------------------------------------------------*
          L     R9,0(R1)             IO PCB
          L     R10,4(R1)            DB PCB
-*
+*---------------------------------------------------------------*
+* XRST: TENTATIVA DE RESTART.                                   *
+*---------------------------------------------------------------*
          MVC   FUNC,=CL4'XRST'
          MVC   IOAREA,BLANKS250
          MVC   RSTID,=CL8'ASMICHK1'
 *
          CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
          CLC   0(2,R9),=C'  '
-         JE    RESTARTED
+         JE    RESTARTED            (RELATIVO)
 *
          SR    R5,R5
-         J     PROCESS
-*
+         J     PROCESS              (RELATIVO)
+*---------------------------------------------------------------*
+* RESTART: CARREGA CONTADOR SALVO.                              *
+*---------------------------------------------------------------*
 RESTARTED DS   0H
          L     R5,SVCOUNT
-*
+*---------------------------------------------------------------*
+* PREPARA LOOP PRINCIPAL.                                       *
+*---------------------------------------------------------------*
 PROCESS  MVC   FUNC,=CL4'GN  '
          MVC   SSA1,BLANKS40
          MVC   SSA1(9),=C'TRANSACT'
-*
+*---------------------------------------------------------------*
+* LOOP GN COM CHKP A CADA 512 REGISTROS.                        *
+*---------------------------------------------------------------*
 MAINLP   CALL  ASMTDLI,(FUNC,R10,IOAREA,SSA1)
          CLC   0(2,R10),=C'  '
-         JNE   ENDPROC
+         JNE   ENDPROC              (RELATIVO)
 *
          LA    R5,1(R5)
 *
          LR    R6,R5
          N     R6,=F'511'
-         JNZ   MAINLP
+         JNZ   MAINLP               (RELATIVO)
 *
          ST    R5,SVCOUNT
          MVC   FUNC,=CL4'CHKP'
@@ -11579,13 +11740,15 @@ MAINLP   CALL  ASMTDLI,(FUNC,R10,IOAREA,SSA1)
 *
          CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
          CLC   0(2,R9),=C'  '
-         JNE   CHKERR
+         JNE   CHKERR               (RELATIVO)
 *
          MVC   FUNC,=CL4'GN  '
-         J     MAINLP
-*
+         J     MAINLP               (RELATIVO)
+*---------------------------------------------------------------*
+* FIM ESPERADO (STATUS 'QC').                                   *
+*---------------------------------------------------------------*
 ENDPROC  CLC   0(2,R10),=C'QC'
-         JNE   STERR
+         JNE   STERR                (RELATIVO)
 *
          ST    R5,SVCOUNT
          MVC   FUNC,=CL4'CHKP'
@@ -11598,13 +11761,15 @@ ENDPROC  CLC   0(2,R10),=C'QC'
          WTO   MF=(E,WTOMSG)
 *
          SR    R15,R15
-         J     EXIT
-*
+         J     EXIT                 (RELATIVO)
+*---------------------------------------------------------------*
+* ROTAS DE ERRO.                                                *
+*---------------------------------------------------------------*
 CHKERR   MVC   WMSG(10),=C'CHKP ERRO='
          MVC   WMSG+10(2),0(R9)
          WTO   MF=(E,WTOMSG)
          LA    R15,12
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 *
 STERR    MVC   WMSG(10),=C'DLI  ERRO='
          MVC   WMSG+10(2),0(R10)
