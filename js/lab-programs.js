@@ -2114,33 +2114,52 @@ const LAB_PROGRAMS = [
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : HEX DUMP DE AREA DE MEMORIA
 *            GERA SAIDA FORMATADA COM OFFSET, HEX E EBCDIC
-* REGISTRADORES:
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
-*   R1  = ENDERECO DA AREA
-*   R2  = TAMANHO EM BYTES
-*   R15 = RETURN CODE (0=OK)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM, BCT)
+* ENTRADA  : R1 -> PLIST    +0 = ENDERECO DO BUFFER
+*                           +4 = TAMANHO EM BYTES
+* SAIDA    : LINHAS NO WTO NO FORMATO  OFFSET | HEX | EBCDIC
+*            R15 = RETURN CODE (0=OK)
+*----------------------------------------------------------------*
+* TECNICA: ESTABELECE BASE COM BALR R12,0 + USING *,R12.
+*          TODOS OS DESVIOS SAO RX (BASE+DESLOCAMENTO):
+*          B, BNL, BL, BH, BCT. O ASSEMBLER GERA OS OFFSETS
+*          RELATIVOS A R12 AUTOMATICAMENTE.
 *================================================================*
 ASMHXD01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO PADRAO: SALVA REGISTRADORES DO CHAMADOR (R14-R12)     *
+* NA SAVE AREA APONTADA POR R13, FIXA O REGISTRADOR BASE R12    *
+* VIA BALR E ENCADEIA A SAVE AREA LOCAL.                        *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVEAREA+4       CHAIN SAVE AREAS
          LA    R13,SAVEAREA
-*
+*---------------------------------------------------------------*
+* CARREGA OS PARAMETROS DE ENTRADA:                             *
+*  R3 = ENDERECO DO BUFFER A SER "DUMPADO"                      *
+*  R4 = TAMANHO EM BYTES                                        *
+*  R5 = COPIA DO ENDERECO INICIAL (REFERENCIA)                  *
+*  R6 = OFFSET CORRENTE (ZERA PARA INICIAR)                     *
+*---------------------------------------------------------------*
          L     R3,0(R1)            LOAD BUFFER ADDRESS
          L     R4,4(R1)            LOAD LENGTH
          LR    R5,R3               SAVE START ADDR
          SR    R6,R6               OFFSET = 0
-*
+*---------------------------------------------------------------*
+* LOOP PRINCIPAL: ENQUANTO OFFSET < TAMANHO, MONTA UMA LINHA    *
+* COM ATE 16 BYTES (OFFSET + REPRESENTACAO HEX + EBCDIC).       *
+*---------------------------------------------------------------*
 LOOP     CR    R6,R4               CHECK IF DONE
          BNL   EXIT                YES - EXIT
          MVC   OUTLINE,BLANKS      CLEAR OUTPUT LINE
-*-- FORMAT OFFSET
+*-- FORMATA O OFFSET (8 DIGITOS DECIMAIS) NA COLUNA INICIAL ----*
          LR    R7,R6               COPY OFFSET
          CVD   R7,DWORK            CONVERT TO PACKED
          UNPK  OUTLINE(8),DWORK    UNPACK OFFSET
          OI    OUTLINE+7,X'F0'     FIX SIGN
-*-- FORMAT HEX BYTES (16 PER LINE)
+*-- FORMATA 16 BYTES EM HEX (COL 11-58) E EBCDIC (COL 61-76) ---*
          LA    R8,OUTLINE+10       POINT TO HEX AREA
          LA    R9,OUTLINE+60       POINT TO CHAR AREA
          LA    R10,16              BYTES PER LINE
@@ -2151,7 +2170,8 @@ HEXLOOP  CR    R6,R4               PAST END?
          UNPK  HEXWORK2(3),HEXWORK(2) CONVERT TO HEX
          TR    HEXWORK2(2),HEXTAB  TRANSLATE TO PRINTABLE
          MVC   0(2,R8),HEXWORK2    MOVE HEX TO OUTPUT
-*-- PRINTABLE CHARACTER
+*-- TESTA SE O BYTE E IMPRIMIVEL (X'40' A X'FE'); CASO ---------*
+*   CONTRARIO COLOCA '.' NA COLUNA CHAR.                        *
          CLI   0(R3),X'40'         PRINTABLE RANGE?
          BL    NOTPRINT
          CLI   0(R3),X'FE'
@@ -2163,16 +2183,22 @@ NEXTBYTE LA    R3,1(R3)            NEXT BYTE
          LA    R6,1(R6)            INCREMENT OFFSET
          LA    R8,3(R8)            NEXT HEX POSITION
          LA    R9,1(R9)            NEXT CHAR POSITION
-         BCT   R10,HEXLOOP         LOOP 16 BYTES
-*
+         BCT   R10,HEXLOOP         LOOP 16 BYTES (BASE+DESLOC)
+*---------------------------------------------------------------*
+* IMPRIME A LINHA MONTADA VIA WTO E VOLTA PARA O LOOP PRINCIPAL.*
+*---------------------------------------------------------------*
 PRNTLINE WTO   MF=(E,WTOMSG)       WRITE OUTPUT LINE
          B     LOOP                NEXT 16-BYTE GROUP
-*
+*---------------------------------------------------------------*
+* EPILOGO: RC=0, RESTAURA SAVE AREA E RETORNA AO CHAMADOR.      *
+*---------------------------------------------------------------*
 EXIT     SR    R15,R15             RC = 0
          L     R13,SAVEAREA+4      RESTORE SAVE AREA
          LM    R14,R12,12(R13)     RESTORE REGISTERS
          BR    R14                 RETURN
-*
+*---------------------------------------------------------------*
+* AREAS DE TRABALHO E CONSTANTES.                               *
+*---------------------------------------------------------------*
 SAVEAREA DS    18F
 DWORK    DS    D
 HEXWORK  DS    XL2
@@ -2189,65 +2215,88 @@ WTOMSG   WTO   ' ',MF=L
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : HEX DUMP DE AREA DE MEMORIA
 *            GERA SAIDA FORMATADA COM OFFSET, HEX E EBCDIC
-* REGISTRADORES:
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
-*   R1  = ENDERECO DA AREA
-*   R2  = TAMANHO EM BYTES
-*   R15 = RETURN CODE (0=OK)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM / BRCT)
+* ENTRADA  : R1 -> PLIST    +0 = ENDERECO DO BUFFER
+*                           +4 = TAMANHO EM BYTES
+* SAIDA    : LINHAS NO WTO NO FORMATO  OFFSET | HEX | EBCDIC
+*            R15 = RETURN CODE (0=OK)
+*----------------------------------------------------------------*
+* TECNICA: ESTABELECE BASE COM LARL R12,ASMHXD01 (PC-RELATIVO)
+*          E DECLARA USING APENAS PARA RESOLVER REFERENCIAS
+*          SIMBOLICAS DE DADOS DENTRO DA CSECT.
+*          TODOS OS DESVIOS SAO RELATIVOS (RI/RIL):
+*          J, JNL, JL, JH, BRCT.  NENHUMA INSTRUCAO DE DESVIO
+*          USA BASE+DESLOCAMENTO NESTA VERSAO.
 *================================================================*
 ASMHXD01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO: SALVA REGISTRADORES E ESTABELECE BASE VIA LARL.      *
+* LARL CARREGA O ENDERECO DA CSECT USANDO OFFSET PC-RELATIVO    *
+* DE 32 BITS, DISPENSANDO O TRUQUE BALR R12,0.                  *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMHXD01         SET BASE (RELATIVE)
+         LARL  R12,ASMHXD01         SET BASE (PC-RELATIVE)
          USING ASMHXD01,R12
          ST    R13,SAVEAREA+4       CHAIN SAVE AREAS
          LA    R13,SAVEAREA
-*
+*---------------------------------------------------------------*
+* CARREGA PARAMETROS DE ENTRADA (MESMA SEMANTICA DA V. BASE).   *
+*---------------------------------------------------------------*
          L     R3,0(R1)            LOAD BUFFER ADDRESS
          L     R4,4(R1)            LOAD LENGTH
          LR    R5,R3               SAVE START ADDR
          SR    R6,R6               OFFSET = 0
-*
+*---------------------------------------------------------------*
+* LOOP PRINCIPAL - MESMA LOGICA DA VERSAO BASE, MAS TODOS OS    *
+* DESVIOS SAO PC-RELATIVOS (J-FORM).                            *
+*---------------------------------------------------------------*
 LOOP     CR    R6,R4               CHECK IF DONE
-         JNL   EXIT                 YES - EXIT
+         JNL   EXIT                 YES - EXIT (RELATIVO)
          MVC   OUTLINE,BLANKS      CLEAR OUTPUT LINE
-*-- FORMAT OFFSET
+*-- FORMATA OFFSET --------------------------------------------*
          LR    R7,R6               COPY OFFSET
          CVD   R7,DWORK            CONVERT TO PACKED
          UNPK  OUTLINE(8),DWORK    UNPACK OFFSET
          OI    OUTLINE+7,X'F0'     FIX SIGN
-*-- FORMAT HEX BYTES (16 PER LINE)
+*-- FORMATA 16 BYTES (HEX + EBCDIC) ---------------------------*
          LA    R8,OUTLINE+10       POINT TO HEX AREA
          LA    R9,OUTLINE+60       POINT TO CHAR AREA
          LA    R10,16              BYTES PER LINE
 HEXLOOP  CR    R6,R4               PAST END?
-         JNL   PRNTLINE             YES - PRINT WHAT WE HAVE
+         JNL   PRNTLINE             YES - PRINT (RELATIVO)
          IC    R7,0(R3)            GET BYTE
          STC   R7,HEXWORK          STORE BYTE
          UNPK  HEXWORK2(3),HEXWORK(2) CONVERT TO HEX
          TR    HEXWORK2(2),HEXTAB  TRANSLATE TO PRINTABLE
          MVC   0(2,R8),HEXWORK2    MOVE HEX TO OUTPUT
-*-- PRINTABLE CHARACTER
+*-- TESTA BYTE IMPRIMIVEL (X'40' A X'FE'), SENAO USA '.' ------*
          CLI   0(R3),X'40'         PRINTABLE RANGE?
-         JL    NOTPRINT
+         JL    NOTPRINT             (RELATIVO)
          CLI   0(R3),X'FE'
-         JH    NOTPRINT
+         JH    NOTPRINT             (RELATIVO)
          MVC   0(1,R9),0(R3)       COPY AS-IS
-         J     NEXTBYTE
+         J     NEXTBYTE             (RELATIVO)
 NOTPRINT MVI   0(R9),C'.'          USE DOT FOR NON-PRINT
 NEXTBYTE LA    R3,1(R3)            NEXT BYTE
          LA    R6,1(R6)            INCREMENT OFFSET
          LA    R8,3(R8)            NEXT HEX POSITION
          LA    R9,1(R9)            NEXT CHAR POSITION
-         BCT   R10,HEXLOOP         LOOP 16 BYTES
-*
+         BRCT  R10,HEXLOOP         LOOP 16 BYTES (RELATIVO)
+*---------------------------------------------------------------*
+* IMPRIME LINHA E VOLTA AO LOOP PRINCIPAL (DESVIO PC-RELATIVO). *
+*---------------------------------------------------------------*
 PRNTLINE WTO   MF=(E,WTOMSG)       WRITE OUTPUT LINE
-         J     LOOP                 NEXT 16-BYTE GROUP
-*
+         J     LOOP                 NEXT GROUP (RELATIVO)
+*---------------------------------------------------------------*
+* EPILOGO: RC=0, RESTAURA SAVE AREA E RETORNA AO CHAMADOR.      *
+*---------------------------------------------------------------*
 EXIT     SR    R15,R15             RC = 0
          L     R13,SAVEAREA+4      RESTORE SAVE AREA
          LM    R14,R12,12(R13)     RESTORE REGISTERS
          BR    R14                 RETURN
-*
+*---------------------------------------------------------------*
+* AREAS DE TRABALHO E CONSTANTES.                               *
+*---------------------------------------------------------------*
 SAVEAREA DS    18F
 DWORK    DS    D
 HEXWORK  DS    XL2
@@ -2274,27 +2323,51 @@ WTOMSG   WTO   ' ',MF=L
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : LOG DE RETURN CODE VIA WTO
 *            FORMATA: STEP=xxxxxxxx RC=nnnn SEV=ssssss
-* R1 -> PARMLIST: @STEPNAME(8), @RC(FULLWORD)
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0 = @STEPNAME (8 BYTES)
+*                            +4 = @RC       (FULLWORD)
+* SAIDA    : MENSAGEM VIA WTO + R15 COM O RC PROPAGADO
+*----------------------------------------------------------------*
+* TECNICA: USA BALR+USING PARA BASE CLASSICA E DESVIOS B/BE DE
+*          FORMATO RX (BASE+DESLOCAMENTO). O CH (COMPARE HALF-
+*          WORD) CLASSIFICA O RC EM FAIXAS DE SEVERIDADE.
 *================================================================*
 ASMRCL01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO: SALVA REGISTRADORES, ESTABELECE BASE E SAVE AREA.    *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* RECEBE PONTEIROS DA PARMLIST E CARREGA O VALOR DO RC.         *
+*  R2 -> NOME DO STEP (8 BYTES)                                 *
+*  R3 -> ENDERECO DO FULLWORD COM O RC                          *
+*  R4 =  RC CARREGADO PARA CLASSIFICACAO                        *
+*---------------------------------------------------------------*
          L     R2,0(R1)            ADDR OF STEPNAME
          L     R3,4(R1)            ADDR OF RC
          L     R4,0(R3)            LOAD RC VALUE
-*
+*---------------------------------------------------------------*
+* MONTA O ESQUELETO DA MENSAGEM E COPIA O NOME DO STEP.         *
+*---------------------------------------------------------------*
          MVC   MSGTEXT,PATTERN     INIT MESSAGE
          MVC   MSGTEXT+5(8),0(R2)  MOVE STEPNAME
-*
+*---------------------------------------------------------------*
+* CONVERTE O RC DE BINARIO PARA DECIMAL PRINTAVEL:              *
+*  CVD  -> EMPACOTADO (PACKED DECIMAL) EM DWORK                 *
+*  UNPK -> ZONED NO CORPO DA MENSAGEM                           *
+*  OI   -> CORRIGE O SINAL DO ULTIMO DIGITO (X'F0')             *
+*---------------------------------------------------------------*
          CVD   R4,DWORK            CONVERT RC
          UNPK  MSGTEXT+17(4),DWORK+6(2)
          OI    MSGTEXT+20,X'F0'    FIX SIGN
-*
+*---------------------------------------------------------------*
+* CLASSIFICA A SEVERIDADE DE ACORDO COM O RC:                   *
+*   0  = SUCCESS    4  = WARNING    8  = ERROR  >8 = CRITICAL   *
+*---------------------------------------------------------------*
 * DETERMINE SEVERITY
          CH    R4,=H'0'
          BE    SEVOK
@@ -2311,14 +2384,18 @@ SEVWARN  MVC   MSGTEXT+26(8),=CL8'WARNING '
 SEVERR   MVC   MSGTEXT+26(8),=CL8'ERROR   '
          B     DOMSG
 SEVCRIT  MVC   MSGTEXT+26(8),=CL8'CRITICAL'
-*
+*---------------------------------------------------------------*
+* EMITE A MENSAGEM VIA WTO E RETORNA PROPAGANDO O RC EM R15.    *
+*---------------------------------------------------------------*
 DOMSG    WTO   MF=(E,WTOMSG)
 *
          LR    R15,R4              PROPAGATE RC
          L     R13,SAVE+4
          LM    R14,R12,12(R13)
          BR    R14
-*
+*---------------------------------------------------------------*
+* AREAS DE TRABALHO E TEMPLATE DA MENSAGEM.                     *
+*---------------------------------------------------------------*
 SAVE     DS    18F
 DWORK    DS    D
 PATTERN  DC    CL40'STEP=........ RC=.... SEV=........'
@@ -2332,51 +2409,72 @@ WTOMSG   WTO   ' ',MF=L
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : LOG DE RETURN CODE VIA WTO
 *            FORMATA: STEP=xxxxxxxx RC=nnnn SEV=ssssss
-* R1 -> PARMLIST: @STEPNAME(8), @RC(FULLWORD)
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0 = @STEPNAME (8 BYTES)
+*                            +4 = @RC       (FULLWORD)
+* SAIDA    : MENSAGEM VIA WTO + R15 COM O RC PROPAGADO
+*----------------------------------------------------------------*
+* TECNICA: USA LARL PARA ESTABELECER BASE VIA PC-RELATIVO E
+*          DESVIOS J/JE (RIL) EM VEZ DOS B/BE CLASSICOS.
+*          NENHUMA INSTRUCAO DE DESVIO NESTA VERSAO USA
+*          FORMATO BASE+DESLOCAMENTO.
 *================================================================*
 ASMRCL01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO: LARL CARREGA O ENDERECO DA CSECT USANDO     *
+* DESLOCAMENTO PC-RELATIVO DE 32 BITS.                          *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
-         LARL  R12,ASMRCL01         
+         LARL  R12,ASMRCL01         SET BASE (PC-RELATIVE)
          USING ASMRCL01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* RECEBE PARMLIST E CARREGA O RC (MESMA SEMANTICA DA V. BASE).  *
+*---------------------------------------------------------------*
          L     R2,0(R1)            ADDR OF STEPNAME
          L     R3,4(R1)            ADDR OF RC
          L     R4,0(R3)            LOAD RC VALUE
-*
+*---------------------------------------------------------------*
+* MONTA A MENSAGEM E FORMATA O RC EM ZONED DECIMAL.             *
+*---------------------------------------------------------------*
          MVC   MSGTEXT,PATTERN     INIT MESSAGE
          MVC   MSGTEXT+5(8),0(R2)  MOVE STEPNAME
 *
          CVD   R4,DWORK            CONVERT RC
          UNPK  MSGTEXT+17(4),DWORK+6(2)
          OI    MSGTEXT+20,X'F0'    FIX SIGN
-*
+*---------------------------------------------------------------*
+* CLASSIFICA A SEVERIDADE USANDO DESVIOS RELATIVOS (J/JE).      *
+*---------------------------------------------------------------*
 * DETERMINE SEVERITY
          CH    R4,=H'0'
-         JE    SEVOK
+         JE    SEVOK                (RELATIVO)
          CH    R4,=H'4'
-         JE    SEVWARN
+         JE    SEVWARN              (RELATIVO)
          CH    R4,=H'8'
-         JE    SEVERR
-         J     SEVCRIT
+         JE    SEVERR               (RELATIVO)
+         J     SEVCRIT              (RELATIVO)
 *
 SEVOK    MVC   MSGTEXT+26(8),=CL8'SUCCESS '
-         J     DOMSG
+         J     DOMSG                (RELATIVO)
 SEVWARN  MVC   MSGTEXT+26(8),=CL8'WARNING '
-         J     DOMSG
+         J     DOMSG                (RELATIVO)
 SEVERR   MVC   MSGTEXT+26(8),=CL8'ERROR   '
-         J     DOMSG
+         J     DOMSG                (RELATIVO)
 SEVCRIT  MVC   MSGTEXT+26(8),=CL8'CRITICAL'
-*
+*---------------------------------------------------------------*
+* EMITE WTO E RETORNA PROPAGANDO O RC EM R15.                   *
+*---------------------------------------------------------------*
 DOMSG    WTO   MF=(E,WTOMSG)
 *
          LR    R15,R4              PROPAGATE RC
          L     R13,SAVE+4
          LM    R14,R12,12(R13)
          BR    R14
-*
+*---------------------------------------------------------------*
+* AREAS DE TRABALHO E TEMPLATE DA MENSAGEM.                     *
+*---------------------------------------------------------------*
 SAVE     DS    18F
 DWORK    DS    D
 PATTERN  DC    CL40'STEP=........ RC=.... SEV=........'
@@ -2400,28 +2498,46 @@ WTOMSG   WTO   ' ',MF=L
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : OBTEM TOD CLOCK E FORMATA TIMESTAMP LEGIVEL
 *            FORMATO: YYYY-MM-DD HH:MM:SS
-* R1 -> @OUTPUT(19 BYTES)
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING)
+* ENTRADA  : R1 -> @OUTPUT(19 BYTES)
+* SAIDA    : BUFFER DE 19 BYTES PREENCHIDO COM O TIMESTAMP
+*----------------------------------------------------------------*
+* TECNICA: MACRO TIME SYS FORNECE DATA EM FORMATO DECIMAL JA
+*          SEPARADO (YYYY/MM/DD/HH/MM/SS).  A MONTAGEM FINAL
+*          USA MVC/MVI/UNPK PARA COMPOR A STRING FINAL.
 *================================================================*
 ASMTMS01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO CLASSICO BALR+USING E SALVA REGISTRADORES.            *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* R2 = ENDERECO DO BUFFER DE SAIDA FORNECIDO PELO CHAMADOR.     *
+*---------------------------------------------------------------*
          L     R2,0(R1)            ADDR OUTPUT BUFFER
-*
+*---------------------------------------------------------------*
+* INVOCA A MACRO TIME PARA OBTER DATA/HORA DO SISTEMA.          *
+* DATETYPE=YYYYMMDD RETORNA A DATA EM ZONED DECIMAL.            *
+*---------------------------------------------------------------*
 * GET CURRENT DATE/TIME VIA TIME MACRO
          TIME  DEC,DATETIME,LINKAGE=SYSTEM,DATETYPE=YYYYMMDD
-*
+*---------------------------------------------------------------*
+* MONTA A PARTE DE DATA: YYYY-MM-DD. USA MVI PARA OS HIFENS.    *
+*---------------------------------------------------------------*
 * FORMAT DATE: YYYY-MM-DD
          MVC   WORK(4),DATETIME+8  YYYY
          MVI   WORK+4,C'-'
          MVC   WORK+5(2),DATETIME+12 MM
          MVI   WORK+7,C'-'
          MVC   WORK+8(2),DATETIME+14 DD
-*
+*---------------------------------------------------------------*
+* MONTA A PARTE DE HORA: HH:MM:SS.                              *
+* UNPK DESEMPACOTA HHMMSS PACKED EM ZONED E OI CORRIGE SINAL.   *
+*---------------------------------------------------------------*
 * FORMAT TIME: HH:MM:SS
          MVI   WORK+10,C' '
          UNPK  TIMEWORK(7),DATETIME(4)
@@ -2431,14 +2547,18 @@ ASMTMS01 CSECT
          MVC   WORK+14(2),TIMEWORK+2 MM
          MVI   WORK+16,C':'
          MVC   WORK+17(2),TIMEWORK+4 SS
-*
+*---------------------------------------------------------------*
+* COPIA TIMESTAMP MONTADO PARA O BUFFER DO CHAMADOR E RETORNA.  *
+*---------------------------------------------------------------*
          MVC   0(19,R2),WORK      COPY TO OUTPUT
 *
          SR    R15,R15             RC=0
          L     R13,SAVE+4
          LM    R14,R12,12(R13)
          BR    R14
-*
+*---------------------------------------------------------------*
+* AREAS DE TRABALHO.                                            *
+*---------------------------------------------------------------*
 SAVE     DS    18F
 DATETIME DS    4F
 TIMEWORK DS    CL8
@@ -2451,28 +2571,44 @@ WORK     DS    CL19
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : OBTEM TOD CLOCK E FORMATA TIMESTAMP LEGIVEL
 *            FORMATO: YYYY-MM-DD HH:MM:SS
-* R1 -> @OUTPUT(19 BYTES)
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* ENTRADA  : R1 -> @OUTPUT(19 BYTES)
+* SAIDA    : BUFFER DE 19 BYTES PREENCHIDO COM O TIMESTAMP
+*----------------------------------------------------------------*
+* TECNICA: IDENTICA A VERSAO BASE, PORE'M A BASE E ESTABELECIDA
+*          COM LARL (PC-RELATIVO).  NAO HA DESVIOS DE CONTROLE
+*          NESTE MODULO -- O CODIGO E TOTALMENTE LINEAR.
 *================================================================*
 ASMTMS01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO: LARL ESTABELECE BASE SEM BALR.              *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
-         LARL  R12,ASMTMS01         
+         LARL  R12,ASMTMS01         SET BASE (PC-RELATIVE)
          USING ASMTMS01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* RECEBE ENDERECO DO BUFFER DE SAIDA.                           *
+*---------------------------------------------------------------*
          L     R2,0(R1)            ADDR OUTPUT BUFFER
-*
+*---------------------------------------------------------------*
+* OBTEM DATA/HORA DO SISTEMA VIA MACRO TIME.                    *
+*---------------------------------------------------------------*
 * GET CURRENT DATE/TIME VIA TIME MACRO
          TIME  DEC,DATETIME,LINKAGE=SYSTEM,DATETYPE=YYYYMMDD
-*
+*---------------------------------------------------------------*
+* MONTA A PARTE DE DATA: YYYY-MM-DD.                            *
+*---------------------------------------------------------------*
 * FORMAT DATE: YYYY-MM-DD
          MVC   WORK(4),DATETIME+8  YYYY
          MVI   WORK+4,C'-'
          MVC   WORK+5(2),DATETIME+12 MM
          MVI   WORK+7,C'-'
          MVC   WORK+8(2),DATETIME+14 DD
-*
+*---------------------------------------------------------------*
+* MONTA A PARTE DE HORA: HH:MM:SS.                              *
+*---------------------------------------------------------------*
 * FORMAT TIME: HH:MM:SS
          MVI   WORK+10,C' '
          UNPK  TIMEWORK(7),DATETIME(4)
@@ -2482,14 +2618,18 @@ ASMTMS01 CSECT
          MVC   WORK+14(2),TIMEWORK+2 MM
          MVI   WORK+16,C':'
          MVC   WORK+17(2),TIMEWORK+4 SS
-*
+*---------------------------------------------------------------*
+* COPIA RESULTADO PARA O BUFFER DO CHAMADOR E RETORNA.          *
+*---------------------------------------------------------------*
          MVC   0(19,R2),WORK      COPY TO OUTPUT
 *
          SR    R15,R15             RC=0
          L     R13,SAVE+4
          LM    R14,R12,12(R13)
          BR    R14
-*
+*---------------------------------------------------------------*
+* AREAS DE TRABALHO.                                            *
+*---------------------------------------------------------------*
 SAVE     DS    18F
 DATETIME DS    4F
 TIMEWORK DS    CL8
@@ -3448,25 +3588,39 @@ DATA2    DC    F'42'
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : DEMONSTRA LINKAGE CONVENTIONS DO Z/OS
 *            SAVE AREA 18F, PARM LIST, CALL INTERNO/EXTERNO
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM / BRASL / BASR)
+*----------------------------------------------------------------*
+* NESTA VERSAO TODA CHAMADA USA FORMA RELATIVA:
+*   BRAS/BRASL -> CHAMA SUB-ROTINA INTERNA (PC-RELATIVO)
+*   BASR       -> CHAMA VIA REGISTRADOR (SEM BASE+DESLOC)
+* NENHUMA INSTRUCAO DE DESVIO DESTE MODULO USA RX (B/BAL/BCT).
 *================================================================*
 ASMLNK01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO: ESTABELECE BASE VIA LARL E ENCADEIA A SAVE  *
+* AREA DO CHAMADOR COM A NOSSA (FORWARD/BACKWARD CHAIN).        *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE CALLER REGS
-         LARL  R12,ASMLNK01         ESTABLISH BASE
+         LARL  R12,ASMLNK01         ESTABLISH BASE (PC-REL)
          USING ASMLNK01,R12
          LA    R11,SAVE             MY SAVE AREA
          ST    R13,SAVE+4           BACKWARD CHAIN
          ST    R11,8(R13)           FORWARD CHAIN
          LR    R13,R11              ACTIVATE MY SAVE
-*
-* CALL INTERNAL SUBROUTINE VIA BAL
+*---------------------------------------------------------------*
+* CHAMADA INTERNA VIA BRASL (BRANCH RELATIVE AND SAVE LONG).    *
+* BRASL SALVA R14 COM O ENDERECO DE RETORNO E DESVIA PC-REL     *
+* PARA A LABEL INTSUB -- SUBSTITUI O CLASSICO "BAL R14,...".    *
+*---------------------------------------------------------------*
          LA    R1,PARM1             LOAD PARM ADDRESS
-         BAL   R14,INTSUB           BRANCH AND LINK
-*
-* CALL EXTERNAL PROGRAM VIA CALL MACRO
+         BRASL R14,INTSUB           CHAMADA INTERNA (RELATIVO)
+*---------------------------------------------------------------*
+* CHAMADA EXTERNA: CARREGA EPA EM R15 E USA BASR (RR FORMAT,    *
+* SEM BASE+DESLOCAMENTO).  BASR CARREGA R14 COM 31-BIT ADDR.    *
+*---------------------------------------------------------------*
          LA    R1,EXTPARMS          PARM LIST
          L     R15,=V(EXTPROG)      LOAD EPA
-         BALR  R14,R15              BRANCH TO EXTERNAL
+         BASR  R14,R15              CALL EXT (RR, SEM BASE+D)
 *
 * RETURN TO CALLER
          L     R13,SAVE+4           RESTORE CALLER SAVE
@@ -3561,26 +3715,39 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CARGA DINAMICA DE MODULOS
 *            LOAD, DELETE, LINK, XCTL
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM / BASR)
+*----------------------------------------------------------------*
+* NESTA VERSAO A BASE E ESTABELECIDA COM LARL (PC-RELATIVO) E
+* A CHAMADA VIA REGISTRADOR USA BASR (RR FORMAT, SEM USAR
+* BASE+DESLOCAMENTO).  SERVICOS DO SISTEMA (LOAD/DELETE/LINK)
+* EXPANDEM EM SVCS E MACROS QUE JA SAO INDEPENDENTES DE BASE.
 *================================================================*
 ASMDYN01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO: BASE VIA LARL, SAVE AREA ENCADEADA.         *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
-         LARL  R12,ASMDYN01         
+         LARL  R12,ASMDYN01         SET BASE (PC-RELATIVE)
          USING ASMDYN01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
-* LOAD - CARREGA MODULO NA MEMORIA SEM EXECUTAR
+*---------------------------------------------------------------*
+* LOAD - CARREGA MODULO NA MEMORIA SEM EXECUTAR (SVC 8).        *
+* APOS O LOAD: R0 = ENTRY POINT, R1 = LENGTH/AUTHORIZATION.     *
+*---------------------------------------------------------------*
          LOAD  EP=UTILPGM
          LR    R2,R0               ENTRY POINT
          LR    R3,R1               LENGTH/AUTH
          ST    R2,EPADDR            SAVE EP ADDR
          WTO   'ASMDYN01: MODULE LOADED'
-*
-* CALL VIA SAVED EP
+*---------------------------------------------------------------*
+* CHAMADA VIA ENTRY POINT PREVIAMENTE CARREGADO.                *
+* USA BASR (RR, 31-BIT) EM VEZ DE BALR PARA NAO "MISTURAR"      *
+* TECNICA CLASSICA NESTA VERSAO RELATIVA.                       *
+*---------------------------------------------------------------*
          L     R15,EPADDR
          LA    R1,PARMS
-         BALR  R14,R15             CALL LOADED MODULE
+         BASR  R14,R15             CALL LOADED MODULE (RR)
 *
 * DELETE - REMOVE DA MEMORIA
          DELETE EP=UTILPGM

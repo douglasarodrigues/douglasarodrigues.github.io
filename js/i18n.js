@@ -29,11 +29,9 @@
       "90% of banking transactions in Brazil run on mainframes.<br>I write, optimize, and support the COBOL, DB2, and CICS code behind them.<br>Want to know how? It's all in the links below.",
     "idx.section.links": "Next Steps",
     "idx.skills.extra.title": "Complementary Skills",
-    "idx.cta.cv": "View Résumé",
-    "idx.cta.linkedin": "LinkedIn",
     "idx.heroStat.years": "Years of experience",
     "idx.heroStat.programs": "Authored programs",
-    "idx.heroStat.incidents": "P1/P2 Incidents resolved",
+    "idx.heroStat.incidents": "100+ Incidents resolved",
     "idx.link1.title": "Mainframe Lab",
     "idx.link1.desc": "97 original programs - see in practice what I master",
     "idx.link2.title": "My Full Journey",
@@ -63,7 +61,7 @@
     "lab.stat.programs": "Programs in Lab",
     "lab.stat.techs": "Technologies",
     "lab.stat.years": "Years of experience",
-    "lab.stat.incidents": "P1/P2 Incidents resolved",
+    "lab.stat.incidents": "100+ Incidents resolved",
     "lab.search.placeholder": "Search by name, technology, or description...",
     "lab.tab.ref": "Quick Reference",
     "lab.footer": "Mainframe Lab - Code, reference, and precision.",
@@ -152,12 +150,12 @@
     "cv.title":
       "Résumé | Douglas Assunção Rodrigues - Software Engineer III Mainframe",
     "cv.meta.desc":
-      "Résumé of Douglas Assunção Rodrigues: 10+ years in Mainframe software engineering for mission-critical financial systems. Assembler z/OS, COBOL, DB2, CICS specialist.",
+      "Résumé of Douglas Assunção Rodrigues: 18+ years in Mainframe software engineering for mission-critical financial systems. Assembler z/OS, COBOL, DB2, CICS specialist.",
     "cv.back": "Back to Home",
     "cv.breadcrumb.current": "Résumé",
     "cv.subtitle": "Software Engineer III - Mainframe",
     "cv.summary":
-      "Mainframe Software Engineer with 10+ years of experience in mission-critical financial systems. Specialist in Assembler z/OS, COBOL, DB2, and CICS, with a proven track record of reducing incident resolution time and driving revenue growth. Deep expertise in VISA and Elo card systems based on ISO 8583, operating in high-availability, high-volume environments.",
+      "Mainframe Software Engineer with 18+ years of experience in mission-critical financial systems. Specialist in Assembler z/OS, COBOL, DB2, and CICS, with a proven track record of reducing incident resolution time and driving revenue growth. Deep expertise in VISA and Elo card systems based on ISO 8583, operating in high-availability, high-volume environments.",
     "cv.section.exp": "Professional Experience",
     "cv.current": "Present",
 
@@ -547,7 +545,7 @@
     "idx.cta.linkedin": "LinkedIn",
     "idx.heroStat.years": "Años de experiencia",
     "idx.heroStat.programs": "Programas autorales",
-    "idx.heroStat.incidents": "Incidentes P1/P2 resueltos",
+    "idx.heroStat.incidents": "Incidentes 100+ resueltos",
     "idx.link1.title": "Mainframe Lab",
     "idx.link1.desc":
       "97 programas originales - vea en la práctica lo que domino",
@@ -580,7 +578,7 @@
     "lab.stat.programs": "Programas en Lab",
     "lab.stat.techs": "Tecnologías",
     "lab.stat.years": "Años de experiencia",
-    "lab.stat.incidents": "Incidentes P1/P2 resueltos",
+    "lab.stat.incidents": "Incidentes 100+ resueltos",
     "lab.search.placeholder": "Buscar por nombre, tecnología o descripción...",
     "lab.tab.ref": "Referencia Rápida",
     "lab.footer": "Mainframe Lab - Código, referencia y precisión.",
@@ -1221,7 +1219,7 @@
     t(q(".lab-header-desc"), "lab.header.desc", dict);
 
     // Stats labels (ordered to match the four cards in mainframe-lab.html:
-    // 1) Programas  2) Tecnologias  3) Anos de experiencia  4) Incidentes P1/P2)
+    // 1) Programas  2) Tecnologias  3) Anos de experiencia  4) Incidentes 100+)
     const statLabels = qa(".lab-stat-label");
     const statKeys = [
       "lab.stat.programs",

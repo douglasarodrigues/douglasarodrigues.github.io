@@ -183,10 +183,11 @@
   --focus-ring-offset: 2px;
 
   /* --- avatar (Hero: elemento dominante — ver design/ux-guidelines.md) ----------- */
-  /* Calibracao 2: retrato genuinamente dominante (224-352px).
-     Mobile 320px: 14rem=224px (70% da tela).
-     Desktop container 480px: 22rem=352px (73% do container). */
-  --avatar-size: clamp(14rem, 64vw, 22rem);
+  /* Calibracao 3: reduzido 30% para tom menos agressivo (157-246px).
+     Mobile 320px: 9.8rem ≈ 156.8px (~49% da tela).
+     Desktop container 480px: 15.4rem ≈ 246.4px (~51% do container).
+     Histórico: anteriormente clamp(14rem, 64vw, 22rem). */
+  --avatar-size: clamp(9.8rem, 45vw, 15.4rem);
   --avatar-ring-width: 4px;
   --avatar-ring-gap: 4px;
   --avatar-ring-gradient: linear-gradient(135deg, #818cf8, #38bdf8);
