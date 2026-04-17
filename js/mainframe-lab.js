@@ -154,11 +154,16 @@
 
   function renderCard(prog, index) {
     const badge = BADGE_MAP[prog.level] || BADGE_MAP.basic;
+    const hasDual = !!(prog.sourceBase && prog.sourceRelative);
     const article = el("article", "lab-card lab-card-reveal");
     article.dataset.search = `${prog.id} ${prog.name} ${prog.desc} ${prog.tech} ${(prog.tags || []).join(" ")}`.toLowerCase();
     article.dataset.tech = prog.tech;
     article.dataset.programId = prog.id;
     article.style.setProperty("--lab-card-index", index);
+
+    const dualBadge = hasDual
+      ? `<span class="lab-badge lab-badge-dual" title="Base+Deslocamento e Endereço Relativo">2 Versões</span>`
+      : "";
 
     article.innerHTML =
       `<div class="lab-card-header">
@@ -166,7 +171,10 @@
           <p class="lab-card-program-id">${escapeHtml(prog.id)}</p>
           <h2 class="lab-card-name">${escapeHtml(prog.name)}</h2>
         </div>
-        <span class="lab-badge ${badge.cls}">${badge.label}</span>
+        <div class="lab-card-badges">
+          ${dualBadge}
+          <span class="lab-badge ${badge.cls}">${badge.label}</span>
+        </div>
       </div>
       <p class="lab-card-desc">${escapeHtml(prog.desc)}</p>
       <footer class="lab-card-footer">
@@ -182,15 +190,46 @@
 
   function renderSourceViewer(prog) {
     const div = el("div", "lab-card-source");
-    const highlighted = highlightSource(prog.source, prog.tech);
-    div.innerHTML =
-      `<div class="lab-card-source-header">
-        <span class="lab-card-source-filename">${escapeHtml(prog.filename)}</span>
-        <button class="lab-card-source-copy" aria-label="Copiar código">
-          ${svgIcon("copy")} <span class="lab-copy-label">Copiar</span>
-        </button>
-      </div>
-      <pre class="lab-card-source-pre"><code data-language="${LANG_MAP[prog.tech] || "cobol"}">${highlighted}</code></pre>`;
+    const hasDual = !!(prog.sourceBase && prog.sourceRelative);
+
+    if (hasDual) {
+      const hlBase = highlightHlasm(prog.sourceBase);
+      const hlRel  = highlightHlasm(prog.sourceRelative);
+      div.innerHTML =
+        `<div class="lab-card-source-tabs" role="tablist" aria-label="Versões do código">
+          <button class="lab-card-source-tab is-active" role="tab" aria-selected="true" data-src-tab="base">Base + Deslocamento</button>
+          <button class="lab-card-source-tab lab-card-source-tab-highlight" role="tab" aria-selected="false" data-src-tab="rel">Endereço Relativo</button>
+        </div>
+        <div class="lab-card-source-panel is-active" data-src-panel="base">
+          <div class="lab-card-source-header">
+            <span class="lab-card-source-filename">${escapeHtml(prog.filename)}</span>
+            <button class="lab-card-source-copy" aria-label="Copiar código">
+              ${svgIcon("copy")} <span class="lab-copy-label">Copiar</span>
+            </button>
+          </div>
+          <pre class="lab-card-source-pre"><code data-language="hlasm">${hlBase}</code></pre>
+        </div>
+        <div class="lab-card-source-panel" data-src-panel="rel" hidden>
+          <div class="lab-card-source-header">
+            <span class="lab-card-source-filename">${escapeHtml(prog.filename)}</span>
+            <button class="lab-card-source-copy" aria-label="Copiar código">
+              ${svgIcon("copy")} <span class="lab-copy-label">Copiar</span>
+            </button>
+          </div>
+          <pre class="lab-card-source-pre"><code data-language="hlasm">${hlRel}</code></pre>
+        </div>`;
+    } else {
+      const src = prog.source || prog.sourceBase || "";
+      const highlighted = highlightSource(src, prog.tech);
+      div.innerHTML =
+        `<div class="lab-card-source-header">
+          <span class="lab-card-source-filename">${escapeHtml(prog.filename)}</span>
+          <button class="lab-card-source-copy" aria-label="Copiar código">
+            ${svgIcon("copy")} <span class="lab-copy-label">Copiar</span>
+          </button>
+        </div>
+        <pre class="lab-card-source-pre"><code data-language="${LANG_MAP[prog.tech] || "cobol"}">${highlighted}</code></pre>`;
+    }
     return div;
   }
 
@@ -477,12 +516,34 @@
       } else {
         const progId = card.dataset.programId;
         const prog = (typeof LAB_PROGRAMS !== "undefined" ? LAB_PROGRAMS : []).find(p => p.id === progId);
-        if (!prog || !prog.source) return;
+        if (!prog) return;
+        if (!prog.source && !prog.sourceBase) return;
 
         const viewer = renderSourceViewer(prog);
         card.appendChild(viewer);
         toggleBtn.setAttribute("aria-expanded", "true");
       }
+    });
+
+    // Tab switching for dual HLASM source viewers
+    document.addEventListener("click", (e) => {
+      const tab = e.target.closest(".lab-card-source-tab");
+      if (!tab || !tab.dataset.srcTab) return;
+      const container = tab.closest(".lab-card-source");
+      if (!container) return;
+
+      const targetKey = tab.dataset.srcTab;
+      qsa(".lab-card-source-tab", container).forEach(t => {
+        if (!t.dataset.srcTab) return;
+        const active = t.dataset.srcTab === targetKey;
+        t.classList.toggle("is-active", active);
+        t.setAttribute("aria-selected", String(active));
+      });
+      qsa(".lab-card-source-panel", container).forEach(p => {
+        const active = p.dataset.srcPanel === targetKey;
+        p.classList.toggle("is-active", active);
+        p.hidden = !active;
+      });
     });
   }
 
@@ -615,7 +676,7 @@
       { text: `${ts}  JOB08421  +LABLOAD: LOADING 7 TECHNOLOGY MODULES...`, cls: "process", delay: 120 },
       { text: `${ts}  JOB08421  +LABLOAD: COBOL(13) HLASM(11) JCL(13) CICS(13)`, cls: "process", delay: 100 },
       { text: `${ts}  JOB08421  +LABLOAD: DB2(13)   IMS(11)  VSAM(11)`, cls: "process", delay: 100 },
-      { text: `${ts}  JOB08421  +LABLOAD: 85 PROGRAMS CATALOGED RC=0000`, cls: "ok", delay: 80 },
+      { text: `${ts}  JOB08421  +LABLOAD: 97 PROGRAMS CATALOGED RC=0000`, cls: "ok", delay: 80 },
       { text: `${ts}  JOB08421  IEF142I LABINIT STEP01 - STEP WAS EXECUTED - COND CODE 0000`, cls: "ok", delay: 70 },
       { text: " ", cls: "empty", delay: 30 },
       { text: "────────────────────────────────────────────────────────────────", cls: "separator", delay: 20 },

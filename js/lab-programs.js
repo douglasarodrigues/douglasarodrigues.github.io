@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LAB-PROGRAMS.JS - Catalogo dos 85 programas do Mainframe Lab
+   LAB-PROGRAMS.JS - Catalogo dos 97 programas do Mainframe Lab
    Cada entrada: id, tech, name, desc, level, filename, tags, source
    ========================================================================== */
 
@@ -20,6 +20,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBFMT01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : FORMATADOR DE CAMPOS ALFANUMERICOS
@@ -60,7 +61,10 @@ const LAB_PROGRAMS = [
                                 LS-CAMPO-SAIDA
                                 LS-CHAR-PAD
                                 LS-TAMANHO.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            INITIALIZE LS-CAMPO-SAIDA
            MOVE FUNCTION LENGTH(LS-CAMPO-ENTRADA)
                                   TO WS-LENGTH
@@ -73,19 +77,34 @@ const LAB_PROGRAMS = [
            END-EVALUATE
            GOBACK
            .
-       1000-LTRIM.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-LTRIM SECTION
+      *==========================================================*
+       1000-LTRIM SECTION.
            MOVE 1 TO WS-START
            INSPECT LS-CAMPO-ENTRADA TALLYING WS-START
                    FOR LEADING SPACES
            MOVE LS-CAMPO-ENTRADA(WS-START:) TO LS-CAMPO-SAIDA
            .
-       2000-RTRIM.
+       1000-LTRIM-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-RTRIM SECTION
+      *==========================================================*
+       2000-RTRIM SECTION.
            MOVE LS-CAMPO-ENTRADA TO WS-TEMP
            MOVE FUNCTION LENGTH(FUNCTION TRIM(WS-TEMP
                 TRAILING)) TO WS-END
            MOVE LS-CAMPO-ENTRADA(1:WS-END) TO LS-CAMPO-SAIDA
            .
-       3000-LPAD.
+       2000-RTRIM-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-LPAD SECTION
+      *==========================================================*
+       3000-LPAD SECTION.
            MOVE FUNCTION TRIM(LS-CAMPO-ENTRADA)
                 TO WS-TEMP
            MOVE FUNCTION LENGTH(FUNCTION TRIM(WS-TEMP))
@@ -99,7 +118,12 @@ const LAB_PROGRAMS = [
                MOVE WS-TEMP TO LS-CAMPO-SAIDA
            END-IF
            .
-       4000-RPAD.
+       3000-LPAD-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-RPAD SECTION
+      *==========================================================*
+       4000-RPAD SECTION.
            MOVE FUNCTION TRIM(LS-CAMPO-ENTRADA)
                 TO LS-CAMPO-SAIDA
            MOVE FUNCTION LENGTH(FUNCTION TRIM(LS-CAMPO-SAIDA))
@@ -110,7 +134,12 @@ const LAB_PROGRAMS = [
                        LS-TAMANHO - WS-LENGTH)
            END-IF
            .
-       5000-CENTER.
+       4000-RPAD-EXIT.
+           EXIT.
+      *==========================================================*
+      * 5000-CENTER SECTION
+      *==========================================================*
+       5000-CENTER SECTION.
            MOVE FUNCTION TRIM(LS-CAMPO-ENTRADA)
                 TO WS-TEMP
            MOVE FUNCTION LENGTH(FUNCTION TRIM(WS-TEMP))
@@ -120,7 +149,9 @@ const LAB_PROGRAMS = [
            MOVE ALL LS-CHAR-PAD TO LS-CAMPO-SAIDA
            MOVE WS-TEMP TO
                 LS-CAMPO-SAIDA(WS-PAD-COUNT + 1:WS-LENGTH)
-           .`
+           .
+       5000-CENTER-EXIT.
+           EXIT.`
   },
 
   {
@@ -133,6 +164,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBDAT01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CONVERSOR DE DATAS MULTIFORMATO
@@ -210,7 +242,10 @@ const LAB_PROGRAMS = [
                                 LS-DATA-SAIDA
                                 LS-DIA-SEMANA
                                 LS-RETORNO.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE ZEROS TO LS-RETORNO
            EVALUATE TRUE
                WHEN LS-GREG-PARA-JUL PERFORM 1000-GREG-JUL
@@ -225,7 +260,12 @@ const LAB_PROGRAMS = [
            END-IF
            GOBACK
            .
-       1000-GREG-JUL.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-GREG-JUL SECTION
+      *==========================================================*
+       1000-GREG-JUL SECTION.
            MOVE LS-DATA-ENTRADA(1:8) TO WS-DATA-INT
            PERFORM 7000-VALIDAR
            IF LS-RETORNO = ZEROS
@@ -236,7 +276,12 @@ const LAB_PROGRAMS = [
                MOVE WS-JULIAN TO LS-DATA-SAIDA
            END-IF
            .
-       2000-JUL-GREG.
+       1000-GREG-JUL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-JUL-GREG SECTION
+      *==========================================================*
+       2000-JUL-GREG SECTION.
            MOVE LS-DATA-ENTRADA(1:7) TO WS-JULIAN
            COMPUTE WS-INTEGER-DATE =
                FUNCTION INTEGER-OF-DAY(WS-JULIAN)
@@ -244,7 +289,12 @@ const LAB_PROGRAMS = [
                FUNCTION DATE-OF-INTEGER(WS-INTEGER-DATE)
            MOVE WS-DATA-INT TO LS-DATA-SAIDA
            .
-       3000-GREG-ISO.
+       2000-JUL-GREG-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-GREG-ISO SECTION
+      *==========================================================*
+       3000-GREG-ISO SECTION.
            MOVE LS-DATA-ENTRADA(1:8) TO WS-DATA-INT
            PERFORM 7000-VALIDAR
            IF LS-RETORNO = ZEROS
@@ -252,13 +302,23 @@ const LAB_PROGRAMS = [
                    DELIMITED SIZE INTO LS-DATA-SAIDA
            END-IF
            .
-       4000-ISO-GREG.
+       3000-GREG-ISO-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-ISO-GREG SECTION
+      *==========================================================*
+       4000-ISO-GREG SECTION.
            MOVE LS-DATA-ENTRADA(1:4)  TO WS-ANO
            MOVE LS-DATA-ENTRADA(6:2)  TO WS-MES
            MOVE LS-DATA-ENTRADA(9:2)  TO WS-DIA
            MOVE WS-DATA-INT TO LS-DATA-SAIDA
            .
-       5000-GREG-CYY.
+       4000-ISO-GREG-EXIT.
+           EXIT.
+      *==========================================================*
+      * 5000-GREG-CYY SECTION
+      *==========================================================*
+       5000-GREG-CYY SECTION.
            MOVE LS-DATA-ENTRADA(1:8) TO WS-DATA-INT
            IF WS-ANO >= 2000
                COMPUTE WS-CYY-C = 1
@@ -274,7 +334,12 @@ const LAB_PROGRAMS = [
            MOVE WS-JUL-DDD TO WS-CYY-DDD
            MOVE WS-CYYDDD TO LS-DATA-SAIDA
            .
-       7000-VALIDAR.
+       5000-GREG-CYY-EXIT.
+           EXIT.
+      *==========================================================*
+      * 7000-VALIDAR SECTION
+      *==========================================================*
+       7000-VALIDAR SECTION.
            IF WS-MES < 1 OR WS-MES > 12
                MOVE 01 TO LS-RETORNO
            ELSE
@@ -291,7 +356,12 @@ const LAB_PROGRAMS = [
                END-IF
            END-IF
            .
-       7500-VERIFICAR-BISSEXTO.
+       7000-VALIDAR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 7500-VERIFICAR-BISSEXTO SECTION
+      *==========================================================*
+       7500-VERIFICAR-BISSEXTO SECTION.
            MOVE 0 TO WS-BISSEXTO
            IF FUNCTION MOD(WS-ANO 4) = 0
                IF FUNCTION MOD(WS-ANO 100) NOT = 0
@@ -300,14 +370,21 @@ const LAB_PROGRAMS = [
                END-IF
            END-IF
            .
-       8000-DIA-SEMANA.
+       7500-VERIFICAR-BISSEXTO-EXIT.
+           EXIT.
+      *==========================================================*
+      * 8000-DIA-SEMANA SECTION
+      *==========================================================*
+       8000-DIA-SEMANA SECTION.
            MOVE WS-DATA-INT TO WS-DATA-INT
            ACCEPT WS-DAY-OF-WEEK FROM DAY-OF-WEEK
            IF WS-DAY-OF-WEEK >= 1 AND <= 7
                MOVE WS-NOME-DIA(WS-DAY-OF-WEEK)
                     TO LS-DIA-SEMANA
            END-IF
-           .`
+           .
+       8000-DIA-SEMANA-EXIT.
+           EXIT.`
   },
 
   {
@@ -320,6 +397,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBLOG01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : LOGGER ESTRUTURADO COM TIMESTAMP E SEVERIDADE
@@ -392,7 +470,10 @@ const LAB_PROGRAMS = [
                                 LS-MODULO
                                 LS-MENSAGEM
                                 LS-RETORNO.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE ZEROS TO LS-RETORNO
            EVALUATE TRUE
                WHEN LS-OPEN   PERFORM 1000-OPEN-LOG
@@ -402,7 +483,12 @@ const LAB_PROGRAMS = [
            END-EVALUATE
            GOBACK
            .
-       1000-OPEN-LOG.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-OPEN-LOG SECTION
+      *==========================================================*
+       1000-OPEN-LOG SECTION.
            IF NOT WS-IS-OPEN
                OPEN EXTEND LOG-FILE
                IF WS-FILE-STATUS NOT = '00'
@@ -415,7 +501,12 @@ const LAB_PROGRAMS = [
                END-IF
            END-IF
            .
-       2000-WRITE-LOG.
+       1000-OPEN-LOG-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-WRITE-LOG SECTION
+      *==========================================================*
+       2000-WRITE-LOG SECTION.
            IF NOT WS-IS-OPEN
                MOVE 90 TO LS-RETORNO
                GOBACK
@@ -436,19 +527,31 @@ const LAB_PROGRAMS = [
                MOVE WS-FILE-STATUS TO LS-RETORNO
            END-IF
            .
-       2100-BUILD-TIMESTAMP.
+       2000-WRITE-LOG-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-BUILD-TIMESTAMP SECTION
+      *==========================================================*
+       2100-BUILD-TIMESTAMP SECTION.
            MOVE FUNCTION CURRENT-DATE TO WS-CURRENT-DATE
            STRING WS-CD-YYYY '-' WS-CD-MM '-' WS-CD-DD
                DELIMITED SIZE INTO WS-TS-DATE
            STRING WS-CD-HH ':' WS-CD-MN ':' WS-CD-SS
                DELIMITED SIZE INTO WS-TS-TIME
            .
-       3000-CLOSE-LOG.
+       2100-BUILD-TIMESTAMP-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-CLOSE-LOG SECTION
+      *==========================================================*
+       3000-CLOSE-LOG SECTION.
            IF WS-IS-OPEN
                CLOSE LOG-FILE
                MOVE 0 TO WS-FILE-OPEN
            END-IF
-           .`
+           .
+       3000-CLOSE-LOG-EXIT.
+           EXIT.`
   },
 
   {
@@ -461,6 +564,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBCSV01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : PARSER CSV COM DELIMITADOR CONFIGURAVEL
@@ -501,7 +605,10 @@ const LAB_PROGRAMS = [
                                 LS-CAMPOS
                                 LS-QTD-CAMPOS
                                 LS-RETORNO.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE ZEROS TO LS-RETORNO
            MOVE ZEROS TO LS-QTD-CAMPOS
            INITIALIZE LS-CAMPOS
@@ -537,7 +644,12 @@ const LAB_PROGRAMS = [
            MOVE WS-CAMPO-IDX TO LS-QTD-CAMPOS
            GOBACK
            .
-       1000-SALVAR-CAMPO.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-SALVAR-CAMPO SECTION
+      *==========================================================*
+       1000-SALVAR-CAMPO SECTION.
            IF WS-CAMPO-IDX <= WS-MAX-CAMPOS
                MOVE WS-CAMPO-TEMP TO
                    LS-CAMPO(WS-CAMPO-IDX)
@@ -547,7 +659,9 @@ const LAB_PROGRAMS = [
            END-IF
            INITIALIZE WS-CAMPO-TEMP
            MOVE 1 TO WS-CAMPO-POS
-           .`
+           .
+       1000-SALVAR-CAMPO-EXIT.
+           EXIT.`
   },
 
   {
@@ -560,6 +674,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBCFG01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : LEITOR DE CONFIGURACAO - CARREGA PARES
@@ -633,7 +748,10 @@ const LAB_PROGRAMS = [
                                 LS-CFG-CHAVE
                                 LS-CFG-VALOR
                                 LS-CFG-RETORNO.
-       0000-PRINCIPAL.
+      *==========================================================*
+      * 0000-PRINCIPAL SECTION
+      *==========================================================*
+       0000-PRINCIPAL SECTION.
            MOVE ZEROS TO LS-CFG-RETORNO
            EVALUATE TRUE
                WHEN LS-ACAO-CARGA
@@ -647,7 +765,12 @@ const LAB_PROGRAMS = [
            END-EVALUATE
            GOBACK
            .
-       1000-CARREGAR-ARQUIVO.
+       0000-PRINCIPAL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-CARREGAR-ARQUIVO SECTION
+      *==========================================================*
+       1000-CARREGAR-ARQUIVO SECTION.
            OPEN INPUT ARQ-CONFIGURACAO
            IF WS-ESTADO-ARQUIVO NOT = '00'
                MOVE 08 TO LS-CFG-RETORNO
@@ -666,7 +789,12 @@ const LAB_PROGRAMS = [
            END-PERFORM
            CLOSE ARQ-CONFIGURACAO
            .
-       1100-PROCESSAR-LINHA.
+       1000-CARREGAR-ARQUIVO-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-PROCESSAR-LINHA SECTION
+      *==========================================================*
+       1100-PROCESSAR-LINHA SECTION.
            MOVE ZERO TO WS-POSICAO-IGUAL
            INSPECT WS-REGISTRO-TRABALHO
                TALLYING WS-POSICAO-IGUAL
@@ -683,7 +811,12 @@ const LAB_PROGRAMS = [
                    TO WS-ENT-VALOR(WS-TOTAL-ENTRADAS)
            END-IF
            .
-       2000-BUSCAR-CHAVE.
+       1100-PROCESSAR-LINHA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-BUSCAR-CHAVE SECTION
+      *==========================================================*
+       2000-BUSCAR-CHAVE SECTION.
            MOVE FUNCTION UPPER-CASE(
                FUNCTION TRIM(LS-CFG-CHAVE))
                TO WS-CHAVE-TEMP
@@ -699,7 +832,9 @@ const LAB_PROGRAMS = [
                    MOVE WS-ENT-VALOR(WS-IDX-BUSCA)
                        TO LS-CFG-VALOR
            END-SEARCH
-           .`
+           .
+       2000-BUSCAR-CHAVE-EXIT.
+           EXIT.`
   },
 
   {
@@ -712,6 +847,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBMSK01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : MASCARAMENTO DE DADOS SENSIVEIS (LGPD)
@@ -747,7 +883,10 @@ const LAB_PROGRAMS = [
        PROCEDURE DIVISION USING LS-ESTRATEGIA
                                 LS-DADO-ORIGINAL
                                 LS-DADO-MASCARADO.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE FUNCTION LENGTH(
                FUNCTION TRIM(LS-DADO-ORIGINAL TRAILING))
                TO WS-LEN
@@ -761,10 +900,20 @@ const LAB_PROGRAMS = [
            END-EVALUATE
            GOBACK
            .
-       1000-MASK-TOTAL.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-MASK-TOTAL SECTION
+      *==========================================================*
+       1000-MASK-TOTAL SECTION.
            MOVE ALL '*' TO LS-DADO-MASCARADO(1:WS-LEN)
            .
-       2000-MASK-PARCIAL.
+       1000-MASK-TOTAL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-MASK-PARCIAL SECTION
+      *==========================================================*
+       2000-MASK-PARCIAL SECTION.
            MOVE LS-DADO-ORIGINAL TO LS-DADO-MASCARADO
            COMPUTE WS-VISIVEL = WS-LEN / 4
            IF WS-VISIVEL < 2
@@ -776,7 +925,12 @@ const LAB_PROGRAMS = [
                MOVE '*' TO LS-DADO-MASCARADO(WS-POS:1)
            END-PERFORM
            .
-       3000-MASK-HASH.
+       2000-MASK-PARCIAL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-MASK-HASH SECTION
+      *==========================================================*
+       3000-MASK-HASH SECTION.
            MOVE ZEROS TO WS-HASH-ACUM
            PERFORM VARYING WS-POS FROM 1 BY 1
                UNTIL WS-POS > WS-LEN
@@ -795,7 +949,12 @@ const LAB_PROGRAMS = [
            STRING 'HASH:' WS-HASH-STR
                DELIMITED SIZE INTO LS-DADO-MASCARADO
            .
-       4000-MASK-EMAIL.
+       3000-MASK-HASH-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-MASK-EMAIL SECTION
+      *==========================================================*
+       4000-MASK-EMAIL SECTION.
            MOVE ZEROS TO WS-ARROBA-POS
            INSPECT LS-DADO-ORIGINAL
                TALLYING WS-ARROBA-POS
@@ -811,13 +970,20 @@ const LAB_PROGRAMS = [
                        WS-ARROBA-POS + 1:)
            END-IF
            .
-       5000-MASK-FONE.
+       4000-MASK-EMAIL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 5000-MASK-FONE SECTION
+      *==========================================================*
+       5000-MASK-FONE SECTION.
            MOVE LS-DADO-ORIGINAL TO LS-DADO-MASCARADO
            IF WS-LEN >= 8
                MOVE ALL '*'
                    TO LS-DADO-MASCARADO(1:WS-LEN - 4)
            END-IF
-           .`
+           .
+       5000-MASK-FONE-EXIT.
+           EXIT.`
   },
 
   {
@@ -830,6 +996,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBSRT01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : SORT COM INPUT/OUTPUT PROCEDURE
@@ -877,7 +1044,10 @@ const LAB_PROGRAMS = [
        01  WS-CHAVE-ANT        PIC X(10) VALUE LOW-VALUES.
 
        PROCEDURE DIVISION.
-       0000-PRINCIPAL.
+      *==========================================================*
+      * 0000-PRINCIPAL SECTION
+      *==========================================================*
+       0000-PRINCIPAL SECTION.
            SORT ARQ-SORT
                ON ASCENDING KEY RS-CHAVE
                INPUT PROCEDURE IS 1000-INPUT-PROC
@@ -892,7 +1062,12 @@ const LAB_PROGRAMS = [
                    WS-GRAVADOS
            STOP RUN
            .
-       1000-INPUT-PROC.
+       0000-PRINCIPAL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-INPUT-PROC SECTION
+      *==========================================================*
+       1000-INPUT-PROC SECTION.
            OPEN INPUT ARQ-ENTRADA
            IF WS-FS-ENT NOT = '00'
                DISPLAY 'ERRO OPEN ENTRADA: ' WS-FS-ENT
@@ -915,7 +1090,12 @@ const LAB_PROGRAMS = [
            END-PERFORM
            CLOSE ARQ-ENTRADA
            .
-       2000-OUTPUT-PROC.
+       1000-INPUT-PROC-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-OUTPUT-PROC SECTION
+      *==========================================================*
+       2000-OUTPUT-PROC SECTION.
            OPEN OUTPUT ARQ-SAIDA
            IF WS-FS-SAI NOT = '00'
                DISPLAY 'ERRO OPEN SAIDA: ' WS-FS-SAI
@@ -934,7 +1114,9 @@ const LAB_PROGRAMS = [
                END-IF
            END-PERFORM
            CLOSE ARQ-SAIDA
-           .`
+           .
+       2000-OUTPUT-PROC-EXIT.
+           EXIT.`
   },
 
   {
@@ -947,6 +1129,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBRPT01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : RELATORIO COM CONTROL BREAK EM 3 NIVEIS
@@ -1018,7 +1201,10 @@ const LAB_PROGRAMS = [
            05 WS-SUB-VALOR     PIC ZZZ.ZZZ.ZZ9,99.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            OPEN INPUT ARQ-ENTRADA OUTPUT ARQ-RELATORIO
            READ ARQ-ENTRADA AT END MOVE 1 TO WS-EOF
            PERFORM UNTIL WS-EOF = 1
@@ -1056,14 +1242,24 @@ const LAB_PROGRAMS = [
            CLOSE ARQ-ENTRADA ARQ-RELATORIO
            STOP RUN
            .
-       1000-CABECALHO.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-CABECALHO SECTION
+      *==========================================================*
+       1000-CABECALHO SECTION.
            ADD 1 TO WS-PAGINA
            MOVE WS-PAGINA TO WS-CB1-PAG
            WRITE REG-RELATORIO FROM WS-CABECALHO-1
            WRITE REG-RELATORIO FROM WS-CABECALHO-2
            MOVE 3 TO WS-LINHAS
            .
-       2000-QUEBRA-DEPTO.
+       1000-CABECALHO-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-QUEBRA-DEPTO SECTION
+      *==========================================================*
+       2000-QUEBRA-DEPTO SECTION.
            MOVE SPACES TO WS-SUB-LABEL
            STRING '  TOTAL DEPTO ' WS-DEPTO-ANT
                DELIMITED SIZE INTO WS-SUB-LABEL
@@ -1072,7 +1268,12 @@ const LAB_PROGRAMS = [
            MOVE ZEROS TO WS-TOT-DEPTO
            ADD 1 TO WS-LINHAS
            .
-       3000-QUEBRA-FILIAL.
+       2000-QUEBRA-DEPTO-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-QUEBRA-FILIAL SECTION
+      *==========================================================*
+       3000-QUEBRA-FILIAL SECTION.
            MOVE SPACES TO WS-SUB-LABEL
            STRING ' TOTAL FILIAL ' WS-FILIAL-ANT
                DELIMITED SIZE INTO WS-SUB-LABEL
@@ -1080,7 +1281,9 @@ const LAB_PROGRAMS = [
            WRITE REG-RELATORIO FROM WS-SUBTOTAL
            MOVE ZEROS TO WS-TOT-FILIAL
            ADD 2 TO WS-LINHAS
-           .`
+           .
+       3000-QUEBRA-FILIAL-EXIT.
+           EXIT.`
   },
 
   {
@@ -1093,6 +1296,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBTBL01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : GERENCIADOR DE TABELA INTERNA EM MEMORIA
@@ -1133,7 +1337,10 @@ const LAB_PROGRAMS = [
 
        PROCEDURE DIVISION USING LS-ACAO LS-CHAVE
                                 LS-VALOR LS-RETORNO.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE ZEROS TO LS-RETORNO
            EVALUATE TRUE
                WHEN LS-INSERT PERFORM 1000-INSERIR
@@ -1145,7 +1352,12 @@ const LAB_PROGRAMS = [
            END-EVALUATE
            GOBACK
            .
-       1000-INSERIR.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-INSERIR SECTION
+      *==========================================================*
+       1000-INSERIR SECTION.
            IF WS-TOTAL >= WS-MAX-ENTRADAS
                MOVE 08 TO LS-RETORNO
                GOBACK
@@ -1161,7 +1373,12 @@ const LAB_PROGRAMS = [
            MOVE LS-VALOR TO WS-TBL-VALOR(WS-POS-INSERT)
            ADD 1 TO WS-TOTAL
            .
-       1100-ENCONTRAR-POSICAO.
+       1000-INSERIR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-ENCONTRAR-POSICAO SECTION
+      *==========================================================*
+       1100-ENCONTRAR-POSICAO SECTION.
            MOVE 1 TO WS-POS-INSERT
            PERFORM VARYING WS-I FROM 1 BY 1
                UNTIL WS-I > WS-TOTAL
@@ -1173,7 +1390,12 @@ const LAB_PROGRAMS = [
                ADD 1 TO WS-POS-INSERT
            END-PERFORM
            .
-       2000-REMOVER.
+       1100-ENCONTRAR-POSICAO-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-REMOVER SECTION
+      *==========================================================*
+       2000-REMOVER SECTION.
            PERFORM 3000-BUSCA-BINARIA
            IF LS-RETORNO NOT = ZEROS
                GOBACK
@@ -1187,7 +1409,12 @@ const LAB_PROGRAMS = [
            INITIALIZE WS-ENTRY(WS-TOTAL)
            SUBTRACT 1 FROM WS-TOTAL
            .
-       3000-BUSCA-BINARIA.
+       2000-REMOVER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-BUSCA-BINARIA SECTION
+      *==========================================================*
+       3000-BUSCA-BINARIA SECTION.
            IF WS-TOTAL = 0
                MOVE 04 TO LS-RETORNO
                GOBACK
@@ -1201,7 +1428,12 @@ const LAB_PROGRAMS = [
                        TO LS-VALOR
            END-SEARCH
            .
-       4000-BUSCA-SEQUENCIAL.
+       3000-BUSCA-BINARIA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-BUSCA-SEQUENCIAL SECTION
+      *==========================================================*
+       4000-BUSCA-SEQUENCIAL SECTION.
            SET WS-IDX TO 1
            SEARCH WS-ENTRY
                AT END
@@ -1213,7 +1445,9 @@ const LAB_PROGRAMS = [
                    MOVE WS-TBL-CHAVE(WS-IDX)
                        TO LS-CHAVE
            END-SEARCH
-           .`
+           .
+       4000-BUSCA-SEQUENCIAL-EXIT.
+           EXIT.`
   },
 
   {
@@ -1226,6 +1460,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBNUM01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CONVERSOR NUMERICO - EXTENSO PT-BR, MOEDA,
@@ -1299,7 +1534,10 @@ const LAB_PROGRAMS = [
 
        PROCEDURE DIVISION USING LS-FUNCAO LS-NUMERO
                                 LS-RESULTADO LS-CASAS-DEC.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            INITIALIZE LS-RESULTADO
            EVALUATE TRUE
                WHEN LS-EXTENSO  PERFORM 1000-EXTENSO
@@ -1309,7 +1547,12 @@ const LAB_PROGRAMS = [
            END-EVALUATE
            GOBACK
            .
-       1000-EXTENSO.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-EXTENSO SECTION
+      *==========================================================*
+       1000-EXTENSO SECTION.
            MOVE LS-NUMERO TO WS-NUMERO-INT
            IF WS-NUMERO-INT = 0
                MOVE 'ZERO' TO LS-RESULTADO
@@ -1344,18 +1587,33 @@ const LAB_PROGRAMS = [
            END-IF
            MOVE WS-RESULTADO-TEMP TO LS-RESULTADO
            .
-       2000-MOEDA.
+       1000-EXTENSO-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-MOEDA SECTION
+      *==========================================================*
+       2000-MOEDA SECTION.
            MOVE LS-NUMERO TO WS-MOEDA-FMT
            STRING 'R$ '
                   FUNCTION TRIM(WS-MOEDA-FMT)
                DELIMITED SIZE INTO LS-RESULTADO
            .
-       3000-PORCENTAGEM.
+       2000-MOEDA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-PORCENTAGEM SECTION
+      *==========================================================*
+       3000-PORCENTAGEM SECTION.
            COMPUTE WS-NUM-EDIT = LS-NUMERO * 100
            STRING FUNCTION TRIM(WS-NUM-EDIT) '%'
                DELIMITED SIZE INTO LS-RESULTADO
            .
-       4000-ARREDONDAR.
+       3000-PORCENTAGEM-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-ARREDONDAR SECTION
+      *==========================================================*
+       4000-ARREDONDAR SECTION.
            EVALUATE LS-CASAS-DEC
                WHEN 0
                    COMPUTE LS-NUMERO ROUNDED =
@@ -1368,7 +1626,9 @@ const LAB_PROGRAMS = [
                    CONTINUE
            END-EVALUATE
            MOVE LS-NUMERO TO LS-RESULTADO
-           .`
+           .
+       4000-ARREDONDAR-EXIT.
+           EXIT.`
   },
 
   {
@@ -1381,6 +1641,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBRPE01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : MOTOR DE RELATORIO REUTILIZAVEL
@@ -1451,7 +1712,10 @@ const LAB_PROGRAMS = [
        PROCEDURE DIVISION USING LS-COMANDO
                                 LS-LINHA
                                 LS-PAGINA-ATUAL.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            EVALUATE TRUE
                WHEN LS-INIT   PERFORM 1000-INICIALIZAR
                WHEN LS-PRINT  PERFORM 2000-IMPRIMIR
@@ -1461,7 +1725,12 @@ const LAB_PROGRAMS = [
            MOVE WS-PAGINA TO LS-PAGINA-ATUAL
            GOBACK
            .
-       1000-INICIALIZAR.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-INICIALIZAR SECTION
+      *==========================================================*
+       1000-INICIALIZAR SECTION.
            OPEN OUTPUT RPT-FILE
            MOVE 1 TO WS-ABERTO
            MOVE FUNCTION CURRENT-DATE TO WS-CURRENT-DT
@@ -1469,7 +1738,12 @@ const LAB_PROGRAMS = [
                DELIMITED SIZE INTO WS-DATA-RPT
            PERFORM 3000-NOVA-PAGINA
            .
-       2000-IMPRIMIR.
+       1000-INICIALIZAR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-IMPRIMIR SECTION
+      *==========================================================*
+       2000-IMPRIMIR SECTION.
            IF WS-LINHA-ATUAL >= WS-MAX-LINHAS
                PERFORM 2500-RODAPE
                PERFORM 3000-NOVA-PAGINA
@@ -1478,10 +1752,20 @@ const LAB_PROGRAMS = [
            ADD 1 TO WS-LINHA-ATUAL
            ADD 1 TO WS-TOT-LINHAS
            .
-       2500-RODAPE.
+       2000-IMPRIMIR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2500-RODAPE SECTION
+      *==========================================================*
+       2500-RODAPE SECTION.
            WRITE RPT-RECORD FROM WS-FOOTER-1
            .
-       3000-NOVA-PAGINA.
+       2500-RODAPE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-NOVA-PAGINA SECTION
+      *==========================================================*
+       3000-NOVA-PAGINA SECTION.
            ADD 1 TO WS-PAGINA
            ADD 1 TO WS-TOT-PAGINAS
            MOVE WS-PAGINA TO WS-H1-PAG
@@ -1489,13 +1773,20 @@ const LAB_PROGRAMS = [
            WRITE RPT-RECORD FROM WS-HEADER-1
            MOVE 2 TO WS-LINHA-ATUAL
            .
-       4000-FECHAR.
+       3000-NOVA-PAGINA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-FECHAR SECTION
+      *==========================================================*
+       4000-FECHAR SECTION.
            IF WS-ABERTO = 1
                PERFORM 2500-RODAPE
                CLOSE RPT-FILE
                MOVE 0 TO WS-ABERTO
            END-IF
-           .`
+           .
+       4000-FECHAR-EXIT.
+           EXIT.`
   },
 
   {
@@ -1508,6 +1799,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBMTX01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : MATCH/MERGE MESTRE-TRANSACAO
@@ -1564,7 +1856,10 @@ const LAB_PROGRAMS = [
        01  WS-EXCEPT-LINE     PIC X(100).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            OPEN INPUT  ARQ-MESTRE ARQ-TRANS
                 OUTPUT ARQ-SAIDA  ARQ-EXCEPT
            PERFORM 1000-READ-MESTRE
@@ -1584,19 +1879,34 @@ const LAB_PROGRAMS = [
            END-PERFORM
            PERFORM 9000-FECHAR
            .
-       1000-READ-MESTRE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-READ-MESTRE SECTION
+      *==========================================================*
+       1000-READ-MESTRE SECTION.
            READ ARQ-MESTRE
                AT END MOVE HIGH-VALUES TO RM-CHAVE
                       MOVE 1 TO WS-EOF-MST
            END-READ
            .
-       1100-READ-TRANS.
+       1000-READ-MESTRE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-READ-TRANS SECTION
+      *==========================================================*
+       1100-READ-TRANS SECTION.
            READ ARQ-TRANS
                AT END MOVE HIGH-VALUES TO RT-CHAVE
                       MOVE 1 TO WS-EOF-TRN
            END-READ
            .
-       2000-MATCH.
+       1100-READ-TRANS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-MATCH SECTION
+      *==========================================================*
+       2000-MATCH SECTION.
            EVALUATE TRUE
                WHEN RT-UPDATE
                    MOVE RT-DADOS TO RM-DADOS
@@ -1621,7 +1931,12 @@ const LAB_PROGRAMS = [
            PERFORM 1000-READ-MESTRE
            PERFORM 1100-READ-TRANS
            .
-       3000-NO-MATCH.
+       2000-MATCH-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-NO-MATCH SECTION
+      *==========================================================*
+       3000-NO-MATCH SECTION.
            IF RT-INSERT
                MOVE RT-CHAVE TO RM-CHAVE
                MOVE RT-DADOS TO RM-DADOS
@@ -1636,7 +1951,12 @@ const LAB_PROGRAMS = [
            END-IF
            PERFORM 1100-READ-TRANS
            .
-       9000-FECHAR.
+       3000-NO-MATCH-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-FECHAR SECTION
+      *==========================================================*
+       9000-FECHAR SECTION.
            CLOSE ARQ-MESTRE ARQ-TRANS ARQ-SAIDA ARQ-EXCEPT
            DISPLAY 'COBMTX01 - COPIADOS:  ' WS-CTR-CPY
            DISPLAY 'COBMTX01 - INSERIDOS: ' WS-CTR-INS
@@ -1644,7 +1964,9 @@ const LAB_PROGRAMS = [
            DISPLAY 'COBMTX01 - DELETADOS: ' WS-CTR-DEL
            DISPLAY 'COBMTX01 - EXCECOES:  ' WS-CTR-EXC
            STOP RUN
-           .`
+           .
+       9000-FECHAR-EXIT.
+           EXIT.`
   },
 
   {
@@ -1657,6 +1979,7 @@ const LAB_PROGRAMS = [
     tags: ["COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : COBSTR01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : PROCESSADOR DE STRINGS - OPERACOES DIVERSAS
@@ -1697,7 +2020,10 @@ const LAB_PROGRAMS = [
        PROCEDURE DIVISION USING LS-OPERACAO LS-ENTRADA
                                 LS-PARAM LS-SAIDA
                                 LS-CONTAGEM.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE ZEROS TO LS-CONTAGEM
            EVALUATE TRUE
                WHEN LS-UPPER  PERFORM 1000-UPPER
@@ -1708,15 +2034,30 @@ const LAB_PROGRAMS = [
            END-EVALUATE
            GOBACK
            .
-       1000-UPPER.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-UPPER SECTION
+      *==========================================================*
+       1000-UPPER SECTION.
            MOVE FUNCTION UPPER-CASE(LS-ENTRADA)
                TO LS-SAIDA
            .
-       2000-LOWER.
+       1000-UPPER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-LOWER SECTION
+      *==========================================================*
+       2000-LOWER SECTION.
            MOVE FUNCTION LOWER-CASE(LS-ENTRADA)
                TO LS-SAIDA
            .
-       3000-CONTAR.
+       2000-LOWER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-CONTAR SECTION
+      *==========================================================*
+       3000-CONTAR SECTION.
            MOVE ZEROS TO WS-COUNT
            INSPECT LS-ENTRADA TALLYING WS-COUNT
                FOR ALL LS-PARAM(1:
@@ -1724,7 +2065,12 @@ const LAB_PROGRAMS = [
                        FUNCTION TRIM(LS-PARAM)))
            MOVE WS-COUNT TO LS-CONTAGEM
            .
-       4000-TROCAR.
+       3000-CONTAR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-TROCAR SECTION
+      *==========================================================*
+       4000-TROCAR SECTION.
            MOVE LS-ENTRADA TO WS-TEMP
            INSPECT WS-TEMP REPLACING ALL
                LS-PARAM(1:FUNCTION LENGTH(
@@ -1733,14 +2079,21 @@ const LAB_PROGRAMS = [
                    FUNCTION TRIM(LS-PARAM)))
            MOVE WS-TEMP TO LS-SAIDA
            .
-       5000-SUBSTRING.
+       4000-TROCAR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 5000-SUBSTRING SECTION
+      *==========================================================*
+       5000-SUBSTRING SECTION.
            MOVE LS-PARAM(1:4) TO WS-POS
            MOVE LS-PARAM(5:4) TO WS-LEN
            IF WS-POS > 0 AND WS-LEN > 0
                MOVE LS-ENTRADA(WS-POS:WS-LEN)
                    TO LS-SAIDA
            END-IF
-           .`
+           .
+       5000-SUBSTRING-EXIT.
+           EXIT.`
   },
 
   // ========================================================================
@@ -1755,13 +2108,14 @@ const LAB_PROGRAMS = [
     level: "advanced",
     filename: "ASMHXD01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMHXD01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : HEX DUMP DE AREA DE MEMORIA
 *            GERA SAIDA FORMATADA COM OFFSET, HEX E EBCDIC
 * REGISTRADORES:
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 *   R1  = ENDERECO DA AREA
 *   R2  = TAMANHO EM BYTES
 *   R15 = RETURN CODE (0=OK)
@@ -1828,6 +2182,81 @@ BLANKS   DC    CL80' '
 HEXTAB   DC    C'0123456789ABCDEF'
 WTOMSG   WTO   ' ',MF=L
          YREGS
+         END   ASMHXD01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMHXD01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : HEX DUMP DE AREA DE MEMORIA
+*            GERA SAIDA FORMATADA COM OFFSET, HEX E EBCDIC
+* REGISTRADORES:
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*   R1  = ENDERECO DA AREA
+*   R2  = TAMANHO EM BYTES
+*   R15 = RETURN CODE (0=OK)
+*================================================================*
+ASMHXD01 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMHXD01         SET BASE (RELATIVE)
+         USING ASMHXD01,R12
+         ST    R13,SAVEAREA+4       CHAIN SAVE AREAS
+         LA    R13,SAVEAREA
+*
+         L     R3,0(R1)            LOAD BUFFER ADDRESS
+         L     R4,4(R1)            LOAD LENGTH
+         LR    R5,R3               SAVE START ADDR
+         SR    R6,R6               OFFSET = 0
+*
+LOOP     CR    R6,R4               CHECK IF DONE
+         JNL   EXIT                 YES - EXIT
+         MVC   OUTLINE,BLANKS      CLEAR OUTPUT LINE
+*-- FORMAT OFFSET
+         LR    R7,R6               COPY OFFSET
+         CVD   R7,DWORK            CONVERT TO PACKED
+         UNPK  OUTLINE(8),DWORK    UNPACK OFFSET
+         OI    OUTLINE+7,X'F0'     FIX SIGN
+*-- FORMAT HEX BYTES (16 PER LINE)
+         LA    R8,OUTLINE+10       POINT TO HEX AREA
+         LA    R9,OUTLINE+60       POINT TO CHAR AREA
+         LA    R10,16              BYTES PER LINE
+HEXLOOP  CR    R6,R4               PAST END?
+         JNL   PRNTLINE             YES - PRINT WHAT WE HAVE
+         IC    R7,0(R3)            GET BYTE
+         STC   R7,HEXWORK          STORE BYTE
+         UNPK  HEXWORK2(3),HEXWORK(2) CONVERT TO HEX
+         TR    HEXWORK2(2),HEXTAB  TRANSLATE TO PRINTABLE
+         MVC   0(2,R8),HEXWORK2    MOVE HEX TO OUTPUT
+*-- PRINTABLE CHARACTER
+         CLI   0(R3),X'40'         PRINTABLE RANGE?
+         JL    NOTPRINT
+         CLI   0(R3),X'FE'
+         JH    NOTPRINT
+         MVC   0(1,R9),0(R3)       COPY AS-IS
+         J     NEXTBYTE
+NOTPRINT MVI   0(R9),C'.'          USE DOT FOR NON-PRINT
+NEXTBYTE LA    R3,1(R3)            NEXT BYTE
+         LA    R6,1(R6)            INCREMENT OFFSET
+         LA    R8,3(R8)            NEXT HEX POSITION
+         LA    R9,1(R9)            NEXT CHAR POSITION
+         BCT   R10,HEXLOOP         LOOP 16 BYTES
+*
+PRNTLINE WTO   MF=(E,WTOMSG)       WRITE OUTPUT LINE
+         J     LOOP                 NEXT 16-BYTE GROUP
+*
+EXIT     SR    R15,R15             RC = 0
+         L     R13,SAVEAREA+4      RESTORE SAVE AREA
+         LM    R14,R12,12(R13)     RESTORE REGISTERS
+         BR    R14                 RETURN
+*
+SAVEAREA DS    18F
+DWORK    DS    D
+HEXWORK  DS    XL2
+HEXWORK2 DS    CL3
+OUTLINE  DS    CL80
+BLANKS   DC    CL80' '
+HEXTAB   DC    C'0123456789ABCDEF'
+WTOMSG   WTO   ' ',MF=L
+         YREGS
          END   ASMHXD01`
   },
 
@@ -1839,13 +2268,14 @@ WTOMSG   WTO   ' ',MF=L
     level: "intermediate",
     filename: "ASMRCL01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMRCL01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : LOG DE RETURN CODE VIA WTO
 *            FORMATA: STEP=xxxxxxxx RC=nnnn SEV=ssssss
 * R1 -> PARMLIST: @STEPNAME(8), @RC(FULLWORD)
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 *================================================================*
 ASMRCL01 CSECT
          STM   R14,R12,12(R13)
@@ -1895,6 +2325,64 @@ PATTERN  DC    CL40'STEP=........ RC=.... SEV=........'
 MSGTEXT  DS    CL40
 WTOMSG   WTO   ' ',MF=L
          YREGS
+         END   ASMRCL01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMRCL01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : LOG DE RETURN CODE VIA WTO
+*            FORMATA: STEP=xxxxxxxx RC=nnnn SEV=ssssss
+* R1 -> PARMLIST: @STEPNAME(8), @RC(FULLWORD)
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMRCL01 CSECT
+         STM   R14,R12,12(R13)
+         LARL  R12,ASMRCL01         
+         USING ASMRCL01,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R2,0(R1)            ADDR OF STEPNAME
+         L     R3,4(R1)            ADDR OF RC
+         L     R4,0(R3)            LOAD RC VALUE
+*
+         MVC   MSGTEXT,PATTERN     INIT MESSAGE
+         MVC   MSGTEXT+5(8),0(R2)  MOVE STEPNAME
+*
+         CVD   R4,DWORK            CONVERT RC
+         UNPK  MSGTEXT+17(4),DWORK+6(2)
+         OI    MSGTEXT+20,X'F0'    FIX SIGN
+*
+* DETERMINE SEVERITY
+         CH    R4,=H'0'
+         JE    SEVOK
+         CH    R4,=H'4'
+         JE    SEVWARN
+         CH    R4,=H'8'
+         JE    SEVERR
+         J     SEVCRIT
+*
+SEVOK    MVC   MSGTEXT+26(8),=CL8'SUCCESS '
+         J     DOMSG
+SEVWARN  MVC   MSGTEXT+26(8),=CL8'WARNING '
+         J     DOMSG
+SEVERR   MVC   MSGTEXT+26(8),=CL8'ERROR   '
+         J     DOMSG
+SEVCRIT  MVC   MSGTEXT+26(8),=CL8'CRITICAL'
+*
+DOMSG    WTO   MF=(E,WTOMSG)
+*
+         LR    R15,R4              PROPAGATE RC
+         L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+PATTERN  DC    CL40'STEP=........ RC=.... SEV=........'
+MSGTEXT  DS    CL40
+WTOMSG   WTO   ' ',MF=L
+         YREGS
          END   ASMRCL01`
   },
 
@@ -1906,18 +2394,70 @@ WTOMSG   WTO   ' ',MF=L
     level: "intermediate",
     filename: "ASMTMS01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMTMS01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : OBTEM TOD CLOCK E FORMATA TIMESTAMP LEGIVEL
 *            FORMATO: YYYY-MM-DD HH:MM:SS
 * R1 -> @OUTPUT(19 BYTES)
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 *================================================================*
 ASMTMS01 CSECT
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R2,0(R1)            ADDR OUTPUT BUFFER
+*
+* GET CURRENT DATE/TIME VIA TIME MACRO
+         TIME  DEC,DATETIME,LINKAGE=SYSTEM,DATETYPE=YYYYMMDD
+*
+* FORMAT DATE: YYYY-MM-DD
+         MVC   WORK(4),DATETIME+8  YYYY
+         MVI   WORK+4,C'-'
+         MVC   WORK+5(2),DATETIME+12 MM
+         MVI   WORK+7,C'-'
+         MVC   WORK+8(2),DATETIME+14 DD
+*
+* FORMAT TIME: HH:MM:SS
+         MVI   WORK+10,C' '
+         UNPK  TIMEWORK(7),DATETIME(4)
+         OI    TIMEWORK+6,X'F0'
+         MVC   WORK+11(2),TIMEWORK   HH
+         MVI   WORK+13,C':'
+         MVC   WORK+14(2),TIMEWORK+2 MM
+         MVI   WORK+16,C':'
+         MVC   WORK+17(2),TIMEWORK+4 SS
+*
+         MVC   0(19,R2),WORK      COPY TO OUTPUT
+*
+         SR    R15,R15             RC=0
+         L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DATETIME DS    4F
+TIMEWORK DS    CL8
+WORK     DS    CL19
+         YREGS
+         END   ASMTMS01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMTMS01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : OBTEM TOD CLOCK E FORMATA TIMESTAMP LEGIVEL
+*            FORMATO: YYYY-MM-DD HH:MM:SS
+* R1 -> @OUTPUT(19 BYTES)
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMTMS01 CSECT
+         STM   R14,R12,12(R13)
+         LARL  R12,ASMTMS01         
+         USING ASMTMS01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
 *
@@ -1966,12 +2506,13 @@ WORK     DS    CL19
     level: "advanced",
     filename: "ASMCNV01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMCNV01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CONVERSAO EBCDIC <-> ASCII VIA TR TABLE
 * R1 -> PARMLIST: @BUFFER, @LENGTH(FW), @DIRECTION(C'E'|C'A')
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 * DIRECTION: 'A' = EBCDIC->ASCII, 'E' = ASCII->EBCDIC
 *================================================================*
 ASMCNV01 CSECT
@@ -2028,6 +2569,70 @@ A2ETAB   DC    256X'40'            DEFAULT TO SPACE
          DC    X'C1C2C3C4C5C6C7C8C9'   A-I
          ORG   ,
          YREGS
+         END   ASMCNV01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMCNV01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : CONVERSAO EBCDIC <-> ASCII VIA TR TABLE
+* R1 -> PARMLIST: @BUFFER, @LENGTH(FW), @DIRECTION(C'E'|C'A')
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* DIRECTION: 'A' = EBCDIC->ASCII, 'E' = ASCII->EBCDIC
+*================================================================*
+ASMCNV01 CSECT
+         STM   R14,R12,12(R13)
+         LARL  R12,ASMCNV01         
+         USING ASMCNV01,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R2,0(R1)            BUFFER ADDRESS
+         L     R3,4(R1)            LENGTH ADDRESS
+         L     R3,0(R3)            ACTUAL LENGTH
+         L     R4,8(R1)            DIRECTION ADDRESS
+         CLI   0(R4),C'A'          EBCDIC TO ASCII?
+         JE    TOASCII
+         CLI   0(R4),C'E'          ASCII TO EBCDIC?
+         JE    TOEBCDIC
+         LA    R15,8               INVALID DIRECTION
+         J     EXIT
+*
+TOASCII  BCTR  R3,0                LENGTH-1 FOR EX
+         EX    R3,TRASC            TRANSLATE TO ASCII
+         J     DONE
+TOEBCDIC BCTR  R3,0
+         EX    R3,TREBC            TRANSLATE TO EBCDIC
+         J     DONE
+*
+TRASC    TR    0(0,R2),E2ATAB      EXECUTED
+TREBC    TR    0(0,R2),A2ETAB      EXECUTED
+*
+DONE     SR    R15,R15             RC=0
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+*
+* EBCDIC TO ASCII TRANSLATION TABLE (PARTIAL - KEY VALUES)
+E2ATAB   DC    256X'2E'            DEFAULT TO '.'
+         ORG   E2ATAB+X'40'
+         DC    X'20'               SPACE
+         ORG   E2ATAB+X'C1'
+         DC    X'41424344454647484950'  A-I (PARTIAL)
+         ORG   E2ATAB+X'F0'
+         DC    X'30313233343536373839'  0-9
+         ORG   ,
+* ASCII TO EBCDIC TRANSLATION TABLE (PARTIAL)
+A2ETAB   DC    256X'40'            DEFAULT TO SPACE
+         ORG   A2ETAB+X'20'
+         DC    X'40'               SPACE
+         ORG   A2ETAB+X'30'
+         DC    X'F0F1F2F3F4F5F6F7F8F9'  0-9
+         ORG   A2ETAB+X'41'
+         DC    X'C1C2C3C4C5C6C7C8C9'   A-I
+         ORG   ,
+         YREGS
          END   ASMCNV01`
   },
 
@@ -2039,13 +2644,14 @@ A2ETAB   DC    256X'40'            DEFAULT TO SPACE
     level: "intermediate",
     filename: "ASMBIT01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMBIT01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : OPERACOES BITWISE EM BYTE
 *            TEST, SET, CLEAR, TOGGLE VIA TM, OI, NI, XI
 * R1 -> PARMLIST: @BYTE, @BITNUM(0-7), @OPERATION(C'T/S/C/X')
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 * R15: TEST -> 0=OFF,4=ON | OTHERS -> 0=OK
 *================================================================*
 ASMBIT01 CSECT
@@ -2116,6 +2722,85 @@ EXIT     L     R13,SAVE+4
 SAVE     DS    18F
 MASK     DS    X
          YREGS
+         END   ASMBIT01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMBIT01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : OPERACOES BITWISE EM BYTE
+*            TEST, SET, CLEAR, TOGGLE VIA TM, OI, NI, XI
+* R1 -> PARMLIST: @BYTE, @BITNUM(0-7), @OPERATION(C'T/S/C/X')
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* R15: TEST -> 0=OFF,4=ON | OTHERS -> 0=OK
+*================================================================*
+ASMBIT01 CSECT
+         STM   R14,R12,12(R13)
+         LARL  R12,ASMBIT01         
+         USING ASMBIT01,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R2,0(R1)            BYTE ADDRESS
+         L     R3,4(R1)            BIT NUMBER ADDRESS
+         L     R3,0(R3)            ACTUAL BIT (0-7)
+         L     R4,8(R1)            OPERATION ADDRESS
+*
+* BUILD BIT MASK (BIT 0 = X'80', BIT 7 = X'01')
+         LA    R5,7
+         SR    R5,R3               7 - BITNUM
+         LA    R6,1
+         SLL   R6,0(R5)            SHIFT 1 LEFT BY (7-N)
+         STC   R6,MASK             STORE MASK BYTE
+*
+         CLI   0(R4),C'T'          TEST?
+         JE    DOTEST
+         CLI   0(R4),C'S'          SET?
+         JE    DOSET
+         CLI   0(R4),C'C'          CLEAR?
+         JE    DOCLEAR
+         CLI   0(R4),C'X'          TOGGLE?
+         JE    DOTOGGLE
+         LA    R15,8               INVALID OP
+         J     EXIT
+*
+DOTEST   EX    R6,EXTM             TM 0(R2),MASK
+         JZ    BITOFF
+         LA    R15,4               BIT IS ON
+         J     EXIT
+BITOFF   SR    R15,R15             BIT IS OFF
+         J     EXIT
+*
+DOSET    IC    R7,0(R2)            LOAD BYTE
+         IC    R8,MASK             LOAD MASK
+         OR    R7,R8               OR = SET
+         STC   R7,0(R2)            STORE BACK
+         SR    R15,R15
+         J     EXIT
+*
+DOCLEAR  IC    R7,0(R2)            LOAD BYTE
+         IC    R8,MASK
+         X     R8,=F'-1'           COMPLEMENT MASK
+         NR    R7,R8               AND = CLEAR
+         STC   R7,0(R2)
+         SR    R15,R15
+         J     EXIT
+*
+DOTOGGLE IC    R7,0(R2)            LOAD BYTE
+         IC    R8,MASK
+         XR    R7,R8               XOR = TOGGLE
+         STC   R7,0(R2)
+         SR    R15,R15
+         J     EXIT
+*
+EXTM     TM    0(R2),0             EXECUTED INSTRUCTION
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+MASK     DS    X
+         YREGS
          END   ASMBIT01`
   },
 
@@ -2127,13 +2812,14 @@ MASK     DS    X
     level: "advanced",
     filename: "ASMBSR01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMBSR01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : BUSCA BINARIA EM TABELA ORDENADA
 *            CLC PARA COMPARACAO, SRL PARA DIVISAO
 * R1 -> PARMLIST: @TABLE, @ENTRIES(FW), @KEYLEN(FW),
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 *                 @ENTRYLEN(FW), @SEARCHKEY
 * R15: 0=FOUND (R1->ENTRY), 4=NOT FOUND
 *================================================================*
@@ -2196,6 +2882,77 @@ EXIT     L     R13,SAVE+4
 *
 SAVE     DS    18F
          YREGS
+         END   ASMBSR01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMBSR01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : BUSCA BINARIA EM TABELA ORDENADA
+*            CLC PARA COMPARACAO, SRL PARA DIVISAO
+* R1 -> PARMLIST: @TABLE, @ENTRIES(FW), @KEYLEN(FW),
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*                 @ENTRYLEN(FW), @SEARCHKEY
+* R15: 0=FOUND (R1->ENTRY), 4=NOT FOUND
+*================================================================*
+ASMBSR01 CSECT
+         STM   R14,R12,12(R13)
+         LARL  R12,ASMBSR01         
+         USING ASMBSR01,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R2,0(R1)            TABLE START
+         L     R3,4(R1)            NUM ENTRIES ADDR
+         L     R3,0(R3)            NUM ENTRIES
+         L     R4,8(R1)            KEY LENGTH ADDR
+         L     R4,0(R4)            KEY LENGTH
+         L     R5,12(R1)           ENTRY LENGTH ADDR
+         L     R5,0(R5)            ENTRY LENGTH
+         L     R6,16(R1)           SEARCH KEY ADDR
+*
+         SR    R7,R7               LOW = 0
+         LR    R8,R3               HIGH = N
+         BCTR  R8,0                HIGH = N-1
+*
+BSLOOP   CR    R7,R8               LOW > HIGH?
+         JH    NOTFND               YES - NOT FOUND
+*
+         LR    R9,R7               MID = LOW
+         AR    R9,R8               MID = LOW + HIGH
+         SRL   R9,1                MID = (LOW+HIGH)/2
+*
+         LR    R10,R9              COPY MID
+         MR    R10,R5              MID * ENTRYLEN (USE R11)
+         LA    R10,0(R11,R2)       ADDR OF MID ENTRY
+*
+         BCTR  R4,0                KEYLEN-1 FOR EX
+         EX    R4,EXCLC            COMPARE KEYS
+         JE    FOUND
+         JH    GOHIGH
+*
+* SEARCH KEY < MID KEY -> HIGH = MID - 1
+         LR    R8,R9
+         BCTR  R8,0
+         J     BSLOOP
+*
+GOHIGH   LR    R7,R9               LOW = MID + 1
+         LA    R7,1(R7)
+         J     BSLOOP
+*
+EXCLC    CLC   0(0,R6),0(R10)      EXECUTED COMPARE
+*
+FOUND    LR    R1,R10              R1 -> FOUND ENTRY
+         SR    R15,R15             RC=0 FOUND
+         J     EXIT
+*
+NOTFND   LA    R15,4               RC=4 NOT FOUND
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+         YREGS
          END   ASMBSR01`
   },
 
@@ -2207,13 +2964,14 @@ SAVE     DS    18F
     level: "intermediate",
     filename: "ASMPCK01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMPCK01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CONVERSAO ENTRE FORMATOS NUMERICOS
 *            ZONED <-> PACKED <-> BINARIO
 * R1 -> PARMLIST: @INPUT, @OUTPUT, @INLEN(FW), @CONV_TYPE
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 * CONV_TYPE: 'ZP'=ZONED->PACKED, 'PZ'=PACKED->ZONED,
 *            'PB'=PACKED->BINARY, 'BP'=BINARY->PACKED,
 *            'ZB'=ZONED->BINARY,  'BZ'=BINARY->ZONED
@@ -2283,6 +3041,84 @@ EXIT     L     R13,SAVE+4
 SAVE     DS    18F
 DWORK    DS    D
          YREGS
+         END   ASMPCK01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMPCK01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : CONVERSAO ENTRE FORMATOS NUMERICOS
+*            ZONED <-> PACKED <-> BINARIO
+* R1 -> PARMLIST: @INPUT, @OUTPUT, @INLEN(FW), @CONV_TYPE
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* CONV_TYPE: 'ZP'=ZONED->PACKED, 'PZ'=PACKED->ZONED,
+*            'PB'=PACKED->BINARY, 'BP'=BINARY->PACKED,
+*            'ZB'=ZONED->BINARY,  'BZ'=BINARY->ZONED
+*================================================================*
+ASMPCK01 CSECT
+         STM   R14,R12,12(R13)
+         LARL  R12,ASMPCK01         
+         USING ASMPCK01,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R2,0(R1)            INPUT ADDR
+         L     R3,4(R1)            OUTPUT ADDR
+         L     R4,8(R1)            LENGTH ADDR
+         L     R4,0(R4)            ACTUAL LENGTH
+         L     R5,12(R1)           CONV TYPE ADDR
+*
+         CLC   0(2,R5),=C'ZP'     ZONED TO PACKED
+         JE    ZTOP
+         CLC   0(2,R5),=C'PZ'     PACKED TO ZONED
+         JE    PTOZ
+         CLC   0(2,R5),=C'PB'     PACKED TO BINARY
+         JE    PTOB
+         CLC   0(2,R5),=C'BP'     BINARY TO PACKED
+         JE    BTOP
+         CLC   0(2,R5),=C'ZB'     ZONED TO BINARY
+         JE    ZTOB
+         CLC   0(2,R5),=C'BZ'     BINARY TO ZONED
+         JE    BTOZ
+         LA    R15,8               INVALID TYPE
+         J     EXIT
+*
+ZTOP     BCTR  R4,0                LEN-1
+         EX    R4,EXPACK           PACK OUTPUT,INPUT
+         J     DONE
+PTOZ     BCTR  R4,0
+         EX    R4,EXUNPK           UNPK OUTPUT,INPUT
+         OI    0(R3),X'F0'         FIX SIGN
+         J     DONE
+PTOB     ZAP   DWORK,0(8,R2)      MOVE PACKED TO DWORK
+         CVB   R6,DWORK            CONVERT TO BINARY
+         ST    R6,0(R3)            STORE BINARY
+         J     DONE
+BTOP     L     R6,0(R2)            LOAD BINARY
+         CVD   R6,DWORK            CONVERT TO PACKED
+         ZAP   0(8,R3),DWORK      STORE PACKED
+         J     DONE
+ZTOB     BCTR  R4,0
+         EX    R4,EXPACK           PACK TO DWORK
+         CVB   R6,DWORK
+         ST    R6,0(R3)
+         J     DONE
+BTOZ     L     R6,0(R2)
+         CVD   R6,DWORK
+         UNPK  0(16,R3),DWORK
+         OI    15(R3),X'F0'
+         J     DONE
+*
+EXPACK   PACK  DWORK,0(0,R2)
+EXUNPK   UNPK  0(0,R3),0(8,R2)
+*
+DONE     SR    R15,R15
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+         YREGS
          END   ASMPCK01`
   },
 
@@ -2294,13 +3130,14 @@ DWORK    DS    D
     level: "advanced",
     filename: "ASMBUF01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMBUF01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : OPERACOES COM BUFFERS LONGOS
 *            MVCL (MOVE), CLCL (COMPARE), MVC PROPAGATION
 * R1 -> PARMLIST: @OP(1), @BUF1, @BUF2, @LEN(FW), @PAD(1)
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 * OP: 'M'=MOVE, 'C'=COMPARE, 'F'=FILL(PROPAGATION)
 * R15: COMPARE->0=EQUAL,1=B1<B2,2=B1>B2 | OTHERS->0=OK
 *================================================================*
@@ -2365,6 +3202,79 @@ EXIT     L     R13,SAVE+4
 *
 SAVE     DS    18F
          YREGS
+         END   ASMBUF01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMBUF01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : OPERACOES COM BUFFERS LONGOS
+*            MVCL (MOVE), CLCL (COMPARE), MVC PROPAGATION
+* R1 -> PARMLIST: @OP(1), @BUF1, @BUF2, @LEN(FW), @PAD(1)
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* OP: 'M'=MOVE, 'C'=COMPARE, 'F'=FILL(PROPAGATION)
+* R15: COMPARE->0=EQUAL,1=B1<B2,2=B1>B2 | OTHERS->0=OK
+*================================================================*
+ASMBUF01 CSECT
+         STM   R14,R12,12(R13)
+         LARL  R12,ASMBUF01         
+         USING ASMBUF01,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R5,0(R1)            OP ADDRESS
+         L     R2,4(R1)            BUF1 ADDRESS
+         L     R3,8(R1)            BUF2 ADDRESS
+         L     R4,12(R1)           LENGTH ADDRESS
+         L     R4,0(R4)            ACTUAL LENGTH
+         L     R6,16(R1)           PAD ADDRESS
+*
+         CLI   0(R5),C'M'          MOVE?
+         JE    DOMOVE
+         CLI   0(R5),C'C'          COMPARE?
+         JE    DOCOMP
+         CLI   0(R5),C'F'          FILL?
+         JE    DOFILL
+         LA    R15,8
+         J     EXIT
+*
+DOMOVE   LR    R0,R2               TARGET = BUF1
+         LR    R1,R4               TARGET LEN
+         LR    R14,R3              SOURCE = BUF2
+         LR    R15,R4              SOURCE LEN
+         MVCL  R0,R14              LONG MOVE
+         SR    R15,R15
+         J     EXIT
+*
+DOCOMP   LR    R0,R2               BUF1
+         LR    R1,R4               LEN1
+         LR    R14,R3              BUF2
+         LR    R15,R4              LEN2
+         CLCL  R0,R14              LONG COMPARE
+         JE    CMPEQ
+         JL    CMPLT
+         LA    R15,2               BUF1 > BUF2
+         J     EXIT
+CMPEQ    SR    R15,R15             EQUAL
+         J     EXIT
+CMPLT    LA    R15,1               BUF1 < BUF2
+         J     EXIT
+*
+* FILL VIA MVC PROPAGATION: SET FIRST BYTE, MVC REST
+DOFILL   MVC   0(1,R2),0(R6)       SET FIRST BYTE = PAD
+         BCTR  R4,0                LEN-1
+         BCTR  R4,0                LEN-2
+         EX    R4,EXMVC            MVC 1(LEN-1,BUF1),0(BUF1)
+         SR    R15,R15
+         J     EXIT
+*
+EXMVC    MVC   1(0,R2),0(R2)       EXECUTED PROPAGATION
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+         YREGS
          END   ASMBUF01`
   },
 
@@ -2376,13 +3286,14 @@ SAVE     DS    18F
     level: "intermediate",
     filename: "ASMTRT01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMTRT01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : DEMONSTRA TRT (TRANSLATE AND TEST) PARA
 *            BUSCA DE CARACTERES ESPECIAIS EM BUFFER
 * R1 -> @BUFFER, @LEN(FW)
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 * R15: 0=NENHUM ESPECIAL, 4=ENCONTRADO (R1->POSICAO)
 *================================================================*
 ASMTRT01 CSECT
@@ -2422,6 +3333,54 @@ EXIT     L     R13,SAVE+4
 SAVE     DS    18F
 TRTTAB   DS    XL256
          YREGS
+         END   ASMTRT01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMTRT01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : DEMONSTRA TRT (TRANSLATE AND TEST) PARA
+*            BUSCA DE CARACTERES ESPECIAIS EM BUFFER
+* R1 -> @BUFFER, @LEN(FW)
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* R15: 0=NENHUM ESPECIAL, 4=ENCONTRADO (R1->POSICAO)
+*================================================================*
+ASMTRT01 CSECT
+         STM   R14,R12,12(R13)
+         LARL  R12,ASMTRT01         
+         USING ASMTRT01,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R2,0(R1)            BUFFER ADDR
+         L     R3,4(R1)            LENGTH ADDR
+         L     R3,0(R3)            ACTUAL LENGTH
+*
+* BUILD TRT TABLE - ZEROS EXCEPT FOR SPECIAL CHARS
+         XC    TRTTAB,TRTTAB       CLEAR TABLE
+         MVI   TRTTAB+C'<',X'01'  FLAG '<'
+         MVI   TRTTAB+C'>',X'02'  FLAG '>'
+         MVI   TRTTAB+C'&',X'03'  FLAG '&'
+         MVI   TRTTAB+C'''',X'04' FLAG QUOTE
+*
+         BCTR  R3,0                LEN-1
+         EX    R3,EXTRT            TRT BUFFER
+         JZ    NOTFOUND             CC=0, NO MATCH
+*
+* R1 -> FIRST SPECIAL, R2 = FUNCTION BYTE
+         LA    R15,4               FOUND
+         J     EXIT
+*
+NOTFOUND SR    R15,R15             NOT FOUND
+*
+EXTRT    TRT   0(0,R2),TRTTAB     EXECUTED TRT
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+TRTTAB   DS    XL256
+         YREGS
          END   ASMTRT01`
   },
 
@@ -2433,17 +3392,68 @@ TRTTAB   DS    XL256
     level: "basic",
     filename: "ASMLNK01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMLNK01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : DEMONSTRA LINKAGE CONVENTIONS DO Z/OS
 *            SAVE AREA 18F, PARM LIST, CALL INTERNO/EXTERNO
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 *================================================================*
 ASMLNK01 CSECT
          STM   R14,R12,12(R13)     SAVE CALLER REGS
          BALR  R12,0                ESTABLISH BASE
          USING *,R12
+         LA    R11,SAVE             MY SAVE AREA
+         ST    R13,SAVE+4           BACKWARD CHAIN
+         ST    R11,8(R13)           FORWARD CHAIN
+         LR    R13,R11              ACTIVATE MY SAVE
+*
+* CALL INTERNAL SUBROUTINE VIA BAL
+         LA    R1,PARM1             LOAD PARM ADDRESS
+         BAL   R14,INTSUB           BRANCH AND LINK
+*
+* CALL EXTERNAL PROGRAM VIA CALL MACRO
+         LA    R1,EXTPARMS          PARM LIST
+         L     R15,=V(EXTPROG)      LOAD EPA
+         BALR  R14,R15              BRANCH TO EXTERNAL
+*
+* RETURN TO CALLER
+         L     R13,SAVE+4           RESTORE CALLER SAVE
+         LM    R14,R12,12(R13)      RESTORE REGS
+         SR    R15,R15              RC=0
+         BR    R14                  RETURN
+*
+*--- INTERNAL SUBROUTINE ---
+INTSUB   ST    R14,INTRET           SAVE RETURN ADDR
+         L     R2,0(R1)             GET PARM
+         WTO   'INTERNAL SUB CALLED'
+         L     R14,INTRET           RESTORE RETURN
+         BR    R14                  RETURN
+*
+INTRET   DS    F
+SAVE     DS    18F
+PARM1    DC    A(DATA1)
+EXTPARMS DC    A(DATA1)
+         DC    X'80'
+         DC    AL3(DATA2)
+DATA1    DC    CL20'HELLO FROM ASMLNK01'
+DATA2    DC    F'42'
+         LTORG
+         YREGS
+         END   ASMLNK01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMLNK01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : DEMONSTRA LINKAGE CONVENTIONS DO Z/OS
+*            SAVE AREA 18F, PARM LIST, CALL INTERNO/EXTERNO
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMLNK01 CSECT
+         STM   R14,R12,12(R13)     SAVE CALLER REGS
+         LARL  R12,ASMLNK01         ESTABLISH BASE
+         USING ASMLNK01,R12
          LA    R11,SAVE             MY SAVE AREA
          ST    R13,SAVE+4           BACKWARD CHAIN
          ST    R11,8(R13)           FORWARD CHAIN
@@ -2492,17 +3502,71 @@ DATA2    DC    F'42'
     level: "advanced",
     filename: "ASMDYN01.hlasm",
     tags: ["HLASM"],
-    source:
+    sourceBase:
 `*================================================================*
 * PROGRAMA : ASMDYN01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CARGA DINAMICA DE MODULOS
 *            LOAD, DELETE, LINK, XCTL
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
 *================================================================*
 ASMDYN01 CSECT
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+* LOAD - CARREGA MODULO NA MEMORIA SEM EXECUTAR
+         LOAD  EP=UTILPGM
+         LR    R2,R0               ENTRY POINT
+         LR    R3,R1               LENGTH/AUTH
+         ST    R2,EPADDR            SAVE EP ADDR
+         WTO   'ASMDYN01: MODULE LOADED'
+*
+* CALL VIA SAVED EP
+         L     R15,EPADDR
+         LA    R1,PARMS
+         BALR  R14,R15             CALL LOADED MODULE
+*
+* DELETE - REMOVE DA MEMORIA
+         DELETE EP=UTILPGM
+         WTO   'ASMDYN01: MODULE DELETED'
+*
+* LINK - CARREGA, EXECUTA E RETORNA
+         LINK  EP=UTILPGM,PARAM=(PARMDATA),VL=1
+         LR    R4,R15              SAVE RC
+         WTO   'ASMDYN01: LINK RETURNED'
+*
+* XCTL - TRANSFERE CONTROLE (SEM RETORNO)
+*        COMENTADO PARA NAO PERDER CONTROLE EM DEMO
+*        XCTL  EP=NEXTPGM,PARAM=(PARMDATA),VL=1
+*
+         SR    R15,R15
+         L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+EPADDR   DS    F
+PARMS    DC    X'80'
+         DC    AL3(PARMDATA)
+PARMDATA DC    CL20'DYNAMIC CALL DATA'
+         LTORG
+         YREGS
+         END   ASMDYN01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMDYN01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : CARGA DINAMICA DE MODULOS
+*            LOAD, DELETE, LINK, XCTL
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMDYN01 CSECT
+         STM   R14,R12,12(R13)
+         LARL  R12,ASMDYN01         
+         USING ASMDYN01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
 *
@@ -2560,6 +3624,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLCOMP1 JOB (ACCT),'COMPILE LINK GO',
+//JCLCOMP1 JOB (ACCT),'COMPILE LINK GO',
 //             CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),
 //             NOTIFY=&SYSUID
 //*================================================================*
@@ -2614,6 +3679,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLCOPY1 JOB (ACCT),'DATASET COPY',
+//JCLCOPY1 JOB (ACCT),'DATASET COPY',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: COPIA DE DATASETS COM IEBGENER E IEBCOPY
@@ -2663,6 +3729,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLVSAM1 JOB (ACCT),'DEFINE KSDS',
+//JCLVSAM1 JOB (ACCT),'DEFINE KSDS',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: DEFINE VSAM KSDS COM IDCAMS
@@ -2731,6 +3798,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLSORT1 JOB (ACCT),'DFSORT FORMAT',
+//JCLSORT1 JOB (ACCT),'DFSORT FORMAT',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: DFSORT COM OUTFIL FORMATADO
@@ -2777,6 +3845,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLICE01 JOB (ACCT),'ICETOOL STATS',
+//JCLICE01 JOB (ACCT),'ICETOOL STATS',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: ICETOOL - OPERACOES AVANCADAS
@@ -2828,6 +3897,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLBKP01 JOB (ACCT),'BACKUP RESTORE',
+//JCLBKP01 JOB (ACCT),'BACKUP RESTORE',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: BACKUP E RESTORE COM ADRDSSU
@@ -2880,6 +3950,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLGDG01 JOB (ACCT),'GDG MANAGEMENT',
+//JCLGDG01 JOB (ACCT),'GDG MANAGEMENT',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: GERENCIAMENTO DE GDG (GENERATION DATA GROUP)
@@ -2932,6 +4003,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLSRT02 JOB (ACCT),'SORT MERGE OPT',
+//JCLSRT02 JOB (ACCT),'SORT MERGE OPT',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: SORT/MERGE COM OPCOES AVANCADAS
@@ -2985,6 +4057,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLJOIN1 JOB (ACCT),'DFSORT JOINS',
+//JCLJOIN1 JOB (ACCT),'DFSORT JOINS',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: JOINKEYS - JOIN DE DOIS ARQUIVOS
@@ -3036,6 +4109,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLCOND1 JOB (ACCT),'CONDITIONAL EXEC',
+//JCLCOND1 JOB (ACCT),'CONDITIONAL EXEC',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: EXECUCAO CONDICIONAL COM IF/THEN/ELSE
@@ -3097,6 +4171,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["JCL"],
     source:
 `//JCLSRT03 JOB (ACCT),'SORT OUTFIL ADV',
+//JCLSRT03 JOB (ACCT),'SORT OUTFIL ADV',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: DFSORT - MULTIPLOS OUTFIL COM SUBTOTAIS
@@ -3158,6 +4233,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["JCL"],
     source:
 `//JCLPRC02 JOB (ACCT),'PROC OVERRIDES',
+//JCLPRC02 JOB (ACCT),'PROC OVERRIDES',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: PROCEDURE COM OVERRIDES
@@ -3215,6 +4291,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["JCL"],
     source:
 `//JCLIDCM2 JOB (ACCT),'IDCAMS MULTI-OPS',
+//JCLIDCM2 JOB (ACCT),'IDCAMS MULTI-OPS',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: IDCAMS - OPERACOES MULTIPLAS EM UM STEP
@@ -3280,7 +4357,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
   },
 
   // ========================================================================
-  // CICS (13 programas)
+  // CICS (16 programas — 13 COBOL + 3 HLASM)
   // ========================================================================
 
   {
@@ -3293,6 +4370,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSABDL
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : TRATADOR DE ABEND CICS COM DIAGNOSTICO
@@ -3325,7 +4403,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-MSG-LEN          PIC S9(04) COMP.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            EXEC CICS HANDLE ABEND
                LABEL(9000-ABEND-HANDLER)
            END-EXEC
@@ -3339,10 +4420,20 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 1000-BUSINESS-LOGIC
            EXEC CICS RETURN END-EXEC
            .
-       1000-BUSINESS-LOGIC.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-BUSINESS-LOGIC SECTION
+      *==========================================================*
+       1000-BUSINESS-LOGIC SECTION.
            CONTINUE
            .
-       9000-ABEND-HANDLER.
+       1000-BUSINESS-LOGIC-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-ABEND-HANDLER SECTION
+      *==========================================================*
+       9000-ABEND-HANDLER SECTION.
            EXEC CICS ASSIGN ABCODE(WS-ABCODE)
                RESP(WS-RESP)
            END-EXEC
@@ -3374,7 +4465,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC
 
            EXEC CICS RETURN END-EXEC
-           .`
+           .
+       9000-ABEND-HANDLER-EXIT.
+           EXIT.`
   },
 
   {
@@ -3387,6 +4480,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSENQM
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CONTROLE DE CONCORRENCIA COM ENQ/DEQ
@@ -3406,7 +4500,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-WAIT-SECS        PIC S9(04) COMP VALUE 5.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE 'CONTA-UPDATE-12345' TO WS-RESOURCE-NAME
            PERFORM 1000-ACQUIRE-LOCK
            IF WS-RESP = DFHRESP(NORMAL)
@@ -3417,7 +4514,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
            EXEC CICS RETURN END-EXEC
            .
-       1000-ACQUIRE-LOCK.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-ACQUIRE-LOCK SECTION
+      *==========================================================*
+       1000-ACQUIRE-LOCK SECTION.
            MOVE 0 TO WS-RETRY-COUNT
            PERFORM UNTIL WS-RETRY-COUNT >= WS-MAX-RETRIES
                EXEC CICS ENQ
@@ -3438,23 +4540,40 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-IF
            END-PERFORM
            .
-       2000-PROCESS.
+       1000-ACQUIRE-LOCK-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-PROCESS SECTION
+      *==========================================================*
+       2000-PROCESS SECTION.
            CONTINUE
            .
-       3000-RELEASE-LOCK.
+       2000-PROCESS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-RELEASE-LOCK SECTION
+      *==========================================================*
+       3000-RELEASE-LOCK SECTION.
            EXEC CICS DEQ
                RESOURCE(WS-RESOURCE-NAME)
                LENGTH(WS-RESOURCE-LEN)
                RESP(WS-RESP)
            END-EXEC
            .
-       9000-LOCK-FAILED.
+       3000-RELEASE-LOCK-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-LOCK-FAILED SECTION
+      *==========================================================*
+       9000-LOCK-FAILED SECTION.
            EXEC CICS WRITEQ TD
                QUEUE('CSML')
                FROM('ENQ FAILED AFTER MAX RETRIES')
                LENGTH(30)
            END-EXEC
-           .`
+           .
+       9000-LOCK-FAILED-EXIT.
+           EXIT.`
   },
 
   {
@@ -3467,6 +4586,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSENVI
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : COLETA INFORMACOES DO AMBIENTE CICS
@@ -3492,7 +4612,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-MSG              PIC X(80).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            EXEC CICS ASSIGN
                APPLID(WS-APPLID)
                SYSID(WS-SYSID)
@@ -3520,7 +4643,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
 
            EXEC CICS RETURN END-EXEC
-           .`
+           .
+       0000-MAIN-EXIT.
+           EXIT.`
   },
 
   {
@@ -3533,6 +4658,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSRESO
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CONSULTA RECURSOS CICS VIA INQUIRE
@@ -3556,13 +4682,21 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-LINE-LEN         PIC S9(04) COMP VALUE 80.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-INQUIRE-PROGRAM
            PERFORM 2000-INQUIRE-FILE
            PERFORM 3000-INQUIRE-TRANSACTION
            EXEC CICS RETURN END-EXEC
            .
-       1000-INQUIRE-PROGRAM.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-INQUIRE-PROGRAM SECTION
+      *==========================================================*
+       1000-INQUIRE-PROGRAM SECTION.
            MOVE 'CICSABDL' TO WS-PGM-NAME
            EXEC CICS INQUIRE PROGRAM(WS-PGM-NAME)
                STATUS(WS-PGM-STATUS)
@@ -3578,7 +4712,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-EXEC
            END-IF
            .
-       2000-INQUIRE-FILE.
+       1000-INQUIRE-PROGRAM-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-INQUIRE-FILE SECTION
+      *==========================================================*
+       2000-INQUIRE-FILE SECTION.
            MOVE 'CUSTFILE' TO WS-FILE-NAME
            EXEC CICS INQUIRE FILE(WS-FILE-NAME)
                ENABLESTATUS(WS-FILE-STATUS)
@@ -3595,13 +4734,20 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-EXEC
            END-IF
            .
-       3000-INQUIRE-TRANSACTION.
+       2000-INQUIRE-FILE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-INQUIRE-TRANSACTION SECTION
+      *==========================================================*
+       3000-INQUIRE-TRANSACTION SECTION.
            MOVE 'TR01' TO WS-TRAN-ID
            EXEC CICS INQUIRE TRANSACTION(WS-TRAN-ID)
                STATUS(WS-TRAN-STATUS)
                RESP(WS-RESP)
            END-EXEC
-           .`
+           .
+       3000-INQUIRE-TRANSACTION-EXIT.
+           EXIT.`
   },
 
   {
@@ -3614,6 +4760,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSTLOG
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : LOGGER DE TRANSACOES VIA TSQ
@@ -3644,7 +4791,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  LS-EVENT-DATA       PIC X(100).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            EXEC CICS ASKTIME ABSTIME(WS-ABSTIME)
            END-EXEC
            EXEC CICS FORMATTIME
@@ -3679,7 +4829,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC
 
            EXEC CICS RETURN END-EXEC
-           .`
+           .
+       0000-MAIN-EXIT.
+           EXIT.`
   },
 
   {
@@ -3692,6 +4844,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSTSQM
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : GERENCIADOR DE TSQ (TEMPORARY STORAGE QUEUE)
@@ -3720,7 +4873,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  LS-RETORNO          PIC 9(02).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE 'DEMOQUEUE' TO WS-QUEUE
            PERFORM 1000-WRITE-ITEMS
            PERFORM 2000-READ-ALL
@@ -3728,7 +4884,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 4000-DELETE-QUEUE
            EXEC CICS RETURN END-EXEC
            .
-       1000-WRITE-ITEMS.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-WRITE-ITEMS SECTION
+      *==========================================================*
+       1000-WRITE-ITEMS SECTION.
            PERFORM VARYING WS-I FROM 1 BY 1
                UNTIL WS-I > 5
                STRING 'ITEM-' WS-I '-DATA-CONTENT'
@@ -3742,7 +4903,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-EXEC
            END-PERFORM
            .
-       2000-READ-ALL.
+       1000-WRITE-ITEMS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-READ-ALL SECTION
+      *==========================================================*
+       2000-READ-ALL SECTION.
            EXEC CICS READQ TS
                QUEUE(WS-QUEUE)
                INTO(WS-DATA)
@@ -3765,7 +4931,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-PERFORM
            END-IF
            .
-       3000-REWRITE-ITEM.
+       2000-READ-ALL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-REWRITE-ITEM SECTION
+      *==========================================================*
+       3000-REWRITE-ITEM SECTION.
            MOVE 'UPDATED-ITEM-3-NEW-DATA' TO WS-DATA
            EXEC CICS WRITEQ TS
                QUEUE(WS-QUEUE)
@@ -3776,12 +4947,19 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                RESP(WS-RESP)
            END-EXEC
            .
-       4000-DELETE-QUEUE.
+       3000-REWRITE-ITEM-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-DELETE-QUEUE SECTION
+      *==========================================================*
+       4000-DELETE-QUEUE SECTION.
            EXEC CICS DELETEQ TS
                QUEUE(WS-QUEUE)
                RESP(WS-RESP)
            END-EXEC
-           .`
+           .
+       4000-DELETE-QUEUE-EXIT.
+           EXIT.`
   },
 
   {
@@ -3794,6 +4972,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSBMS01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : TRANSACAO PSEUDO-CONVERSACIONAL COM BMS
@@ -3818,7 +4997,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-MAP-LEN          PIC S9(04) COMP.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            IF EIBCALEN = 0
                SET WS-FIRST-TIME TO TRUE
            ELSE
@@ -3840,7 +5022,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                LENGTH(LENGTH OF WS-COMMAREA)
            END-EXEC
            .
-       1000-SEND-MAP.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-SEND-MAP SECTION
+      *==========================================================*
+       1000-SEND-MAP SECTION.
            MOVE SPACES TO WS-MD-MSG
            MOVE 'INFORME OS DADOS DO CLIENTE' TO WS-MD-MSG
            EXEC CICS SEND MAP('MAPCLI')
@@ -3851,7 +5038,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC
            SET WS-MAP-SENT TO TRUE
            .
-       2000-RECEIVE-AND-PROCESS.
+       1000-SEND-MAP-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-RECEIVE-AND-PROCESS SECTION
+      *==========================================================*
+       2000-RECEIVE-AND-PROCESS SECTION.
            EXEC CICS RECEIVE MAP('MAPCLI')
                MAPSET('MSCLI')
                INTO(WS-MAP-DATA)
@@ -3864,7 +5056,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                PERFORM 1000-SEND-MAP
            END-IF
            .
-       3000-VALIDATE.
+       2000-RECEIVE-AND-PROCESS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-VALIDATE SECTION
+      *==========================================================*
+       3000-VALIDATE SECTION.
            IF WS-MD-NOME = SPACES
                MOVE 'NOME OBRIGATORIO' TO WS-MD-MSG
                PERFORM 1000-SEND-MAP
@@ -3876,7 +5073,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    TO WS-MD-MSG
                PERFORM 1000-SEND-MAP
            END-IF
-           .`
+           .
+       3000-VALIDATE-EXIT.
+           EXIT.`
   },
 
   {
@@ -3889,6 +5088,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSBROW
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : BROWSE VSAM VIA CICS
@@ -3909,7 +5109,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-COUNT            PIC 9(04) VALUE 0.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE LOW-VALUES TO WS-KEY
            PERFORM 1000-START-BROWSE
            IF WS-RESP = DFHRESP(NORMAL)
@@ -3918,14 +5121,24 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
            EXEC CICS RETURN END-EXEC
            .
-       1000-START-BROWSE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-START-BROWSE SECTION
+      *==========================================================*
+       1000-START-BROWSE SECTION.
            EXEC CICS STARTBR FILE(WS-FILE)
                RIDFLD(WS-KEY)
                GTEQ
                RESP(WS-RESP)
            END-EXEC
            .
-       2000-READ-FORWARD.
+       1000-START-BROWSE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-READ-FORWARD SECTION
+      *==========================================================*
+       2000-READ-FORWARD SECTION.
            MOVE 0 TO WS-COUNT
            PERFORM UNTIL WS-COUNT >= WS-PAGE-SIZE
                MOVE 200 TO WS-REC-LEN
@@ -3942,11 +5155,18 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ADD 1 TO WS-COUNT
            END-PERFORM
            .
-       3000-END-BROWSE.
+       2000-READ-FORWARD-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-END-BROWSE SECTION
+      *==========================================================*
+       3000-END-BROWSE SECTION.
            EXEC CICS ENDBR FILE(WS-FILE)
                RESP(WS-RESP)
            END-EXEC
-           .`
+           .
+       3000-END-BROWSE-EXIT.
+           EXIT.`
   },
 
   {
@@ -3959,6 +5179,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSCRUD
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CRUD COMPLETO EM VSAM VIA CICS
@@ -3982,14 +5203,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-REC-LEN          PIC S9(04) COMP VALUE 200.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-CREATE
            PERFORM 2000-READ
            PERFORM 3000-UPDATE
            PERFORM 4000-DELETE
            EXEC CICS RETURN END-EXEC
            .
-       1000-CREATE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-CREATE SECTION
+      *==========================================================*
+       1000-CREATE SECTION.
            INITIALIZE WS-RECORD
            MOVE '0000000001' TO WS-REC-KEY
            MOVE 'CLIENTE TESTE' TO WS-REC-NOME
@@ -4009,7 +5238,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    CONTINUE
            END-EVALUATE
            .
-       2000-READ.
+       1000-CREATE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-READ SECTION
+      *==========================================================*
+       2000-READ SECTION.
            MOVE '0000000001' TO WS-KEY
            EXEC CICS READ FILE(WS-FILE)
                INTO(WS-RECORD)
@@ -4018,7 +5252,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                RESP(WS-RESP)
            END-EXEC
            .
-       3000-UPDATE.
+       2000-READ-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-UPDATE SECTION
+      *==========================================================*
+       3000-UPDATE SECTION.
            MOVE '0000000001' TO WS-KEY
            EXEC CICS READ FILE(WS-FILE)
                INTO(WS-RECORD)
@@ -4036,7 +5275,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-EXEC
            END-IF
            .
-       4000-DELETE.
+       3000-UPDATE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-DELETE SECTION
+      *==========================================================*
+       4000-DELETE SECTION.
            MOVE '0000000001' TO WS-KEY
            EXEC CICS DELETE FILE(WS-FILE)
                RIDFLD(WS-KEY)
@@ -4045,7 +5289,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            IF WS-RESP = DFHRESP(NOTFND)
                CONTINUE
            END-IF
-           .`
+           .
+       4000-DELETE-EXIT.
+           EXIT.`
   },
 
   {
@@ -4058,6 +5304,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSTDQ01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : OPERACOES COM TDQ (TRANSIENT DATA QUEUE)
@@ -4078,13 +5325,21 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-READ-LEN         PIC S9(04) COMP.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-WRITE-EXTRA
            PERFORM 2000-WRITE-INTRA
            PERFORM 3000-READ-INTRA
            EXEC CICS RETURN END-EXEC
            .
-       1000-WRITE-EXTRA.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-WRITE-EXTRA SECTION
+      *==========================================================*
+       1000-WRITE-EXTRA SECTION.
            MOVE 'LOG: TRANSACAO EXECUTADA COM SUCESSO'
                TO WS-MSG
            EXEC CICS WRITEQ TD
@@ -4094,7 +5349,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                RESP(WS-RESP)
            END-EXEC
            .
-       2000-WRITE-INTRA.
+       1000-WRITE-EXTRA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-WRITE-INTRA SECTION
+      *==========================================================*
+       2000-WRITE-INTRA SECTION.
            MOVE 'MENSAGEM PARA PROCESSAMENTO POSTERIOR'
                TO WS-MSG
            EXEC CICS WRITEQ TD
@@ -4104,7 +5364,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                RESP(WS-RESP)
            END-EXEC
            .
-       3000-READ-INTRA.
+       2000-WRITE-INTRA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-READ-INTRA SECTION
+      *==========================================================*
+       3000-READ-INTRA SECTION.
            MOVE 100 TO WS-READ-LEN
            EXEC CICS READQ TD
                QUEUE(WS-QUEUE-INTRA)
@@ -4112,7 +5377,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                LENGTH(WS-READ-LEN)
                RESP(WS-RESP)
            END-EXEC
-           .`
+           .
+       3000-READ-INTRA-EXIT.
+           EXIT.`
   },
 
   {
@@ -4125,6 +5392,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSXCTL
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : DEMONSTRA LINK E XCTL ENTRE PROGRAMAS
@@ -4145,7 +5413,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-CA-LEN           PIC S9(04) COMP.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE 'C' TO WS-CA-ACAO
            MOVE '0000000001' TO WS-CA-CODIGO
            COMPUTE WS-CA-LEN =
@@ -4178,7 +5449,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
 
            EXEC CICS RETURN END-EXEC
-           .`
+           .
+       0000-MAIN-EXIT.
+           EXIT.`
   },
 
   {
@@ -4191,6 +5464,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSJRNL
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : GERENCIADOR DE JOURNAL PARA AUDITORIA
@@ -4218,7 +5492,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-TERMID           PIC X(04).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            EXEC CICS ASSIGN
                USERID(WS-USERID)
                FACILITY(WS-TERMID)
@@ -4233,7 +5510,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 2000-LOG-AFTER
            EXEC CICS RETURN END-EXEC
            .
-       1000-LOG-BEFORE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-LOG-BEFORE SECTION
+      *==========================================================*
+       1000-LOG-BEFORE SECTION.
            MOVE 'BEFORE' TO WS-PF-TYPE
            EXEC CICS WRITE JOURNALNAME(WS-JOURNAL)
                JTYPEID(WS-JTYPEID)
@@ -4244,7 +5526,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                RESP(WS-RESP)
            END-EXEC
            .
-       2000-LOG-AFTER.
+       1000-LOG-BEFORE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-LOG-AFTER SECTION
+      *==========================================================*
+       2000-LOG-AFTER SECTION.
            MOVE 'AFTER ' TO WS-PF-TYPE
            EXEC CICS WRITE JOURNALNAME(WS-JOURNAL)
                JTYPEID(WS-JTYPEID)
@@ -4254,7 +5541,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                FLENGTH(WS-FROM-LEN)
                RESP(WS-RESP)
            END-EXEC
-           .`
+           .
+       2000-LOG-AFTER-EXIT.
+           EXIT.`
   },
 
   {
@@ -4267,6 +5556,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["CICS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : CICSSTRT
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : START ASSÍNCRONO E RETRIEVE
@@ -4293,7 +5583,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-RT-LEN           PIC S9(04) COMP VALUE 111.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            IF EIBCALEN > 0
                PERFORM 2000-RETRIEVE-AND-PROCESS
            ELSE
@@ -4301,7 +5594,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
            EXEC CICS RETURN END-EXEC
            .
-       1000-START-ASYNC.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-START-ASYNC SECTION
+      *==========================================================*
+       1000-START-ASYNC SECTION.
            MOVE '1234567890' TO WS-SD-CHAVE
            MOVE 'PROCESSAR LOTE NOTURNO' TO WS-SD-DADOS
            COMPUTE WS-SD-LEN =
@@ -4323,7 +5621,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-EXEC
            END-IF
            .
-       2000-RETRIEVE-AND-PROCESS.
+       1000-START-ASYNC-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-RETRIEVE-AND-PROCESS SECTION
+      *==========================================================*
+       2000-RETRIEVE-AND-PROCESS SECTION.
            EXEC CICS RETRIEVE
                INTO(WS-RETRIEVED)
                LENGTH(WS-RT-LEN)
@@ -4336,16 +5639,450 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-EVALUATE
            END-IF
            .
-       2100-PROCESS-BATCH.
+       2000-RETRIEVE-AND-PROCESS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-PROCESS-BATCH SECTION
+      *==========================================================*
+       2100-PROCESS-BATCH SECTION.
            CONTINUE
            .
-       2200-PROCESS-REPORT.
+       2100-PROCESS-BATCH-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2200-PROCESS-REPORT SECTION
+      *==========================================================*
+       2200-PROCESS-REPORT SECTION.
            CONTINUE
-           .`
+           .
+       2200-PROCESS-REPORT-EXIT.
+           EXIT.`
   },
 
+
+  {
+    id: "ASMCENV1",
+    tech: "cics",
+    name: "Inspetor de Ambiente (ASM)",
+    desc: "EXEC CICS ASSIGN em Assembler — coleta usuário, terminal, transação e exibe via SEND TEXT.",
+    level: "basic",
+    filename: "ASMCENV1.hlasm",
+    tags: ["HLASM","CICS"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMCENV1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : INSPETOR DE AMBIENTE CICS EM ASSEMBLER
+*            COLETA USERID, TERMINAL, TRANSACAO VIA ASSIGN
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMCENV1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         EXEC CICS ASSIGN                                      X
+               USERID(WUSER)                                   X
+               FACILITY(WTERM)                                 X
+               RESP(WRESP)
+*
+         CLC   WRESP,DFHRESP(NORMAL)
+         BNE   ERRASSN
+*
+         MVC   WLINE,BLANKS
+         MVC   WLINE(5),=C'USER='
+         MVC   WLINE+5(8),WUSER
+         MVC   WLINE+14(6),=C' TERM='
+         MVC   WLINE+20(4),WTERM
+         MVC   WLINE+25(6),=C' TRAN='
+         MVC   WLINE+31(4),EIBTRNID
+*
+         EXEC CICS SEND TEXT                                   X
+               FROM(WLINE)                                     X
+               LENGTH(WLINELN)                                 X
+               ERASE                                           X
+               FREEKB                                          X
+               RESP(WRESP)
+*
+         EXEC CICS RETURN
+*
+ERRASSN  MVC   WLINE,BLANKS
+         MVC   WLINE(20),=C'ERRO AO LER AMBIENTE'
+         EXEC CICS SEND TEXT FROM(WLINE) LENGTH(WLINELN)       X
+               ERASE FREEKB
+         EXEC CICS RETURN
+*
+SAVE     DS    18F
+WRESP    DS    F
+WUSER    DS    CL8
+WTERM    DS    CL4
+WLINE    DS    CL80
+WLINELN  DC    H'80'
+BLANKS   DC    CL80' '
+         DFHEIBLK
+         YREGS
+         END   ASMCENV1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMCENV1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : INSPETOR DE AMBIENTE CICS EM ASSEMBLER
+*            COLETA USERID, TERMINAL, TRANSACAO VIA ASSIGN
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMCENV1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMCENV1         SET BASE (RELATIVE)
+         USING ASMCENV1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         EXEC CICS ASSIGN                                      X
+               USERID(WUSER)                                   X
+               FACILITY(WTERM)                                 X
+               RESP(WRESP)
+*
+         CLC   WRESP,DFHRESP(NORMAL)
+         JNE   ERRASSN
+*
+         MVC   WLINE,BLANKS
+         MVC   WLINE(5),=C'USER='
+         MVC   WLINE+5(8),WUSER
+         MVC   WLINE+14(6),=C' TERM='
+         MVC   WLINE+20(4),WTERM
+         MVC   WLINE+25(6),=C' TRAN='
+         MVC   WLINE+31(4),EIBTRNID
+*
+         EXEC CICS SEND TEXT                                   X
+               FROM(WLINE)                                     X
+               LENGTH(WLINELN)                                 X
+               ERASE                                           X
+               FREEKB                                          X
+               RESP(WRESP)
+*
+         EXEC CICS RETURN
+*
+ERRASSN  MVC   WLINE,BLANKS
+         MVC   WLINE(20),=C'ERRO AO LER AMBIENTE'
+         EXEC CICS SEND TEXT FROM(WLINE) LENGTH(WLINELN)       X
+               ERASE FREEKB
+         EXEC CICS RETURN
+*
+SAVE     DS    18F
+WRESP    DS    F
+WUSER    DS    CL8
+WTERM    DS    CL4
+WLINE    DS    CL80
+WLINELN  DC    H'80'
+BLANKS   DC    CL80' '
+         DFHEIBLK
+         YREGS
+         END   ASMCENV1`
+  },
+
+  {
+    id: "ASMCBMS1",
+    tech: "cics",
+    name: "BMS SEND/RECEIVE (ASM)",
+    desc: "Transação pseudo-conversacional em HLASM — SEND MAP, RECEIVE MAP com validação e RETURN TRANSID.",
+    level: "intermediate",
+    filename: "ASMCBMS1.hlasm",
+    tags: ["HLASM","CICS","BMS"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMCBMS1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : TRANSACAO PSEUDO-CONVERSACIONAL COM BMS EM ASSEMBLER
+*            SEND MAP / RECEIVE MAP / RETURN TRANSID
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMCBMS1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         CLC   EIBCALEN,=H'0'
+         BE    PRIMVEZ
+*
+         EXEC CICS RECEIVE MAP('MAPINQ')                      X
+               MAPSET('MSINQ')                                 X
+               INTO(MAPAREA)                                   X
+               RESP(WRESP)
+*
+         CLC   WRESP,DFHRESP(NORMAL)
+         BNE   MAPERR
+*
+         CLC   MAPKEY,BLANKS
+         BE    SENDERR
+*
+         MVC   MAPOUT,=CL40'REGISTRO ENCONTRADO COM SUCESSO'
+         B     SENDMAP
+*
+SENDERR  MVC   MAPOUT,=CL40'ERRO: CHAVE NAO INFORMADA'
+*
+SENDMAP  EXEC CICS SEND MAP('MAPINQ')                         X
+               MAPSET('MSINQ')                                 X
+               FROM(MAPAREA)                                   X
+               ERASE FREEKB                                    X
+               RESP(WRESP)
+*
+         EXEC CICS RETURN                                      X
+               TRANSID('INQ1')                                 X
+               COMMAREA(WCOMM)                                 X
+               LENGTH(WCOMMLN)
+*
+PRIMVEZ  XC    MAPAREA,MAPAREA
+         MVC   MAPOUT,=CL40'INFORME A CHAVE DE CONSULTA'
+         B     SENDMAP
+*
+MAPERR   MVC   MAPOUT,=CL40'ERRO AO RECEBER MAPA'
+         B     SENDMAP
+*
+SAVE     DS    18F
+WRESP    DS    F
+WCOMM    DS    CL8
+WCOMMLN  DC    H'8'
+MAPAREA  DS    0CL256
+MAPKEY   DS    CL10
+         DS    CL206
+MAPOUT   DS    CL40
+BLANKS   DC    CL10' '
+         DFHEIBLK
+         YREGS
+         END   ASMCBMS1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMCBMS1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : TRANSACAO PSEUDO-CONVERSACIONAL COM BMS EM ASSEMBLER
+*            SEND MAP / RECEIVE MAP / RETURN TRANSID
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMCBMS1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMCBMS1         SET BASE (RELATIVE)
+         USING ASMCBMS1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         CLC   EIBCALEN,=H'0'
+         JE    PRIMVEZ
+*
+         EXEC CICS RECEIVE MAP('MAPINQ')                      X
+               MAPSET('MSINQ')                                 X
+               INTO(MAPAREA)                                   X
+               RESP(WRESP)
+*
+         CLC   WRESP,DFHRESP(NORMAL)
+         JNE   MAPERR
+*
+         CLC   MAPKEY,BLANKS
+         JE    SENDERR
+*
+         MVC   MAPOUT,=CL40'REGISTRO ENCONTRADO COM SUCESSO'
+         J     SENDMAP
+*
+SENDERR  MVC   MAPOUT,=CL40'ERRO: CHAVE NAO INFORMADA'
+*
+SENDMAP  EXEC CICS SEND MAP('MAPINQ')                         X
+               MAPSET('MSINQ')                                 X
+               FROM(MAPAREA)                                   X
+               ERASE FREEKB                                    X
+               RESP(WRESP)
+*
+         EXEC CICS RETURN                                      X
+               TRANSID('INQ1')                                 X
+               COMMAREA(WCOMM)                                 X
+               LENGTH(WCOMMLN)
+*
+PRIMVEZ  XC    MAPAREA,MAPAREA
+         MVC   MAPOUT,=CL40'INFORME A CHAVE DE CONSULTA'
+         J     SENDMAP
+*
+MAPERR   MVC   MAPOUT,=CL40'ERRO AO RECEBER MAPA'
+         J     SENDMAP
+*
+SAVE     DS    18F
+WRESP    DS    F
+WCOMM    DS    CL8
+WCOMMLN  DC    H'8'
+MAPAREA  DS    0CL256
+MAPKEY   DS    CL10
+         DS    CL206
+MAPOUT   DS    CL40
+BLANKS   DC    CL10' '
+         DFHEIBLK
+         YREGS
+         END   ASMCBMS1`
+  },
+
+  {
+    id: "ASMCABD1",
+    tech: "cics",
+    name: "Tratador de Abend (ASM)",
+    desc: "HANDLE ABEND em HLASM — captura código, formata diagnóstico, grava log em TDQ e retorna.",
+    level: "advanced",
+    filename: "ASMCABD1.hlasm",
+    tags: ["HLASM","CICS","ABEND"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMCABD1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : TRATADOR DE ABEND CICS EM ASSEMBLER
+*            HANDLE ABEND -> CAPTURA -> LOG TDQ -> RETURN
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMCABD1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         EXEC CICS HANDLE ABEND                                X
+               LABEL(ABDHAND)
+*
+         EXEC CICS ASSIGN                                      X
+               USERID(WUSER)                                   X
+               FACILITY(WTERM)                                 X
+               RESP(WRESP)
+*
+         EXEC CICS READ FILE('CADMSTR')                        X
+               INTO(WREC)                                      X
+               RIDFLD(WKEY)                                    X
+               LENGTH(WRECLN)                                  X
+               RESP(WRESP)
+*
+         EXEC CICS RETURN
+*
+ABDHAND  DS    0H
+         EXEC CICS ASSIGN ABCODE(WABCD)                       X
+               RESP(WRESP)
+*
+         EXEC CICS ASKTIME ABSTIME(WABSTM)
+         EXEC CICS FORMATTIME ABSTIME(WABSTM)                 X
+               DATESEP('/') TIMESEP(':')                       X
+               DDMMYYYY(WTSTAMP)                               X
+               TIME(WTSTAMP+12)
+*
+         MVC   WLOGMSG,BLANKS
+         MVC   WLOGMSG(19),WTSTAMP
+         MVI   WLOGMSG+19,C'|'
+         MVC   WLOGMSG+20(4),EIBTRNID
+         MVI   WLOGMSG+24,C'|'
+         MVC   WLOGMSG+25(8),WUSER
+         MVI   WLOGMSG+33,C'|'
+         MVC   WLOGMSG+34(4),WABCD
+         MVI   WLOGMSG+38,C'|'
+         MVC   WLOGMSG+39(20),=CL20'ABEND CAPTURADO ASM'
+*
+         EXEC CICS WRITEQ TD                                   X
+               QUEUE('CSML')                                   X
+               FROM(WLOGMSG)                                   X
+               LENGTH(WLOGLN)                                  X
+               RESP(WRESP)
+*
+         EXEC CICS RETURN
+*
+SAVE     DS    18F
+WRESP    DS    F
+WABSTM   DS    PL8
+WUSER    DS    CL8
+WTERM    DS    CL4
+WABCD    DS    CL4
+WTSTAMP  DS    CL26
+WLOGMSG  DS    CL80
+WLOGLN   DC    H'80'
+WKEY     DS    CL10
+WREC     DS    CL200
+WRECLN   DC    H'200'
+BLANKS   DC    CL80' '
+         DFHEIBLK
+         YREGS
+         END   ASMCABD1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMCABD1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : TRATADOR DE ABEND CICS EM ASSEMBLER
+*            HANDLE ABEND -> CAPTURA -> LOG TDQ -> RETURN
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMCABD1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMCABD1         SET BASE (RELATIVE)
+         USING ASMCABD1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         EXEC CICS HANDLE ABEND                                X
+               LABEL(ABDHAND)
+*
+         EXEC CICS ASSIGN                                      X
+               USERID(WUSER)                                   X
+               FACILITY(WTERM)                                 X
+               RESP(WRESP)
+*
+         EXEC CICS READ FILE('CADMSTR')                        X
+               INTO(WREC)                                      X
+               RIDFLD(WKEY)                                    X
+               LENGTH(WRECLN)                                  X
+               RESP(WRESP)
+*
+         EXEC CICS RETURN
+*
+ABDHAND  DS    0H
+         EXEC CICS ASSIGN ABCODE(WABCD)                       X
+               RESP(WRESP)
+*
+         EXEC CICS ASKTIME ABSTIME(WABSTM)
+         EXEC CICS FORMATTIME ABSTIME(WABSTM)                 X
+               DATESEP('/') TIMESEP(':')                       X
+               DDMMYYYY(WTSTAMP)                               X
+               TIME(WTSTAMP+12)
+*
+         MVC   WLOGMSG,BLANKS
+         MVC   WLOGMSG(19),WTSTAMP
+         MVI   WLOGMSG+19,C'|'
+         MVC   WLOGMSG+20(4),EIBTRNID
+         MVI   WLOGMSG+24,C'|'
+         MVC   WLOGMSG+25(8),WUSER
+         MVI   WLOGMSG+33,C'|'
+         MVC   WLOGMSG+34(4),WABCD
+         MVI   WLOGMSG+38,C'|'
+         MVC   WLOGMSG+39(20),=CL20'ABEND CAPTURADO ASM'
+*
+         EXEC CICS WRITEQ TD                                   X
+               QUEUE('CSML')                                   X
+               FROM(WLOGMSG)                                   X
+               LENGTH(WLOGLN)                                  X
+               RESP(WRESP)
+*
+         EXEC CICS RETURN
+*
+SAVE     DS    18F
+WRESP    DS    F
+WABSTM   DS    PL8
+WUSER    DS    CL8
+WTERM    DS    CL4
+WABCD    DS    CL4
+WTSTAMP  DS    CL26
+WLOGMSG  DS    CL80
+WLOGLN   DC    H'80'
+WKEY     DS    CL10
+WREC     DS    CL200
+WRECLN   DC    H'200'
+BLANKS   DC    CL80' '
+         DFHEIBLK
+         YREGS
+         END   ASMCABD1`
+  },
   // ========================================================================
-  // DB2 (13 programas)
+  // DB2 (16 programas — 13 COBOL + 3 HLASM)
   // ========================================================================
 
   {
@@ -4358,6 +6095,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2CTIQ
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : INSPETOR DE CATALOGO DB2
@@ -4410,17 +6148,30 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-LIST-TABLES
            DISPLAY 'CATALOGO: ' WS-TABLE-COUNT ' TABELAS'
            STOP RUN.
 
-       1000-LIST-TABLES.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-LIST-TABLES SECTION
+      *==========================================================*
+       1000-LIST-TABLES SECTION.
            EXEC SQL OPEN CSR-TABLES END-EXEC
            PERFORM 1100-FETCH-TABLE UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-TABLES END-EXEC.
 
-       1100-FETCH-TABLE.
+       1000-LIST-TABLES-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-FETCH-TABLE SECTION
+      *==========================================================*
+       1100-FETCH-TABLE SECTION.
            EXEC SQL FETCH CSR-TABLES
                INTO :WS-TABLE-NAME
            END-EXEC
@@ -4431,12 +6182,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                PERFORM 3000-LIST-INDEXES
            END-IF.
 
-       2000-LIST-COLUMNS.
+       1100-FETCH-TABLE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-LIST-COLUMNS SECTION
+      *==========================================================*
+       2000-LIST-COLUMNS SECTION.
            EXEC SQL OPEN CSR-COLUMNS END-EXEC
            PERFORM 2100-FETCH-COL UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-COLUMNS END-EXEC.
 
-       2100-FETCH-COL.
+       2000-LIST-COLUMNS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-FETCH-COL SECTION
+      *==========================================================*
+       2100-FETCH-COL SECTION.
            EXEC SQL FETCH CSR-COLUMNS
                INTO :WS-COL-NAME,
                     :WS-COL-TYPE,
@@ -4449,12 +6210,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                        ' LEN=' WS-COL-LEN
            END-IF.
 
-       3000-LIST-INDEXES.
+       2100-FETCH-COL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-LIST-INDEXES SECTION
+      *==========================================================*
+       3000-LIST-INDEXES SECTION.
            EXEC SQL OPEN CSR-INDEXES END-EXEC
            PERFORM 3100-FETCH-IX UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-INDEXES END-EXEC.
 
-       3100-FETCH-IX.
+       3000-LIST-INDEXES-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3100-FETCH-IX SECTION
+      *==========================================================*
+       3100-FETCH-IX SECTION.
            EXEC SQL FETCH CSR-INDEXES
                INTO :WS-IX-NAME,
                     :WS-IX-UNIQUE
@@ -4463,7 +6234,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ADD 1 TO WS-IX-COUNT
                DISPLAY '  IDX: ' WS-IX-NAME
                        ' UNIQUE=' WS-IX-UNIQUE
-           END-IF.`
+           END-IF.
+       3100-FETCH-IX-EXIT.
+           EXIT.`
   },
 
   {
@@ -4476,6 +6249,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2CMTB
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : COMMIT BATCH HANDLER
@@ -4520,13 +6294,21 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 0100-CHECK-RESTART
            PERFORM 1000-PROCESS-BATCH
            PERFORM 9000-FINAL-COMMIT
            STOP RUN.
 
-       0100-CHECK-RESTART.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 0100-CHECK-RESTART SECTION
+      *==========================================================*
+       0100-CHECK-RESTART SECTION.
            OPEN INPUT RESTART-FILE
            READ RESTART-FILE
                AT END MOVE 'N' TO WS-IS-RESTART
@@ -4536,12 +6318,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-READ
            CLOSE RESTART-FILE.
 
-       1000-PROCESS-BATCH.
+       0100-CHECK-RESTART-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-PROCESS-BATCH SECTION
+      *==========================================================*
+       1000-PROCESS-BATCH SECTION.
            EXEC SQL OPEN CSR-ACCOUNTS END-EXEC
            PERFORM 1100-FETCH-AND-UPDATE UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-ACCOUNTS END-EXEC.
 
-       1100-FETCH-AND-UPDATE.
+       1000-PROCESS-BATCH-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-FETCH-AND-UPDATE SECTION
+      *==========================================================*
+       1100-FETCH-AND-UPDATE SECTION.
            EXEC SQL FETCH CSR-ACCOUNTS
                INTO :WS-ACCT-KEY, :WS-BALANCE
            END-EXEC
@@ -4559,7 +6351,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-IF
            END-IF.
 
-       2000-COMMIT-AND-SAVE.
+       1100-FETCH-AND-UPDATE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-COMMIT-AND-SAVE SECTION
+      *==========================================================*
+       2000-COMMIT-AND-SAVE SECTION.
            EXEC SQL COMMIT END-EXEC
            ADD 1 TO WS-COMMIT-COUNT
            OPEN OUTPUT RESTART-FILE
@@ -4570,12 +6367,19 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            DISPLAY 'COMMIT #' WS-COMMIT-COUNT
                    ' KEY=' WS-ACCT-KEY.
 
-       9000-FINAL-COMMIT.
+       2000-COMMIT-AND-SAVE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-FINAL-COMMIT SECTION
+      *==========================================================*
+       9000-FINAL-COMMIT SECTION.
            EXEC SQL COMMIT END-EXEC
            ADD 1 TO WS-COMMIT-COUNT
            DISPLAY 'BATCH COMPLETO: '
                    WS-PROC-COUNT ' REGISTROS, '
-                   WS-COMMIT-COUNT ' COMMITS'.`
+                   WS-COMMIT-COUNT ' COMMITS'.
+       9000-FINAL-COMMIT-EXIT.
+           EXIT.`
   },
 
   {
@@ -4588,6 +6392,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2RETR
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : DATA RETRIEVAL
@@ -4634,24 +6439,42 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-OPEN-CURSOR
            PERFORM 2000-PROCESS-ROWS
            PERFORM 3000-CLOSE-CURSOR
            PERFORM 4000-DISPLAY-TOTALS
            STOP RUN.
 
-       1000-OPEN-CURSOR.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-OPEN-CURSOR SECTION
+      *==========================================================*
+       1000-OPEN-CURSOR SECTION.
            EXEC SQL OPEN CSR-CLIENTS END-EXEC
            IF SQLCODE NOT = 0
                DISPLAY 'ERRO OPEN CURSOR: ' SQLCODE
                STOP RUN
            END-IF.
 
-       2000-PROCESS-ROWS.
+       1000-OPEN-CURSOR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-PROCESS-ROWS SECTION
+      *==========================================================*
+       2000-PROCESS-ROWS SECTION.
            PERFORM 2100-FETCH-ROW UNTIL SQLCODE NOT = 0.
 
-       2100-FETCH-ROW.
+       2000-PROCESS-ROWS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-FETCH-ROW SECTION
+      *==========================================================*
+       2100-FETCH-ROW SECTION.
            EXEC SQL FETCH CSR-CLIENTS
                INTO :WS-R-ACCT-ID,
                     :WS-R-NAME,
@@ -4668,15 +6491,27 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                        WS-FMT-BAL
            END-IF.
 
-       3000-CLOSE-CURSOR.
+       2100-FETCH-ROW-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-CLOSE-CURSOR SECTION
+      *==========================================================*
+       3000-CLOSE-CURSOR SECTION.
            EXEC SQL CLOSE CSR-CLIENTS END-EXEC.
 
-       4000-DISPLAY-TOTALS.
+       3000-CLOSE-CURSOR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-DISPLAY-TOTALS SECTION
+      *==========================================================*
+       4000-DISPLAY-TOTALS SECTION.
            MOVE WS-TOTAL-BAL TO WS-FMT-BAL
            DISPLAY '================================='
            DISPLAY 'REGISTROS: ' WS-REC-COUNT
            DISPLAY 'SALDO TOTAL: ' WS-FMT-BAL
-           DISPLAY '================================='.`
+           DISPLAY '================================='.
+       4000-DISPLAY-TOTALS-EXIT.
+           EXIT.`
   },
 
   {
@@ -4689,6 +6524,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2DYNE
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : DYNAMIC SQL EXECUTOR
@@ -4722,14 +6558,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-BUILD-SQL
            PERFORM 2000-PREPARE-STMT
            PERFORM 3000-DESCRIBE-STMT
            PERFORM 4000-EXECUTE-QUERY
            STOP RUN.
 
-       1000-BUILD-SQL.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-BUILD-SQL SECTION
+      *==========================================================*
+       1000-BUILD-SQL SECTION.
            STRING
                'SELECT CLIENT_NAME, BALANCE'
                ' FROM TBACCOUNTS A, TBCLIENTS C'
@@ -4741,7 +6585,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            MOVE 'SP' TO WS-PARAM-REGION
            MOVE 'A'  TO WS-PARAM-STATUS.
 
-       2000-PREPARE-STMT.
+       1000-BUILD-SQL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-PREPARE-STMT SECTION
+      *==========================================================*
+       2000-PREPARE-STMT SECTION.
            EXEC SQL PREPARE DYNSTMT FROM :WS-DYN-SQL
            END-EXEC
            IF SQLCODE NOT = 0
@@ -4749,7 +6598,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                STOP RUN
            END-IF.
 
-       3000-DESCRIBE-STMT.
+       2000-PREPARE-STMT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-DESCRIBE-STMT SECTION
+      *==========================================================*
+       3000-DESCRIBE-STMT SECTION.
            EXEC SQL DESCRIBE DYNSTMT INTO :SQLDA
            END-EXEC
            IF SQLCODE = 0
@@ -4758,7 +6612,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                        WS-NUM-COLS
            END-IF.
 
-       4000-EXECUTE-QUERY.
+       3000-DESCRIBE-STMT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-EXECUTE-QUERY SECTION
+      *==========================================================*
+       4000-EXECUTE-QUERY SECTION.
            EXEC SQL OPEN DYN-CURSOR
                USING :WS-PARAM-REGION,
                      :WS-PARAM-STATUS
@@ -4767,7 +6626,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            EXEC SQL CLOSE DYN-CURSOR END-EXEC
            DISPLAY 'TOTAL REGISTROS: ' WS-REC-COUNT.
 
-       4100-FETCH-DYN.
+       4000-EXECUTE-QUERY-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4100-FETCH-DYN SECTION
+      *==========================================================*
+       4100-FETCH-DYN SECTION.
            EXEC SQL FETCH DYN-CURSOR
                INTO :WS-RESULT-NAME,
                     :WS-RESULT-BAL
@@ -4776,7 +6640,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ADD 1 TO WS-REC-COUNT
                DISPLAY WS-RESULT-NAME ' SALDO='
                        WS-RESULT-BAL
-           END-IF.`
+           END-IF.
+       4100-FETCH-DYN-EXIT.
+           EXIT.`
   },
 
   {
@@ -4789,6 +6655,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2HLTH
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : HEALTH CHECK DB2
@@ -4831,19 +6698,32 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            DISPLAY '=== DB2 HEALTH CHECK ==='
            DISPLAY 'DATABASE: ' WS-DB-NAME
            PERFORM 1000-CHECK-TABLESPACES
            PERFORM 9000-SUMMARY
            STOP RUN.
 
-       1000-CHECK-TABLESPACES.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-CHECK-TABLESPACES SECTION
+      *==========================================================*
+       1000-CHECK-TABLESPACES SECTION.
            EXEC SQL OPEN CSR-TS-STATUS END-EXEC
            PERFORM 1100-FETCH-TS UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-TS-STATUS END-EXEC.
 
-       1100-FETCH-TS.
+       1000-CHECK-TABLESPACES-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-FETCH-TS SECTION
+      *==========================================================*
+       1100-FETCH-TS SECTION.
            EXEC SQL FETCH CSR-TS-STATUS
                INTO :WS-TS-NAME,
                     :WS-TS-STATUS,
@@ -4857,7 +6737,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                PERFORM 1200-EVALUATE-TS
            END-IF.
 
-       1200-EVALUATE-TS.
+       1100-FETCH-TS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1200-EVALUATE-TS SECTION
+      *==========================================================*
+       1200-EVALUATE-TS SECTION.
            DISPLAY 'TS: ' WS-TS-NAME
                    ' STATUS=' WS-TS-STATUS
                    ' TYPE=' WS-TS-TYPE
@@ -4874,13 +6759,20 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                DISPLAY '  *** RUNSTATS NUNCA EXECUTADO ***'
            END-IF.
 
-       9000-SUMMARY.
+       1200-EVALUATE-TS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-SUMMARY SECTION
+      *==========================================================*
+       9000-SUMMARY SECTION.
            DISPLAY '========================='
            DISPLAY 'TABLESPACES VERIFICADOS: '
                    WS-CHECK-COUNT
            DISPLAY 'ALERTAS ENCONTRADOS:    '
                    WS-WARN-COUNT
-           DISPLAY '========================='.`
+           DISPLAY '========================='.
+       9000-SUMMARY-EXIT.
+           EXIT.`
   },
 
   {
@@ -4893,6 +6785,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2SQCD
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : SQLCODE DECODER
@@ -4921,14 +6814,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        PROCEDURE DIVISION USING LS-SQLCODE
                                 LS-MESSAGE
                                 LS-SEVERITY.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            MOVE LS-SQLCODE TO WS-INPUT-SQLCODE
            PERFORM 1000-DECODE-SQLCODE
            MOVE WS-OUTPUT-MSG TO LS-MESSAGE
            MOVE WS-SEVERITY TO LS-SEVERITY
            GOBACK.
 
-       1000-DECODE-SQLCODE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-DECODE-SQLCODE SECTION
+      *==========================================================*
+       1000-DECODE-SQLCODE SECTION.
            EVALUATE TRUE
                WHEN WS-INPUT-SQLCODE = 0
                    MOVE 'SUCESSO - EXECUCAO NORMAL'
@@ -4982,7 +6883,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    MOVE 'SQLCODE POSITIVO NAO CATALOGADO'
                        TO WS-OUTPUT-MSG
                    MOVE 'WARNING' TO WS-SEVERITY
-           END-EVALUATE.`
+           END-EVALUATE.
+       1000-DECODE-SQLCODE-EXIT.
+           EXIT.`
   },
 
   {
@@ -4995,6 +6898,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2CRS01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CURSORES MULTIPLOS MESTRE-DETALHE
@@ -5042,18 +6946,31 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-PROCESS-ORDERS
            DISPLAY 'PEDIDOS PROCESSADOS: ' WS-ORDER-COUNT
            EXEC SQL COMMIT END-EXEC
            STOP RUN.
 
-       1000-PROCESS-ORDERS.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-PROCESS-ORDERS SECTION
+      *==========================================================*
+       1000-PROCESS-ORDERS SECTION.
            EXEC SQL OPEN CSR-ORDERS END-EXEC
            PERFORM 1100-FETCH-ORDER UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-ORDERS END-EXEC.
 
-       1100-FETCH-ORDER.
+       1000-PROCESS-ORDERS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-FETCH-ORDER SECTION
+      *==========================================================*
+       1100-FETCH-ORDER SECTION.
            EXEC SQL FETCH CSR-ORDERS
                INTO :WS-M-ORDER-ID,
                     :WS-M-CLIENT-ID,
@@ -5067,12 +6984,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ADD 1 TO WS-ORDER-COUNT
            END-IF.
 
-       2000-PROCESS-ITEMS.
+       1100-FETCH-ORDER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-PROCESS-ITEMS SECTION
+      *==========================================================*
+       2000-PROCESS-ITEMS SECTION.
            EXEC SQL OPEN CSR-ITEMS END-EXEC
            PERFORM 2100-FETCH-ITEM UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-ITEMS END-EXEC.
 
-       2100-FETCH-ITEM.
+       2000-PROCESS-ITEMS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-FETCH-ITEM SECTION
+      *==========================================================*
+       2100-FETCH-ITEM SECTION.
            EXEC SQL FETCH CSR-ITEMS
                INTO :WS-D-LINE-NO,
                     :WS-D-PRODUCT,
@@ -5084,7 +7011,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ADD WS-D-SUBTOTAL TO WS-CALC-TOTAL
            END-IF.
 
-       3000-UPDATE-ORDER.
+       2100-FETCH-ITEM-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-UPDATE-ORDER SECTION
+      *==========================================================*
+       3000-UPDATE-ORDER SECTION.
            EXEC SQL UPDATE TBORDERS
                SET TOTAL_AMT = :WS-CALC-TOTAL,
                    STATUS    = 'C'
@@ -5093,7 +7025,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            IF SQLCODE NOT = 0
                DISPLAY 'ERRO UPDATE ORDER '
                        WS-M-ORDER-ID ': ' SQLCODE
-           END-IF.`
+           END-IF.
+       3000-UPDATE-ORDER-EXIT.
+           EXIT.`
   },
 
   {
@@ -5106,6 +7040,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2BLK01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : BULK LOAD DB2
@@ -5144,24 +7079,42 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-DB2-BALANCE      PIC S9(13)V99 COMP-3.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            OPEN INPUT INPUT-FILE
            PERFORM 1000-LOAD-RECORDS
            PERFORM 9000-FINAL-COMMIT
            CLOSE INPUT-FILE
            STOP RUN.
 
-       1000-LOAD-RECORDS.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-LOAD-RECORDS SECTION
+      *==========================================================*
+       1000-LOAD-RECORDS SECTION.
            PERFORM 1100-READ-AND-INSERT
                UNTIL WS-EOF = 'Y'.
 
-       1100-READ-AND-INSERT.
+       1000-LOAD-RECORDS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-READ-AND-INSERT SECTION
+      *==========================================================*
+       1100-READ-AND-INSERT SECTION.
            READ INPUT-FILE
                AT END MOVE 'Y' TO WS-EOF
                NOT AT END PERFORM 2000-INSERT-ROW
            END-READ.
 
-       2000-INSERT-ROW.
+       1100-READ-AND-INSERT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-INSERT-ROW SECTION
+      *==========================================================*
+       2000-INSERT-ROW SECTION.
            MOVE INP-BALANCE TO WS-DB2-BALANCE
            EXEC SQL INSERT INTO TBACCOUNTS
                (ACCT_ID, CLIENT_NAME, REGION,
@@ -5189,19 +7142,31 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                            ' SQLCODE=' SQLCODE
            END-EVALUATE.
 
-       3000-COMMIT-BATCH.
+       2000-INSERT-ROW-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-COMMIT-BATCH SECTION
+      *==========================================================*
+       3000-COMMIT-BATCH SECTION.
            EXEC SQL COMMIT END-EXEC
            ADD 1 TO WS-COMMIT-COUNT
            DISPLAY 'COMMIT #' WS-COMMIT-COUNT
                    ' INSERTS=' WS-INSERT-COUNT.
 
-       9000-FINAL-COMMIT.
+       3000-COMMIT-BATCH-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-FINAL-COMMIT SECTION
+      *==========================================================*
+       9000-FINAL-COMMIT SECTION.
            EXEC SQL COMMIT END-EXEC
            ADD 1 TO WS-COMMIT-COUNT
            DISPLAY 'CARGA FINALIZADA'
            DISPLAY '  INSERIDOS: ' WS-INSERT-COUNT
            DISPLAY '  ERROS:     ' WS-ERROR-COUNT
-           DISPLAY '  COMMITS:   ' WS-COMMIT-COUNT.`
+           DISPLAY '  COMMITS:   ' WS-COMMIT-COUNT.
+       9000-FINAL-COMMIT-EXIT.
+           EXIT.`
   },
 
   {
@@ -5214,6 +7179,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2TMP01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : TABELAS TEMPORARIAS GLOBAIS DB2
@@ -5246,7 +7212,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-CREATE-TEMP-TABLE
            MOVE 'SP' TO WS-REGION
            PERFORM 2000-POPULATE-TEMP
@@ -5257,7 +7226,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            EXEC SQL COMMIT END-EXEC
            STOP RUN.
 
-       1000-CREATE-TEMP-TABLE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-CREATE-TEMP-TABLE SECTION
+      *==========================================================*
+       1000-CREATE-TEMP-TABLE SECTION.
            EXEC SQL
                DECLARE GLOBAL TEMPORARY TABLE
                    SESSION.TOP_ACCOUNTS
@@ -5272,7 +7246,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                STOP RUN
            END-IF.
 
-       2000-POPULATE-TEMP.
+       1000-CREATE-TEMP-TABLE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-POPULATE-TEMP SECTION
+      *==========================================================*
+       2000-POPULATE-TEMP SECTION.
            EXEC SQL
                INSERT INTO SESSION.TOP_ACCOUNTS
                SELECT A.ACCT_ID,
@@ -5291,12 +7270,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                DISPLAY 'ERRO POPULATE TEMP: ' SQLCODE
            END-IF.
 
-       3000-READ-RESULTS.
+       2000-POPULATE-TEMP-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-READ-RESULTS SECTION
+      *==========================================================*
+       3000-READ-RESULTS SECTION.
            EXEC SQL OPEN CSR-TMP END-EXEC
            PERFORM 3100-FETCH-TMP UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-TMP END-EXEC.
 
-       3100-FETCH-TMP.
+       3000-READ-RESULTS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3100-FETCH-TMP SECTION
+      *==========================================================*
+       3100-FETCH-TMP SECTION.
            EXEC SQL FETCH CSR-TMP
                INTO :WS-TMP-ACCT-ID,
                     :WS-TMP-NAME,
@@ -5310,7 +7299,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                        WS-TMP-ACCT-ID ' '
                        WS-TMP-NAME ' '
                        WS-FMT-BAL
-           END-IF.`
+           END-IF.
+       3100-FETCH-TMP-EXIT.
+           EXIT.`
   },
 
   {
@@ -5323,6 +7314,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2LCK01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CONTROLE DE CONCORRENCIA DB2
@@ -5351,11 +7343,19 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-TO-ACCT          PIC X(10) VALUE '0000000002'.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-TRANSFER-WITH-RETRY
            STOP RUN.
 
-       1000-TRANSFER-WITH-RETRY.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-TRANSFER-WITH-RETRY SECTION
+      *==========================================================*
+       1000-TRANSFER-WITH-RETRY SECTION.
            MOVE 0 TO WS-RETRY-COUNT
            MOVE 'N' TO WS-LOCK-OK
            PERFORM 1100-ATTEMPT-TRANSFER
@@ -5366,7 +7366,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                        WS-MAX-RETRIES ' TENTATIVAS'
            END-IF.
 
-       1100-ATTEMPT-TRANSFER.
+       1000-TRANSFER-WITH-RETRY-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-ATTEMPT-TRANSFER SECTION
+      *==========================================================*
+       1100-ATTEMPT-TRANSFER SECTION.
            ADD 1 TO WS-RETRY-COUNT
            PERFORM 2000-DEBIT-ACCOUNT
            IF WS-LOCK-OK = 'Y'
@@ -5381,7 +7386,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                EXEC SQL ROLLBACK END-EXEC
            END-IF.
 
-       2000-DEBIT-ACCOUNT.
+       1100-ATTEMPT-TRANSFER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-DEBIT-ACCOUNT SECTION
+      *==========================================================*
+       2000-DEBIT-ACCOUNT SECTION.
            EXEC SQL
                SELECT BALANCE INTO :WS-BALANCE
                FROM   TBACCOUNTS
@@ -5418,7 +7428,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    MOVE WS-MAX-RETRIES TO WS-RETRY-COUNT
            END-EVALUATE.
 
-       3000-CREDIT-ACCOUNT.
+       2000-DEBIT-ACCOUNT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-CREDIT-ACCOUNT SECTION
+      *==========================================================*
+       3000-CREDIT-ACCOUNT SECTION.
            EXEC SQL
                SELECT BALANCE INTO :WS-BALANCE
                FROM   TBACCOUNTS
@@ -5444,7 +7459,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    DISPLAY 'ERRO CREDIT: ' SQLCODE
                    MOVE 'N' TO WS-LOCK-OK
                    MOVE WS-MAX-RETRIES TO WS-RETRY-COUNT
-           END-EVALUATE.`
+           END-EVALUATE.
+       3000-CREDIT-ACCOUNT-EXIT.
+           EXIT.`
   },
 
   {
@@ -5457,6 +7474,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2SPC01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : STORED PROCEDURE CALL
@@ -5484,13 +7502,21 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-FMT-BAL         PIC Z(12)9.99.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-CALL-CREDIT-PROC
            PERFORM 2000-CALL-DEBIT-PROC
            PERFORM 3000-CALL-BALANCE-PROC
            STOP RUN.
 
-       1000-CALL-CREDIT-PROC.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-CALL-CREDIT-PROC SECTION
+      *==========================================================*
+       1000-CALL-CREDIT-PROC SECTION.
            MOVE 'C' TO WS-IN-OPER
            MOVE 250.00 TO WS-INOUT-AMOUNT
            EXEC SQL
@@ -5513,7 +7539,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                DISPLAY 'ERRO CALL CREDIT: ' SQLCODE
            END-IF.
 
-       2000-CALL-DEBIT-PROC.
+       1000-CALL-CREDIT-PROC-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-CALL-DEBIT-PROC SECTION
+      *==========================================================*
+       2000-CALL-DEBIT-PROC SECTION.
            MOVE 'D' TO WS-IN-OPER
            MOVE 100.00 TO WS-INOUT-AMOUNT
            EXEC SQL
@@ -5533,7 +7564,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                DISPLAY 'ERRO CALL DEBIT: ' SQLCODE
            END-IF.
 
-       3000-CALL-BALANCE-PROC.
+       2000-CALL-DEBIT-PROC-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-CALL-BALANCE-PROC SECTION
+      *==========================================================*
+       3000-CALL-BALANCE-PROC SECTION.
            MOVE 'Q' TO WS-IN-OPER
            MOVE 0 TO WS-INOUT-AMOUNT
            EXEC SQL
@@ -5553,7 +7589,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                        WS-FMT-AMT
            ELSE
                DISPLAY 'ERRO CALL QUERY: ' SQLCODE
-           END-IF.`
+           END-IF.
+       3000-CALL-BALANCE-PROC-EXIT.
+           EXIT.`
   },
 
   {
@@ -5566,6 +7604,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2RLL01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : SAVEPOINT E ROLLBACK
@@ -5591,11 +7630,19 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-FMT-BAL          PIC Z(12)9.99.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-BEGIN-TRANSACTION
            STOP RUN.
 
-       1000-BEGIN-TRANSACTION.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-BEGIN-TRANSACTION SECTION
+      *==========================================================*
+       1000-BEGIN-TRANSACTION SECTION.
            EXEC SQL SAVEPOINT SP_ORDER ON ROLLBACK
                RETAIN CURSORS
            END-EXEC
@@ -5631,7 +7678,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            EXEC SQL COMMIT END-EXEC
            DISPLAY 'TRANSACAO COMPLETA COM SUCESSO'.
 
-       2000-CREATE-ORDER.
+       1000-BEGIN-TRANSACTION-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-CREATE-ORDER SECTION
+      *==========================================================*
+       2000-CREATE-ORDER SECTION.
            EXEC SQL INSERT INTO TBORDERS
                (ORDER_ID, CLIENT_ACCT, TOTAL_AMT,
                 STATUS, ORDER_DATE)
@@ -5644,7 +7696,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                DISPLAY 'PEDIDO CRIADO: ' WS-ORDER-ID
            END-IF.
 
-       3000-PROCESS-PAYMENT.
+       2000-CREATE-ORDER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-PROCESS-PAYMENT SECTION
+      *==========================================================*
+       3000-PROCESS-PAYMENT SECTION.
            EXEC SQL
                SELECT BALANCE INTO :WS-BALANCE
                FROM   TBACCOUNTS
@@ -5665,7 +7722,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                MOVE -1 TO SQLCODE
            END-IF.
 
-       4000-SCHEDULE-SHIPPING.
+       3000-PROCESS-PAYMENT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-SCHEDULE-SHIPPING SECTION
+      *==========================================================*
+       4000-SCHEDULE-SHIPPING SECTION.
            EXEC SQL UPDATE TBORDERS
                SET STATUS = 'S'
                WHERE ORDER_ID = :WS-ORDER-ID
@@ -5676,20 +7738,37 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                DISPLAY 'ENVIO AGENDADO'
            END-IF.
 
-       8000-ROLLBACK-ORDER.
+       4000-SCHEDULE-SHIPPING-EXIT.
+           EXIT.
+      *==========================================================*
+      * 8000-ROLLBACK-ORDER SECTION
+      *==========================================================*
+       8000-ROLLBACK-ORDER SECTION.
            EXEC SQL ROLLBACK TO SAVEPOINT SP_ORDER
            END-EXEC
            DISPLAY 'ROLLBACK: PEDIDO CANCELADO'.
 
-       8100-ROLLBACK-PAYMENT.
+       8000-ROLLBACK-ORDER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 8100-ROLLBACK-PAYMENT SECTION
+      *==========================================================*
+       8100-ROLLBACK-PAYMENT SECTION.
            EXEC SQL ROLLBACK TO SAVEPOINT SP_PAYMENT
            END-EXEC
            DISPLAY 'ROLLBACK: PAGAMENTO DESFEITO'.
 
-       8200-ROLLBACK-SHIPPING.
+       8100-ROLLBACK-PAYMENT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 8200-ROLLBACK-SHIPPING SECTION
+      *==========================================================*
+       8200-ROLLBACK-SHIPPING SECTION.
            EXEC SQL ROLLBACK TO SAVEPOINT SP_SHIPPING
            END-EXEC
-           DISPLAY 'ROLLBACK: ENVIO CANCELADO'.`
+           DISPLAY 'ROLLBACK: ENVIO CANCELADO'.
+       8200-ROLLBACK-SHIPPING-EXIT.
+           EXIT.`
   },
 
   {
@@ -5702,6 +7781,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["DB2", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : DB2XRF01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CONSULTAS CRUZADAS AVANCADAS
@@ -5782,21 +7862,34 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EXEC.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            DISPLAY '=== RELATORIO ANALITICO DB2 ==='
            PERFORM 1000-SUMMARY-REPORT
            PERFORM 2000-ORPHAN-CHECK
            PERFORM 3000-UNION-REPORT
            STOP RUN.
 
-       1000-SUMMARY-REPORT.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-SUMMARY-REPORT SECTION
+      *==========================================================*
+       1000-SUMMARY-REPORT SECTION.
            DISPLAY '--- RESUMO POR REGIAO/CATEGORIA ---'
            EXEC SQL OPEN CSR-SUMMARY END-EXEC
            PERFORM 1100-FETCH-SUMMARY
                UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-SUMMARY END-EXEC.
 
-       1100-FETCH-SUMMARY.
+       1000-SUMMARY-REPORT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-FETCH-SUMMARY SECTION
+      *==========================================================*
+       1100-FETCH-SUMMARY SECTION.
            EXEC SQL FETCH CSR-SUMMARY
                INTO :WS-RPT-REGION,
                     :WS-RPT-CATEGORY,
@@ -5814,14 +7907,24 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                        'MED=' WS-FMT-AVG
            END-IF.
 
-       2000-ORPHAN-CHECK.
+       1100-FETCH-SUMMARY-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-ORPHAN-CHECK SECTION
+      *==========================================================*
+       2000-ORPHAN-CHECK SECTION.
            DISPLAY '--- CONTAS SEM CLIENTE (EXISTS) ---'
            EXEC SQL OPEN CSR-ORPHANS END-EXEC
            PERFORM 2100-FETCH-ORPHAN
                UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-ORPHANS END-EXEC.
 
-       2100-FETCH-ORPHAN.
+       2000-ORPHAN-CHECK-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-FETCH-ORPHAN SECTION
+      *==========================================================*
+       2100-FETCH-ORPHAN SECTION.
            EXEC SQL FETCH CSR-ORPHANS
                INTO :WS-ORPHAN-ID
            END-EXEC
@@ -5829,14 +7932,24 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                DISPLAY '  ORFA: ' WS-ORPHAN-ID
            END-IF.
 
-       3000-UNION-REPORT.
+       2100-FETCH-ORPHAN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-UNION-REPORT SECTION
+      *==========================================================*
+       3000-UNION-REPORT SECTION.
            DISPLAY '--- ATIVAS vs INATIVAS (UNION) ---'
            EXEC SQL OPEN CSR-UNION END-EXEC
            PERFORM 3100-FETCH-UNION
                UNTIL SQLCODE NOT = 0
            EXEC SQL CLOSE CSR-UNION END-EXEC.
 
-       3100-FETCH-UNION.
+       3000-UNION-REPORT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3100-FETCH-UNION SECTION
+      *==========================================================*
+       3100-FETCH-UNION SECTION.
            EXEC SQL FETCH CSR-UNION
                INTO :WS-UNI-REGION,
                     :WS-UNI-SOURCE,
@@ -5846,11 +7959,497 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                DISPLAY '  ' WS-UNI-REGION ' '
                        WS-UNI-SOURCE ' '
                        'QTD=' WS-UNI-COUNT
-           END-IF.`
+           END-IF.
+       3100-FETCH-UNION-EXIT.
+           EXIT.`
   },
 
+
+  {
+    id: "ASMDSEL1",
+    tech: "db2",
+    name: "SELECT INTO (ASM)",
+    desc: "SELECT INTO em Assembler com EXEC SQL, verificação de SQLCODE e WTO de resultado.",
+    level: "basic",
+    filename: "ASMDSEL1.hlasm",
+    tags: ["HLASM","DB2"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMDSEL1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : SELECT INTO EM ASSEMBLER COM DB2
+*            BUSCA REGISTRO POR CHAVE E EXIBE VIA WTO
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMDSEL1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         MVC   HCHAVE,=CL10'EMP0001   '
+*
+         EXEC SQL SELECT NOME, DEPTO, SALARIO                 X
+               INTO :HNOME, :HDEPTO, :HSAL                    X
+               FROM EMPREGADOS                                 X
+               WHERE CHAVE = :HCHAVE
+*
+         CLC   SQLCODE,=F'0'
+         BNE   SQLERR
+*
+         MVC   WMSG(6),=C'NOME= '
+         MVC   WMSG+6(30),HNOME
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         B     EXIT
+*
+SQLERR   MVC   WMSG(16),=C'SQLCODE ERRO:   '
+         L     R3,SQLCODE
+         CVD   R3,DWORK
+         UNPK  WMSG+14(6),DWORK+5(3)
+         OI    WMSG+19,X'F0'
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+HCHAVE   DS    CL10
+HNOME    DS    CL30
+HDEPTO   DS    CL6
+HSAL     DS    PL8
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         EXEC SQL INCLUDE SQLCA
+         YREGS
+         END   ASMDSEL1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMDSEL1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : SELECT INTO EM ASSEMBLER COM DB2
+*            BUSCA REGISTRO POR CHAVE E EXIBE VIA WTO
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMDSEL1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMDSEL1         SET BASE (RELATIVE)
+         USING ASMDSEL1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         MVC   HCHAVE,=CL10'EMP0001   '
+*
+         EXEC SQL SELECT NOME, DEPTO, SALARIO                 X
+               INTO :HNOME, :HDEPTO, :HSAL                    X
+               FROM EMPREGADOS                                 X
+               WHERE CHAVE = :HCHAVE
+*
+         CLC   SQLCODE,=F'0'
+         JNE   SQLERR
+*
+         MVC   WMSG(6),=C'NOME= '
+         MVC   WMSG+6(30),HNOME
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         J     EXIT
+*
+SQLERR   MVC   WMSG(16),=C'SQLCODE ERRO:   '
+         L     R3,SQLCODE
+         CVD   R3,DWORK
+         UNPK  WMSG+14(6),DWORK+5(3)
+         OI    WMSG+19,X'F0'
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+HCHAVE   DS    CL10
+HNOME    DS    CL30
+HDEPTO   DS    CL6
+HSAL     DS    PL8
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         EXEC SQL INCLUDE SQLCA
+         YREGS
+         END   ASMDSEL1`
+  },
+
+  {
+    id: "ASMDCUR1",
+    tech: "db2",
+    name: "Cursor Processing (ASM)",
+    desc: "DECLARE CURSOR, OPEN, FETCH em loop e CLOSE em Assembler com contagem e COMMIT periódico.",
+    level: "intermediate",
+    filename: "ASMDCUR1.hlasm",
+    tags: ["HLASM","DB2","CURSOR"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMDCUR1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : PROCESSAMENTO DE CURSOR DB2 EM ASSEMBLER
+*            DECLARE, OPEN, FETCH LOOP, CLOSE COM COMMIT
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMDCUR1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         EXEC SQL DECLARE CSR1 CURSOR FOR                      X
+               SELECT CHAVE, NOME, DEPTO                       X
+               FROM EMPREGADOS                                 X
+               WHERE DEPTO = :HDEPTO                           X
+               ORDER BY CHAVE
+*
+         MVC   HDEPTO,=CL6'FIN   '
+         SR    R5,R5
+*
+         EXEC SQL OPEN CSR1
+         CLC   SQLCODE,=F'0'
+         BNE   OPENERR
+*
+FLOOP    EXEC SQL FETCH CSR1                                   X
+               INTO :HCHAVE, :HNOME, :HDEPTO
+*
+         CLC   SQLCODE,=F'0'
+         BNE   ENDFTCH
+*
+         LA    R5,1(R5)
+*
+         LR    R6,R5
+         N     R6,=F'127'
+         BNZ   FLOOP
+         EXEC SQL COMMIT
+         B     FLOOP
+*
+ENDFTCH  CLC   SQLCODE,=F'100'
+         BNE   FTCHERR
+*
+         EXEC SQL CLOSE CSR1
+*
+         CVD   R5,DWORK
+         UNPK  WMSG+12(6),DWORK+5(3)
+         OI    WMSG+17,X'F0'
+         MVC   WMSG(12),=C'PROCESSADOS='
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         B     EXIT
+*
+OPENERR  LA    R15,8
+         B     EXIT
+FTCHERR  LA    R15,12
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+HCHAVE   DS    CL10
+HNOME    DS    CL30
+HDEPTO   DS    CL6
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         EXEC SQL INCLUDE SQLCA
+         YREGS
+         END   ASMDCUR1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMDCUR1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : PROCESSAMENTO DE CURSOR DB2 EM ASSEMBLER
+*            DECLARE, OPEN, FETCH LOOP, CLOSE COM COMMIT
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMDCUR1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMDCUR1         SET BASE (RELATIVE)
+         USING ASMDCUR1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         EXEC SQL DECLARE CSR1 CURSOR FOR                      X
+               SELECT CHAVE, NOME, DEPTO                       X
+               FROM EMPREGADOS                                 X
+               WHERE DEPTO = :HDEPTO                           X
+               ORDER BY CHAVE
+*
+         MVC   HDEPTO,=CL6'FIN   '
+         SR    R5,R5
+*
+         EXEC SQL OPEN CSR1
+         CLC   SQLCODE,=F'0'
+         JNE   OPENERR
+*
+FLOOP    EXEC SQL FETCH CSR1                                   X
+               INTO :HCHAVE, :HNOME, :HDEPTO
+*
+         CLC   SQLCODE,=F'0'
+         JNE   ENDFTCH
+*
+         LA    R5,1(R5)
+*
+         LR    R6,R5
+         N     R6,=F'127'
+         JNZ   FLOOP
+         EXEC SQL COMMIT
+         J     FLOOP
+*
+ENDFTCH  CLC   SQLCODE,=F'100'
+         JNE   FTCHERR
+*
+         EXEC SQL CLOSE CSR1
+*
+         CVD   R5,DWORK
+         UNPK  WMSG+12(6),DWORK+5(3)
+         OI    WMSG+17,X'F0'
+         MVC   WMSG(12),=C'PROCESSADOS='
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         J     EXIT
+*
+OPENERR  LA    R15,8
+         J     EXIT
+FTCHERR  LA    R15,12
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+HCHAVE   DS    CL10
+HNOME    DS    CL30
+HDEPTO   DS    CL6
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         EXEC SQL INCLUDE SQLCA
+         YREGS
+         END   ASMDCUR1`
+  },
+
+  {
+    id: "ASMDDYN1",
+    tech: "db2",
+    name: "SQL Dinâmico (ASM)",
+    desc: "PREPARE, EXECUTE e EXECUTE IMMEDIATE em HLASM para SQL dinâmico com parameter markers.",
+    level: "advanced",
+    filename: "ASMDDYN1.hlasm",
+    tags: ["HLASM","DB2","DYNAMIC SQL"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMDDYN1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : SQL DINAMICO EM ASSEMBLER
+*            PREPARE + EXECUTE COM PARAMETER MARKERS
+*            EXECUTE IMMEDIATE PARA DDL
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMDDYN1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         MVC   WSQL,BLANKS
+         MVC   WSQL(L'CRETMP),CRETMP
+*
+         EXEC SQL EXECUTE IMMEDIATE :WSQL
+         CLC   SQLCODE,=F'0'
+         BNE   SQLERR
+*
+         MVC   WSQL,BLANKS
+         MVC   WSQL(L'INSSQL),INSSQL
+*
+         EXEC SQL PREPARE STMT1 FROM :WSQL
+         CLC   SQLCODE,=F'0'
+         BNE   SQLERR
+*
+         MVC   HCHAVE,=CL10'K001      '
+         MVC   HDESC,=CL30'PRIMEIRO REGISTRO DINAMICO    '
+         EXEC SQL EXECUTE STMT1 USING :HCHAVE, :HDESC
+*
+         MVC   HCHAVE,=CL10'K002      '
+         MVC   HDESC,=CL30'SEGUNDO REGISTRO DINAMICO     '
+         EXEC SQL EXECUTE STMT1 USING :HCHAVE, :HDESC
+*
+         MVC   HCHAVE,=CL10'K003      '
+         MVC   HDESC,=CL30'TERCEIRO REGISTRO DINAMICO    '
+         EXEC SQL EXECUTE STMT1 USING :HCHAVE, :HDESC
+*
+         CLC   SQLCODE,=F'0'
+         BNE   SQLERR
+*
+         MVC   WSQL,BLANKS
+         MVC   WSQL(L'SELSQL),SELSQL
+*
+         EXEC SQL PREPARE STMT2 FROM :WSQL
+         EXEC SQL DECLARE DCSR CURSOR FOR STMT2
+         EXEC SQL OPEN DCSR
+*
+DLOOP    EXEC SQL FETCH DCSR INTO :HCHAVE, :HDESC
+         CLC   SQLCODE,=F'0'
+         BNE   DENDLP
+         MVC   WMSG(10),HCHAVE
+         MVC   WMSG+11(30),HDESC
+         WTO   MF=(E,WTOMSG)
+         B     DLOOP
+*
+DENDLP   EXEC SQL CLOSE DCSR
+         EXEC SQL COMMIT
+*
+         SR    R15,R15
+         B     EXIT
+*
+SQLERR   L     R3,SQLCODE
+         CVD   R3,DWORK
+         UNPK  WMSG(8),DWORK+4(4)
+         OI    WMSG+7,X'F0'
+         MVC   WMSG+9(10),=C'SQLCODE ER'
+         WTO   MF=(E,WTOMSG)
+         EXEC SQL ROLLBACK
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+CRETMP   DC    C'DECLARE GLOBAL TEMPORARY TABLE SESSION.TMPDYN X
+               (CHAVE CHAR(10), DESCR CHAR(30))'
+INSSQL   DC    C'INSERT INTO SESSION.TMPDYN VALUES (?, ?)'
+SELSQL   DC    C'SELECT CHAVE, DESCR FROM SESSION.TMPDYN ORDERX
+                BY CHAVE'
+SAVE     DS    18F
+DWORK    DS    D
+HCHAVE   DS    CL10
+HDESC    DS    CL30
+WSQL     DS    CL256
+WMSG     DS    CL60
+BLANKS   DC    CL256' '
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         EXEC SQL INCLUDE SQLCA
+         YREGS
+         END   ASMDDYN1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMDDYN1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : SQL DINAMICO EM ASSEMBLER
+*            PREPARE + EXECUTE COM PARAMETER MARKERS
+*            EXECUTE IMMEDIATE PARA DDL
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMDDYN1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMDDYN1         SET BASE (RELATIVE)
+         USING ASMDDYN1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         MVC   WSQL,BLANKS
+         MVC   WSQL(L'CRETMP),CRETMP
+*
+         EXEC SQL EXECUTE IMMEDIATE :WSQL
+         CLC   SQLCODE,=F'0'
+         JNE   SQLERR
+*
+         MVC   WSQL,BLANKS
+         MVC   WSQL(L'INSSQL),INSSQL
+*
+         EXEC SQL PREPARE STMT1 FROM :WSQL
+         CLC   SQLCODE,=F'0'
+         JNE   SQLERR
+*
+         MVC   HCHAVE,=CL10'K001      '
+         MVC   HDESC,=CL30'PRIMEIRO REGISTRO DINAMICO    '
+         EXEC SQL EXECUTE STMT1 USING :HCHAVE, :HDESC
+*
+         MVC   HCHAVE,=CL10'K002      '
+         MVC   HDESC,=CL30'SEGUNDO REGISTRO DINAMICO     '
+         EXEC SQL EXECUTE STMT1 USING :HCHAVE, :HDESC
+*
+         MVC   HCHAVE,=CL10'K003      '
+         MVC   HDESC,=CL30'TERCEIRO REGISTRO DINAMICO    '
+         EXEC SQL EXECUTE STMT1 USING :HCHAVE, :HDESC
+*
+         CLC   SQLCODE,=F'0'
+         JNE   SQLERR
+*
+         MVC   WSQL,BLANKS
+         MVC   WSQL(L'SELSQL),SELSQL
+*
+         EXEC SQL PREPARE STMT2 FROM :WSQL
+         EXEC SQL DECLARE DCSR CURSOR FOR STMT2
+         EXEC SQL OPEN DCSR
+*
+DLOOP    EXEC SQL FETCH DCSR INTO :HCHAVE, :HDESC
+         CLC   SQLCODE,=F'0'
+         JNE   DENDLP
+         MVC   WMSG(10),HCHAVE
+         MVC   WMSG+11(30),HDESC
+         WTO   MF=(E,WTOMSG)
+         J     DLOOP
+*
+DENDLP   EXEC SQL CLOSE DCSR
+         EXEC SQL COMMIT
+*
+         SR    R15,R15
+         J     EXIT
+*
+SQLERR   L     R3,SQLCODE
+         CVD   R3,DWORK
+         UNPK  WMSG(8),DWORK+4(4)
+         OI    WMSG+7,X'F0'
+         MVC   WMSG+9(10),=C'SQLCODE ER'
+         WTO   MF=(E,WTOMSG)
+         EXEC SQL ROLLBACK
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+CRETMP   DC    C'DECLARE GLOBAL TEMPORARY TABLE SESSION.TMPDYN X
+               (CHAVE CHAR(10), DESCR CHAR(30))'
+INSSQL   DC    C'INSERT INTO SESSION.TMPDYN VALUES (?, ?)'
+SELSQL   DC    C'SELECT CHAVE, DESCR FROM SESSION.TMPDYN ORDERX
+                BY CHAVE'
+SAVE     DS    18F
+DWORK    DS    D
+HCHAVE   DS    CL10
+HDESC    DS    CL30
+WSQL     DS    CL256
+WMSG     DS    CL60
+BLANKS   DC    CL256' '
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         EXEC SQL INCLUDE SQLCA
+         YREGS
+         END   ASMDDYN1`
+  },
   // ========================================================================
-  // IMS (11 programas)
+  // IMS (14 programas — 11 COBOL + 3 HLASM)
   // ========================================================================
 
   {
@@ -5863,6 +8462,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSCHK01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CHECKPOINT/RESTART PARA BMP BATCH
@@ -5914,7 +8514,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            05 LS-IO-STATUS       PIC XX.
 
        PROCEDURE DIVISION USING LS-IO-PCB LS-PCB-MASK.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-ATTEMPT-RESTART
            PERFORM 2000-PROCESS-LOOP
               UNTIL LS-PCB-STATUS = 'GB'
@@ -5922,7 +8525,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 3000-FINAL-CHECKPOINT
            GOBACK
            .
-       1000-ATTEMPT-RESTART.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-ATTEMPT-RESTART SECTION
+      *==========================================================*
+       1000-ATTEMPT-RESTART SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-XRST
                                 LS-IO-PCB
                                 WS-IO-AREA
@@ -5935,7 +8543,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               MOVE 'CHKP0001' TO WS-CHKP-ID
            END-IF
            .
-       2000-PROCESS-LOOP.
+       1000-ATTEMPT-RESTART-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-PROCESS-LOOP SECTION
+      *==========================================================*
+       2000-PROCESS-LOOP SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-GN
                                 LS-PCB-MASK
                                 WS-IO-AREA
@@ -5955,7 +8568,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                  DISPLAY 'IMSCHK01: DL/I ERROR ' LS-PCB-STATUS
            END-EVALUATE
            .
-       2500-TAKE-CHECKPOINT.
+       2000-PROCESS-LOOP-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2500-TAKE-CHECKPOINT SECTION
+      *==========================================================*
+       2500-TAKE-CHECKPOINT SECTION.
            ADD 1 TO WS-CHKP-COUNTER
            MOVE WS-CHKP-ID TO WS-RESTART-TOKEN
            CALL 'CBLTDLI' USING WS-FUNC-CHKP
@@ -5970,12 +8588,19 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               DISPLAY 'IMSCHK01: CHKP FAILED ' LS-IO-STATUS
            END-IF
            .
-       3000-FINAL-CHECKPOINT.
+       2500-TAKE-CHECKPOINT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-FINAL-CHECKPOINT SECTION
+      *==========================================================*
+       3000-FINAL-CHECKPOINT SECTION.
            PERFORM 2500-TAKE-CHECKPOINT
            DISPLAY 'IMSCHK01: TOTAL PROCESSED='
                    WS-TOTAL-PROCESSED
                    ' CHECKPOINTS=' WS-CHKP-COUNTER
-           .`
+           .
+       3000-FINAL-CHECKPOINT-EXIT.
+           EXIT.`
   },
 
   {
@@ -5988,6 +8613,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSNAV01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : NAVEGACAO HIERARQUICA IMS
@@ -6042,14 +8668,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            05 LS-PCB-KEY-AREA    PIC X(50).
 
        PROCEDURE DIVISION USING LS-PCB-MASK.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-NAVIGATE-ROOT
            PERFORM 2000-NAVIGATE-CHILDREN
            PERFORM 3000-NAVIGATE-DEPENDENTS
            DISPLAY 'IMSNAV01: TOTAL SEGMENTS=' WS-SEG-COUNT
            GOBACK
            .
-       1000-NAVIGATE-ROOT.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-NAVIGATE-ROOT SECTION
+      *==========================================================*
+       1000-NAVIGATE-ROOT SECTION.
            SET WS-MODE-ROOT TO TRUE
            MOVE 'CUST000001' TO WS-SSA-CUSTID
            CALL 'CBLTDLI' USING WS-FUNC-GU
@@ -6067,7 +8701,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-PCB-STATUS
            END-IF
            .
-       2000-NAVIGATE-CHILDREN.
+       1000-NAVIGATE-ROOT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-NAVIGATE-CHILDREN SECTION
+      *==========================================================*
+       2000-NAVIGATE-CHILDREN SECTION.
            SET WS-MODE-CHILD TO TRUE
            PERFORM UNTIL LS-PCB-STATUS NOT = SPACES
               CALL 'CBLTDLI' USING WS-FUNC-GN
@@ -6082,7 +8721,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               END-IF
            END-PERFORM
            .
-       3000-NAVIGATE-DEPENDENTS.
+       2000-NAVIGATE-CHILDREN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-NAVIGATE-DEPENDENTS SECTION
+      *==========================================================*
+       3000-NAVIGATE-DEPENDENTS SECTION.
            SET WS-MODE-DEPENDENT TO TRUE
            MOVE 'CUST000001' TO WS-SSA-CUSTID
            CALL 'CBLTDLI' USING WS-FUNC-GU
@@ -6093,7 +8737,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               PERFORM 3100-GET-DEPENDENT-ITEMS
            END-IF
            .
-       3100-GET-DEPENDENT-ITEMS.
+       3000-NAVIGATE-DEPENDENTS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3100-GET-DEPENDENT-ITEMS SECTION
+      *==========================================================*
+       3100-GET-DEPENDENT-ITEMS SECTION.
            PERFORM UNTIL LS-PCB-STATUS NOT = SPACES
               CALL 'CBLTDLI' USING WS-FUNC-GNP
                                    LS-PCB-MASK
@@ -6107,7 +8756,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                  DISPLAY 'IMSNAV01: NO MORE DEPENDENTS'
               END-IF
            END-PERFORM
-           .`
+           .
+       3100-GET-DEPENDENT-ITEMS-EXIT.
+           EXIT.`
   },
 
   {
@@ -6120,6 +8771,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSSSA01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CONSTRUTOR DINAMICO DE SSAs
@@ -6182,13 +8834,21 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            05 LS-PCB-KEY-AREA    PIC X(50).
 
        PROCEDURE DIVISION USING LS-PCB-MASK.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-BUILD-SIMPLE-SSA
            PERFORM 2000-BUILD-BOOLEAN-SSA
            PERFORM 3000-BUILD-MULTI-LEVEL-SSA
            GOBACK
            .
-       1000-BUILD-SIMPLE-SSA.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-BUILD-SIMPLE-SSA SECTION
+      *==========================================================*
+       1000-BUILD-SIMPLE-SSA SECTION.
            INITIALIZE WS-SSA-BUFFER
            MOVE 'CUSTOMER' TO WS-SSA-SEG-NAME
            SET WS-SSA-QUALIFIED TO TRUE
@@ -6203,7 +8863,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            DISPLAY 'IMSSSA01: SIMPLE SSA STATUS='
                    LS-PCB-STATUS
            .
-       2000-BUILD-BOOLEAN-SSA.
+       1000-BUILD-SIMPLE-SSA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-BUILD-BOOLEAN-SSA SECTION
+      *==========================================================*
+       2000-BUILD-BOOLEAN-SSA SECTION.
            INITIALIZE WS-SSA-BUFFER
            MOVE 0 TO WS-SSA-STACK-PTR
            PERFORM 7000-PUSH-CONDITION
@@ -6227,7 +8892,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            DISPLAY 'IMSSSA01: BOOLEAN SSA STATUS='
                    LS-PCB-STATUS
            .
-       3000-BUILD-MULTI-LEVEL-SSA.
+       2000-BUILD-BOOLEAN-SSA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-BUILD-MULTI-LEVEL-SSA SECTION
+      *==========================================================*
+       3000-BUILD-MULTI-LEVEL-SSA SECTION.
            INITIALIZE WS-SSA-BUFFER
            MOVE 'CUSTOMER' TO WS-SSA-SEG-NAME
            SET WS-SSA-UNQUALIFIED TO TRUE
@@ -6247,7 +8917,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            DISPLAY 'IMSSSA01: MULTI-LEVEL STATUS='
                    LS-PCB-STATUS
            .
-       7000-PUSH-CONDITION.
+       3000-BUILD-MULTI-LEVEL-SSA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 7000-PUSH-CONDITION SECTION
+      *==========================================================*
+       7000-PUSH-CONDITION SECTION.
            ADD 1 TO WS-SSA-STACK-PTR
            MOVE WS-SSA-SEG-NAME
               TO WS-SSE-SEGMENT(WS-SSA-STACK-PTR)
@@ -6260,7 +8935,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            MOVE WS-SSA-BOOLEAN
               TO WS-SSE-BOOL(WS-SSA-STACK-PTR)
            .
-       8000-ASSEMBLE-SSA.
+       7000-PUSH-CONDITION-EXIT.
+           EXIT.
+      *==========================================================*
+      * 8000-ASSEMBLE-SSA SECTION
+      *==========================================================*
+       8000-ASSEMBLE-SSA SECTION.
            INITIALIZE WS-BUILT-SSA
            STRING WS-SSA-SEG-NAME DELIMITED SIZE
                   WS-SSA-QUAL-CHAR DELIMITED SIZE
@@ -6270,7 +8950,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                   ')' DELIMITED SIZE
                   INTO WS-BUILT-SSA
            .
-       8100-ASSEMBLE-BOOLEAN-SSA.
+       8000-ASSEMBLE-SSA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 8100-ASSEMBLE-BOOLEAN-SSA SECTION
+      *==========================================================*
+       8100-ASSEMBLE-BOOLEAN-SSA SECTION.
            INITIALIZE WS-BUILT-SSA
            PERFORM VARYING WS-IDX FROM 1 BY 1
               UNTIL WS-IDX > WS-SSA-STACK-PTR
@@ -6280,7 +8965,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                      WS-SSE-BOOL(WS-IDX)  DELIMITED SPACES
                      INTO WS-BUILT-SSA
            END-PERFORM
-           .`
+           .
+       8100-ASSEMBLE-BOOLEAN-SSA-EXIT.
+           EXIT.`
   },
 
   {
@@ -6293,6 +8980,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSSTD01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : DECODIFICADOR DE STATUS CODES DL/I
@@ -6354,7 +9042,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
 
        PROCEDURE DIVISION USING LS-STATUS-CODE
                                 LS-OUTPUT-MESSAGE.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            INITIALIZE LS-OUTPUT-MESSAGE
            SET WS-NOT-FOUND TO TRUE
            PERFORM VARYING WS-SEARCH-IDX FROM 1 BY 1
@@ -6384,7 +9075,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                      INTO LS-OUTPUT-MESSAGE
            END-IF
            GOBACK
-           .`
+           .
+       0000-MAIN-EXIT.
+           EXIT.`
   },
 
   {
@@ -6397,6 +9090,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSDLI02
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : OPERACOES DL/I AVANCADAS COM SSA
@@ -6462,14 +9156,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            05 LS-PCB-KEY-AREA    PIC X(50).
 
        PROCEDURE DIVISION USING LS-PCB-MASK.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-QUALIFIED-RETRIEVE
            PERFORM 2000-MULTI-LEVEL-INSERT
            PERFORM 3000-POSITION-AND-DELETE
            DISPLAY 'IMSDLI02: OPERATIONS=' WS-OP-COUNT
            GOBACK
            .
-       1000-QUALIFIED-RETRIEVE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-QUALIFIED-RETRIEVE SECTION
+      *==========================================================*
+       1000-QUALIFIED-RETRIEVE SECTION.
            MOVE 'CUST000001' TO WS-SSA-CUSTID
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-PCB-MASK
@@ -6481,7 +9183,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               PERFORM 1100-GET-CHILD-ORDERS
            END-IF
            .
-       1100-GET-CHILD-ORDERS.
+       1000-QUALIFIED-RETRIEVE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-GET-CHILD-ORDERS SECTION
+      *==========================================================*
+       1100-GET-CHILD-ORDERS SECTION.
            PERFORM UNTIL LS-PCB-STATUS NOT = SPACES
               CALL 'CBLTDLI' USING WS-FUNC-GNP
                                    LS-PCB-MASK
@@ -6492,7 +9199,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               END-IF
            END-PERFORM
            .
-       2000-MULTI-LEVEL-INSERT.
+       1100-GET-CHILD-ORDERS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-MULTI-LEVEL-INSERT SECTION
+      *==========================================================*
+       2000-MULTI-LEVEL-INSERT SECTION.
            MOVE 'CUST000001' TO WS-SSA-CUSTID
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-PCB-MASK
@@ -6515,7 +9227,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               END-IF
            END-IF
            .
-       2100-INSERT-ITEM.
+       2000-MULTI-LEVEL-INSERT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-INSERT-ITEM SECTION
+      *==========================================================*
+       2100-INSERT-ITEM SECTION.
            INITIALIZE WS-NEW-ITEM
            MOVE 'ITEM000001' TO WS-NI-ITEMID
            MOVE 'WIDGET TYPE A' TO WS-NI-DESC
@@ -6533,7 +9250,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               DISPLAY 'IMSDLI02: ITEM INSERTED'
            END-IF
            .
-       3000-POSITION-AND-DELETE.
+       2100-INSERT-ITEM-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-POSITION-AND-DELETE SECTION
+      *==========================================================*
+       3000-POSITION-AND-DELETE SECTION.
            MOVE 'CUST000001' TO WS-SSA-CUSTID
            MOVE 'ORD0000099' TO WS-SSA-ORDERID
            CALL 'CBLTDLI' USING WS-FUNC-GHU
@@ -6550,7 +9272,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                  DISPLAY 'IMSDLI02: ORDER DELETED'
               END-IF
            END-IF
-           .`
+           .
+       3000-POSITION-AND-DELETE-EXIT.
+           EXIT.`
   },
 
   {
@@ -6563,6 +9287,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSBMP02
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : BMP COM PROCESSAMENTO DE MENSAGENS
@@ -6623,7 +9348,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        PROCEDURE DIVISION USING LS-IO-PCB
                                 LS-ALT-PCB
                                 LS-DB-PCB.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            SET WS-CONTINUE TO TRUE
            PERFORM 1000-GET-MESSAGE
            PERFORM UNTIL WS-STOP
@@ -6635,7 +9363,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 5000-FINAL-CHECKPOINT
            GOBACK
            .
-       1000-GET-MESSAGE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-GET-MESSAGE SECTION
+      *==========================================================*
+       1000-GET-MESSAGE SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-IO-PCB
                                 WS-MSG-IN-AREA
@@ -6653,14 +9386,24 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               PERFORM 1100-GET-SEGMENTS
            END-IF
            .
-       1100-GET-SEGMENTS.
+       1000-GET-MESSAGE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-GET-SEGMENTS SECTION
+      *==========================================================*
+       1100-GET-SEGMENTS SECTION.
            PERFORM UNTIL LS-IO-STATUS NOT = SPACES
               CALL 'CBLTDLI' USING WS-FUNC-GN
                                    LS-IO-PCB
                                    WS-MSG-IN-AREA
            END-PERFORM
            .
-       2000-PROCESS-MESSAGE.
+       1100-GET-SEGMENTS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-PROCESS-MESSAGE SECTION
+      *==========================================================*
+       2000-PROCESS-MESSAGE SECTION.
            EVALUATE WS-MI-TRANCODE
               WHEN 'INQUIRY '
                  PERFORM 2100-DB-LOOKUP
@@ -6670,7 +9413,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                  MOVE 'UNKNOWN TRANSACTION' TO WS-MO-DATA
            END-EVALUATE
            .
-       2100-DB-LOOKUP.
+       2000-PROCESS-MESSAGE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-DB-LOOKUP SECTION
+      *==========================================================*
+       2100-DB-LOOKUP SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-DB-PCB
                                 WS-IO-AREA
@@ -6680,10 +9428,20 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               MOVE 'RECORD NOT FOUND' TO WS-MO-DATA
            END-IF
            .
-       2200-DB-UPDATE.
+       2100-DB-LOOKUP-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2200-DB-UPDATE SECTION
+      *==========================================================*
+       2200-DB-UPDATE SECTION.
            MOVE 'UPDATE PROCESSED' TO WS-MO-DATA
            .
-       3000-SEND-RESPONSE.
+       2200-DB-UPDATE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-SEND-RESPONSE SECTION
+      *==========================================================*
+       3000-SEND-RESPONSE SECTION.
            MOVE 212 TO WS-MO-LL
            MOVE 0   TO WS-MO-ZZ
            CALL 'CBLTDLI' USING WS-FUNC-ISRT
@@ -6694,7 +9452,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-IO-STATUS
            END-IF
            .
-       4000-CHECK-CHECKPOINT.
+       3000-SEND-RESPONSE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-CHECK-CHECKPOINT SECTION
+      *==========================================================*
+       4000-CHECK-CHECKPOINT SECTION.
            ADD 1 TO WS-SINCE-CHKP
            IF WS-SINCE-CHKP >= WS-CHKP-FREQ
               CALL 'CBLTDLI' USING WS-FUNC-CHKP
@@ -6705,12 +9468,19 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               END-IF
            END-IF
            .
-       5000-FINAL-CHECKPOINT.
+       4000-CHECK-CHECKPOINT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 5000-FINAL-CHECKPOINT SECTION
+      *==========================================================*
+       5000-FINAL-CHECKPOINT SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-CHKP
                                 LS-IO-PCB
                                 WS-CHKP-AREA
            DISPLAY 'IMSBMP02: MSGS=' WS-MSG-COUNT
-           .`
+           .
+       5000-FINAL-CHECKPOINT-EXIT.
+           EXIT.`
   },
 
   {
@@ -6723,6 +9493,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSCMD01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : EMISSAO DE COMANDOS IMS VIA DL/I
@@ -6769,7 +9540,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            05 LS-IO-STATUS       PIC XX.
 
        PROCEDURE DIVISION USING LS-IO-PCB.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM VARYING WS-CMD-IDX FROM 1 BY 1
               UNTIL WS-CMD-IDX > 3
               PERFORM 1000-ISSUE-COMMAND
@@ -6777,7 +9551,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-PERFORM
            GOBACK
            .
-       1000-ISSUE-COMMAND.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-ISSUE-COMMAND SECTION
+      *==========================================================*
+       1000-ISSUE-COMMAND SECTION.
            INITIALIZE WS-CMD-AREA
            MOVE WS-CMD-ENTRY(WS-CMD-IDX)
               TO WS-CMD-TEXT
@@ -6801,7 +9580,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                  SET WS-NO-MORE TO TRUE
            END-EVALUATE
            .
-       2000-RETRIEVE-RESPONSES.
+       1000-ISSUE-COMMAND-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-RETRIEVE-RESPONSES SECTION
+      *==========================================================*
+       2000-RETRIEVE-RESPONSES SECTION.
            PERFORM UNTIL WS-NO-MORE
               INITIALIZE WS-RSP-AREA
               CALL 'CBLTDLI' USING WS-FUNC-RCMD
@@ -6823,7 +9607,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                     SET WS-NO-MORE TO TRUE
               END-EVALUATE
            END-PERFORM
-           .`
+           .
+       2000-RETRIEVE-RESPONSES-EXIT.
+           EXIT.`
   },
 
   {
@@ -6836,6 +9622,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSSEG01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : NAVEGACAO MULTI-SEGMENTO EM 3 NIVEIS
@@ -6903,14 +9690,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            05 LS-PCB-KEY-AREA    PIC X(50).
 
        PROCEDURE DIVISION USING LS-PCB-MASK.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-PROCESS-DEPARTMENTS
            DISPLAY 'IMSSEG01: DEPTS=' WS-DEPT-COUNT
                    ' EMPS=' WS-EMP-COUNT
                    ' SKILLS=' WS-SKILL-COUNT
            GOBACK
            .
-       1000-PROCESS-DEPARTMENTS.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-PROCESS-DEPARTMENTS SECTION
+      *==========================================================*
+       1000-PROCESS-DEPARTMENTS SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-PCB-MASK
                                 WS-IO-AREA
@@ -6926,7 +9721,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                                    WS-IO-AREA
            END-PERFORM
            .
-       2000-PROCESS-EMPLOYEES.
+       1000-PROCESS-DEPARTMENTS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-PROCESS-EMPLOYEES SECTION
+      *==========================================================*
+       2000-PROCESS-EMPLOYEES SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-GNP
                                 LS-PCB-MASK
                                 WS-IO-AREA
@@ -6943,7 +9743,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                                    WS-SSA-EMP-UNQUAL
            END-PERFORM
            .
-       3000-PROCESS-SKILLS.
+       2000-PROCESS-EMPLOYEES-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-PROCESS-SKILLS SECTION
+      *==========================================================*
+       3000-PROCESS-SKILLS SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-GNP
                                 LS-PCB-MASK
                                 WS-IO-AREA
@@ -6958,7 +9763,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                                    WS-IO-AREA
                                    WS-SSA-SKILL-UNQUAL
            END-PERFORM
-           .`
+           .
+       3000-PROCESS-SKILLS-EXIT.
+           EXIT.`
   },
 
   {
@@ -6971,6 +9778,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSALT01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : USO DE PCBS ALTERNADOS NO PSB
@@ -7038,7 +9846,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        PROCEDURE DIVISION USING LS-IO-PCB
                                 LS-PCB-CUSTDB
                                 LS-PCB-PRODDB.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-QUERY-CUSTOMER-DB
            PERFORM 2000-QUERY-PRODUCT-DB
            PERFORM 3000-CROSS-REFERENCE
@@ -7046,7 +9857,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    ' PRODUCTS=' WS-PROD-COUNT
            GOBACK
            .
-       1000-QUERY-CUSTOMER-DB.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-QUERY-CUSTOMER-DB SECTION
+      *==========================================================*
+       1000-QUERY-CUSTOMER-DB SECTION.
            MOVE 'CUSTDB' TO WS-ACTIVE-PCB
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-PCB-CUSTDB
@@ -7063,7 +9879,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                                    WS-SSA-UNQUAL-CUST
            END-PERFORM
            .
-       2000-QUERY-PRODUCT-DB.
+       1000-QUERY-CUSTOMER-DB-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-QUERY-PRODUCT-DB SECTION
+      *==========================================================*
+       2000-QUERY-PRODUCT-DB SECTION.
            MOVE 'PRODDB' TO WS-ACTIVE-PCB
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-PCB-PRODDB
@@ -7080,13 +9901,20 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                                    WS-SSA-UNQUAL-PROD
            END-PERFORM
            .
-       3000-CROSS-REFERENCE.
+       2000-QUERY-PRODUCT-DB-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-CROSS-REFERENCE SECTION
+      *==========================================================*
+       3000-CROSS-REFERENCE SECTION.
            DISPLAY 'IMSALT01: CROSS-REF COMPLETE'
            DISPLAY 'IMSALT01: CUSTDB SENS='
                    LS-C-SENSEG-CNT
                    ' PRODDB SENS='
                    LS-P-SENSEG-CNT
-           .`
+           .
+       3000-CROSS-REFERENCE-EXIT.
+           EXIT.`
   },
 
   {
@@ -7099,6 +9927,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSCON01
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : TRANSACAO CONVERSACIONAL IMS
@@ -7148,14 +9977,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            05 LS-IO-STATUS       PIC XX.
 
        PROCEDURE DIVISION USING LS-IO-PCB.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-READ-SPA
            PERFORM 2000-READ-INPUT
            PERFORM 3000-PROCESS-STATE
            PERFORM 4000-WRITE-SPA
            GOBACK
            .
-       1000-READ-SPA.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-READ-SPA SECTION
+      *==========================================================*
+       1000-READ-SPA SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-IO-PCB
                                 WS-SPA-AREA
@@ -7164,7 +10001,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-IO-STATUS
            END-IF
            .
-       2000-READ-INPUT.
+       1000-READ-SPA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-READ-INPUT SECTION
+      *==========================================================*
+       2000-READ-INPUT SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-IO-PCB
                                 WS-MSG-IN
@@ -7173,7 +10015,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-IO-STATUS
            END-IF
            .
-       3000-PROCESS-STATE.
+       2000-READ-INPUT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-PROCESS-STATE SECTION
+      *==========================================================*
+       3000-PROCESS-STATE SECTION.
            EVALUATE TRUE
               WHEN WS-STATE-INIT
                  PERFORM 3100-SHOW-MENU
@@ -7190,12 +10037,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                  PERFORM 3600-SHOW-COMPLETION
            END-EVALUATE
            .
-       3100-SHOW-MENU.
+       3000-PROCESS-STATE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3100-SHOW-MENU SECTION
+      *==========================================================*
+       3100-SHOW-MENU SECTION.
            MOVE 'MENU: 1=INQUIRY 2=UPDATE 3=EXIT'
               TO WS-MO-OUTPUT
            PERFORM 5000-SEND-OUTPUT
            .
-       3200-PROCESS-MENU-CHOICE.
+       3100-SHOW-MENU-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3200-PROCESS-MENU-CHOICE SECTION
+      *==========================================================*
+       3200-PROCESS-MENU-CHOICE SECTION.
            EVALUATE WS-MI-INPUT(1:1)
               WHEN '1'
                  MOVE 'ENTER CUSTOMER ID:'
@@ -7217,14 +10074,24 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-EVALUATE
            PERFORM 5000-SEND-OUTPUT
            .
-       3300-PROCESS-CUSTOMER-SELECT.
+       3200-PROCESS-MENU-CHOICE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3300-PROCESS-CUSTOMER-SELECT SECTION
+      *==========================================================*
+       3300-PROCESS-CUSTOMER-SELECT SECTION.
            MOVE WS-MI-INPUT(1:10) TO WS-SPA-CUSTID
            MOVE 'CUSTOMER LOADED. CHOOSE ACTION:'
               TO WS-MO-OUTPUT
            SET WS-STATE-DETAIL TO TRUE
            PERFORM 5000-SEND-OUTPUT
            .
-       3400-PROCESS-DETAIL-ACTION.
+       3300-PROCESS-CUSTOMER-SELECT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3400-PROCESS-DETAIL-ACTION SECTION
+      *==========================================================*
+       3400-PROCESS-DETAIL-ACTION SECTION.
            STRING 'CONFIRM ' DELIMITED SIZE
                   WS-SPA-ACTION DELIMITED SPACES
                   ' FOR ' DELIMITED SIZE
@@ -7234,7 +10101,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            SET WS-STATE-CONFIRM TO TRUE
            PERFORM 5000-SEND-OUTPUT
            .
-       3500-PROCESS-CONFIRMATION.
+       3400-PROCESS-DETAIL-ACTION-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3500-PROCESS-CONFIRMATION SECTION
+      *==========================================================*
+       3500-PROCESS-CONFIRMATION SECTION.
            IF WS-MI-INPUT(1:1) = 'Y'
               STRING WS-SPA-ACTION DELIMITED SPACES
                      ' COMPLETED FOR ' DELIMITED SIZE
@@ -7248,12 +10120,22 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
            PERFORM 5000-SEND-OUTPUT
            .
-       3600-SHOW-COMPLETION.
+       3500-PROCESS-CONFIRMATION-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3600-SHOW-COMPLETION SECTION
+      *==========================================================*
+       3600-SHOW-COMPLETION SECTION.
            MOVE SPACES TO WS-SPA-STATE
            MOVE 'TRANSACTION COMPLETE.' TO WS-MO-OUTPUT
            PERFORM 5000-SEND-OUTPUT
            .
-       4000-WRITE-SPA.
+       3600-SHOW-COMPLETION-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-WRITE-SPA SECTION
+      *==========================================================*
+       4000-WRITE-SPA SECTION.
            CALL 'CBLTDLI' USING WS-FUNC-ISRT
                                 LS-IO-PCB
                                 WS-SPA-AREA
@@ -7262,13 +10144,20 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-IO-STATUS
            END-IF
            .
-       5000-SEND-OUTPUT.
+       4000-WRITE-SPA-EXIT.
+           EXIT.
+      *==========================================================*
+      * 5000-SEND-OUTPUT SECTION
+      *==========================================================*
+       5000-SEND-OUTPUT SECTION.
            MOVE 212 TO WS-MO-LL
            MOVE 0   TO WS-MO-ZZ
            CALL 'CBLTDLI' USING WS-FUNC-ISRT
                                 LS-IO-PCB
                                 WS-MSG-OUT
-           .`
+           .
+       5000-SEND-OUTPUT-EXIT.
+           EXIT.`
   },
 
   {
@@ -7281,6 +10170,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["IMS", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : IMSQRY03
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CONSULTA HIERARQUICA AVANCADA
@@ -7365,7 +10255,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            05 LS-PCB-KEY-AREA    PIC X(50).
 
        PROCEDURE DIVISION USING LS-PCB-MASK.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-CMD-D-PATH-CALL
            PERFORM 2000-CMD-F-FIRST-OCCUR
            PERFORM 3000-CMD-L-LAST-OCCUR
@@ -7376,7 +10269,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    ' HITS=' WS-HIT-COUNT
            GOBACK
            .
-       1000-CMD-D-PATH-CALL.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-CMD-D-PATH-CALL SECTION
+      *==========================================================*
+       1000-CMD-D-PATH-CALL SECTION.
            ADD 1 TO WS-QUERY-COUNT
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-PCB-MASK
@@ -7393,7 +10291,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-PCB-STATUS
            END-IF
            .
-       2000-CMD-F-FIRST-OCCUR.
+       1000-CMD-D-PATH-CALL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-CMD-F-FIRST-OCCUR SECTION
+      *==========================================================*
+       2000-CMD-F-FIRST-OCCUR SECTION.
            ADD 1 TO WS-QUERY-COUNT
            MOVE 'ACTIVE' TO WS-SSA-F-STATUS
            CALL 'CBLTDLI' USING WS-FUNC-GU
@@ -7406,7 +10309,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-PCB-SEG-NAME
            END-IF
            .
-       3000-CMD-L-LAST-OCCUR.
+       2000-CMD-F-FIRST-OCCUR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-CMD-L-LAST-OCCUR SECTION
+      *==========================================================*
+       3000-CMD-L-LAST-OCCUR SECTION.
            ADD 1 TO WS-QUERY-COUNT
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-PCB-MASK
@@ -7418,7 +10326,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-PCB-SEG-NAME
            END-IF
            .
-       4000-CMD-N-IGNORE-PATH.
+       3000-CMD-L-LAST-OCCUR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-CMD-N-IGNORE-PATH SECTION
+      *==========================================================*
+       4000-CMD-N-IGNORE-PATH SECTION.
            ADD 1 TO WS-QUERY-COUNT
            CALL 'CBLTDLI' USING WS-FUNC-GN
                                 LS-PCB-MASK
@@ -7430,7 +10343,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-PCB-SEG-NAME
            END-IF
            .
-       5000-CMD-U-MAINTAIN-POS.
+       4000-CMD-N-IGNORE-PATH-EXIT.
+           EXIT.
+      *==========================================================*
+      * 5000-CMD-U-MAINTAIN-POS SECTION
+      *==========================================================*
+       5000-CMD-U-MAINTAIN-POS SECTION.
            ADD 1 TO WS-QUERY-COUNT
            MOVE 'SOUTHEAST ' TO WS-SSA-U-REGION
            CALL 'CBLTDLI' USING WS-FUNC-GU
@@ -7443,7 +10361,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                       LS-PCB-SEG-NAME
            END-IF
            .
-       6000-BOOLEAN-SSA-QUERY.
+       5000-CMD-U-MAINTAIN-POS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 6000-BOOLEAN-SSA-QUERY SECTION
+      *==========================================================*
+       6000-BOOLEAN-SSA-QUERY SECTION.
            ADD 1 TO WS-QUERY-COUNT
            CALL 'CBLTDLI' USING WS-FUNC-GU
                                 LS-PCB-MASK
@@ -7457,11 +10380,589 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
               DISPLAY 'IMSQRY03: BOOLEAN STATUS='
                       LS-PCB-STATUS
            END-IF
-           .`
+           .
+       6000-BOOLEAN-SSA-QUERY-EXIT.
+           EXIT.`
   },
 
+
+  {
+    id: "ASMIGN01",
+    tech: "ims",
+    name: "GU/GN Básico (ASM)",
+    desc: "Chamadas DL/I GU e GN em Assembler via ASMTDLI — leitura única e sequencial de segmentos.",
+    level: "basic",
+    filename: "ASMIGN01.hlasm",
+    tags: ["HLASM","IMS","DL/I"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMIGN01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : DL/I GU E GN BASICO EM ASSEMBLER
+*            ASMTDLI PARA LEITURA UNICA E SEQUENCIAL
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMIGN01 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R9,0(R1)             DB PCB ADDRESS
+*
+         MVC   FUNC,=CL4'GU  '
+         MVC   SSA1,BLANKS
+         MVC   SSA1(9),=C'SEGROOT '
+         MVI   SSA1+9,C'('
+         MVC   SSA1+10(7),=C'KEYROOT'
+         MVC   SSA1+17(2),=C'= '
+         MVC   SSA1+19(10),=CL10'EMP001    '
+         MVI   SSA1+29,C')'
+*
+         CALL  ASMTDLI,(FUNC,R9,IOAREA,SSA1)
+*
+         CLC   0(2,R9),=C'  '
+         BNE   STERR
+*
+         MVC   WMSG(6),=C'GU OK='
+         MVC   WMSG+6(30),IOAREA
+         WTO   MF=(E,WTOMSG)
+*
+         MVC   FUNC,=CL4'GN  '
+         MVC   SSA1,BLANKS
+         MVC   SSA1(9),=C'SEGROOT '
+         SR    R5,R5
+*
+GNLOOP   CALL  ASMTDLI,(FUNC,R9,IOAREA,SSA1)
+         CLC   0(2,R9),=C'  '
+         BNE   GNEND
+         LA    R5,1(R5)
+         B     GNLOOP
+*
+GNEND    CLC   0(2,R9),=C'GB'
+         BNE   STERR
+*
+         CVD   R5,DWORK
+         UNPK  WMSG+4(4),DWORK+6(2)
+         OI    WMSG+7,X'F0'
+         MVC   WMSG(4),=C'GN= '
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         B     EXIT
+*
+STERR    MVC   WMSG(8),=C'DLI ERR='
+         MVC   WMSG+8(2),0(R9)
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+FUNC     DS    CL4
+IOAREA   DS    CL500
+SSA1     DS    CL40
+WMSG     DS    CL60
+BLANKS   DC    CL40' '
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMIGN01`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMIGN01
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : DL/I GU E GN BASICO EM ASSEMBLER
+*            ASMTDLI PARA LEITURA UNICA E SEQUENCIAL
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMIGN01 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMIGN01         SET BASE (RELATIVE)
+         USING ASMIGN01,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R9,0(R1)             DB PCB ADDRESS
+*
+         MVC   FUNC,=CL4'GU  '
+         MVC   SSA1,BLANKS
+         MVC   SSA1(9),=C'SEGROOT '
+         MVI   SSA1+9,C'('
+         MVC   SSA1+10(7),=C'KEYROOT'
+         MVC   SSA1+17(2),=C'= '
+         MVC   SSA1+19(10),=CL10'EMP001    '
+         MVI   SSA1+29,C')'
+*
+         CALL  ASMTDLI,(FUNC,R9,IOAREA,SSA1)
+*
+         CLC   0(2,R9),=C'  '
+         JNE   STERR
+*
+         MVC   WMSG(6),=C'GU OK='
+         MVC   WMSG+6(30),IOAREA
+         WTO   MF=(E,WTOMSG)
+*
+         MVC   FUNC,=CL4'GN  '
+         MVC   SSA1,BLANKS
+         MVC   SSA1(9),=C'SEGROOT '
+         SR    R5,R5
+*
+GNLOOP   CALL  ASMTDLI,(FUNC,R9,IOAREA,SSA1)
+         CLC   0(2,R9),=C'  '
+         JNE   GNEND
+         LA    R5,1(R5)
+         J     GNLOOP
+*
+GNEND    CLC   0(2,R9),=C'GB'
+         JNE   STERR
+*
+         CVD   R5,DWORK
+         UNPK  WMSG+4(4),DWORK+6(2)
+         OI    WMSG+7,X'F0'
+         MVC   WMSG(4),=C'GN= '
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         J     EXIT
+*
+STERR    MVC   WMSG(8),=C'DLI ERR='
+         MVC   WMSG+8(2),0(R9)
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+FUNC     DS    CL4
+IOAREA   DS    CL500
+SSA1     DS    CL40
+WMSG     DS    CL60
+BLANKS   DC    CL40' '
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMIGN01`
+  },
+
+  {
+    id: "ASMIHNV1",
+    tech: "ims",
+    name: "Hierarquia Multi-Nível (ASM)",
+    desc: "Navegação pai-filho com GU, GN e GNP em HLASM — percorre 3 níveis hierárquicos do IMS.",
+    level: "intermediate",
+    filename: "ASMIHNV1.hlasm",
+    tags: ["HLASM","IMS","DL/I","GNP"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMIHNV1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : NAVEGACAO HIERARQUICA IMS EM ASSEMBLER
+*            GU ROOT -> GNP CHILD -> GNP GRANDCHILD (3 NIVEIS)
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMIHNV1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R9,0(R1)             DB PCB ADDRESS
+*
+         MVC   FUNC,=CL4'GU  '
+         MVC   SSA1,BLANKS
+         MVC   SSA1(9),=C'CLIENTE '
+         MVI   SSA1+9,C'('
+         MVC   SSA1+10(6),=C'NUMCLI'
+         MVC   SSA1+16(2),=C'= '
+         MVC   SSA1+18(10),=CL10'CLI00100  '
+         MVI   SSA1+28,C')'
+*
+         CALL  ASMTDLI,(FUNC,R9,IOAREAP,SSA1)
+         CLC   0(2,R9),=C'  '
+         BNE   STERR
+*
+         MVC   WMSG(10),=C'CLIENTE:  '
+         MVC   WMSG+10(30),IOAREAP
+         WTO   MF=(E,WTOMSG)
+*
+         MVC   FUNC,=CL4'GNP '
+         MVC   SSA1,BLANKS
+         MVC   SSA1(9),=C'CONTA   '
+         SR    R5,R5
+*
+LPCONTA  CALL  ASMTDLI,(FUNC,R9,IOAREAF,SSA1)
+         CLC   0(2,R9),=C'  '
+         BNE   CNTEND
+*
+         LA    R5,1(R5)
+*
+         MVC   FUNCN,=CL4'GNP '
+         MVC   SSA2,BLANKS
+         MVC   SSA2(9),=C'MOVIMENT'
+         SR    R6,R6
+*
+LPMOV    CALL  ASMTDLI,(FUNCN,R9,IOAREAN,SSA2)
+         CLC   0(2,R9),=C'  '
+         BNE   MOVEND
+         LA    R6,1(R6)
+         B     LPMOV
+*
+MOVEND   CLC   0(2,R9),=C'GE'
+         BE    LPCONTA
+         B     CNTEND
+*
+CNTEND   CVD   R5,DWORK
+         UNPK  WMSG+8(4),DWORK+6(2)
+         OI    WMSG+11,X'F0'
+         MVC   WMSG(8),=C'CONTAS= '
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         B     EXIT
+*
+STERR    MVC   WMSG(8),=C'DLI ERR='
+         MVC   WMSG+8(2),0(R9)
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+FUNC     DS    CL4
+FUNCN    DS    CL4
+IOAREAP  DS    CL200
+IOAREAF  DS    CL200
+IOAREAN  DS    CL200
+SSA1     DS    CL40
+SSA2     DS    CL40
+WMSG     DS    CL60
+BLANKS   DC    CL40' '
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMIHNV1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMIHNV1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : NAVEGACAO HIERARQUICA IMS EM ASSEMBLER
+*            GU ROOT -> GNP CHILD -> GNP GRANDCHILD (3 NIVEIS)
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMIHNV1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMIHNV1         SET BASE (RELATIVE)
+         USING ASMIHNV1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R9,0(R1)             DB PCB ADDRESS
+*
+         MVC   FUNC,=CL4'GU  '
+         MVC   SSA1,BLANKS
+         MVC   SSA1(9),=C'CLIENTE '
+         MVI   SSA1+9,C'('
+         MVC   SSA1+10(6),=C'NUMCLI'
+         MVC   SSA1+16(2),=C'= '
+         MVC   SSA1+18(10),=CL10'CLI00100  '
+         MVI   SSA1+28,C')'
+*
+         CALL  ASMTDLI,(FUNC,R9,IOAREAP,SSA1)
+         CLC   0(2,R9),=C'  '
+         JNE   STERR
+*
+         MVC   WMSG(10),=C'CLIENTE:  '
+         MVC   WMSG+10(30),IOAREAP
+         WTO   MF=(E,WTOMSG)
+*
+         MVC   FUNC,=CL4'GNP '
+         MVC   SSA1,BLANKS
+         MVC   SSA1(9),=C'CONTA   '
+         SR    R5,R5
+*
+LPCONTA  CALL  ASMTDLI,(FUNC,R9,IOAREAF,SSA1)
+         CLC   0(2,R9),=C'  '
+         JNE   CNTEND
+*
+         LA    R5,1(R5)
+*
+         MVC   FUNCN,=CL4'GNP '
+         MVC   SSA2,BLANKS
+         MVC   SSA2(9),=C'MOVIMENT'
+         SR    R6,R6
+*
+LPMOV    CALL  ASMTDLI,(FUNCN,R9,IOAREAN,SSA2)
+         CLC   0(2,R9),=C'  '
+         JNE   MOVEND
+         LA    R6,1(R6)
+         J     LPMOV
+*
+MOVEND   CLC   0(2,R9),=C'GE'
+         JE    LPCONTA
+         J     CNTEND
+*
+CNTEND   CVD   R5,DWORK
+         UNPK  WMSG+8(4),DWORK+6(2)
+         OI    WMSG+11,X'F0'
+         MVC   WMSG(8),=C'CONTAS= '
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         J     EXIT
+*
+STERR    MVC   WMSG(8),=C'DLI ERR='
+         MVC   WMSG+8(2),0(R9)
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+FUNC     DS    CL4
+FUNCN    DS    CL4
+IOAREAP  DS    CL200
+IOAREAF  DS    CL200
+IOAREAN  DS    CL200
+SSA1     DS    CL40
+SSA2     DS    CL40
+WMSG     DS    CL60
+BLANKS   DC    CL40' '
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMIHNV1`
+  },
+
+  {
+    id: "ASMICHK1",
+    tech: "ims",
+    name: "BMP com Checkpoint (ASM)",
+    desc: "BMP batch em HLASM com CHKP/XRST para checkpoint/restart e processamento com contagem.",
+    level: "advanced",
+    filename: "ASMICHK1.hlasm",
+    tags: ["HLASM","IMS","BMP","CHKP"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMICHK1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : BMP BATCH COM CHECKPOINT/RESTART EM ASSEMBLER
+*            CHKP PERIODICO + XRST PARA RECUPERACAO
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMICHK1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R9,0(R1)             IO PCB
+         L     R10,4(R1)            DB PCB
+*
+         MVC   FUNC,=CL4'XRST'
+         MVC   IOAREA,BLANKS250
+         MVC   RSTID,=CL8'ASMICHK1'
+*
+         CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
+         CLC   0(2,R9),=C'  '
+         BE    RESTARTED
+*
+         SR    R5,R5
+         B     PROCESS
+*
+RESTARTED DS   0H
+         L     R5,SVCOUNT
+*
+PROCESS  MVC   FUNC,=CL4'GN  '
+         MVC   SSA1,BLANKS40
+         MVC   SSA1(9),=C'TRANSACT'
+*
+MAINLP   CALL  ASMTDLI,(FUNC,R10,IOAREA,SSA1)
+         CLC   0(2,R10),=C'  '
+         BNE   ENDPROC
+*
+         LA    R5,1(R5)
+*
+         LR    R6,R5
+         N     R6,=F'511'
+         BNZ   MAINLP
+*
+         ST    R5,SVCOUNT
+         MVC   FUNC,=CL4'CHKP'
+         MVC   RSTID,=CL8'ASMICHK1'
+*
+         CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
+         CLC   0(2,R9),=C'  '
+         BNE   CHKERR
+*
+         MVC   FUNC,=CL4'GN  '
+         B     MAINLP
+*
+ENDPROC  CLC   0(2,R10),=C'QC'
+         BNE   STERR
+*
+         ST    R5,SVCOUNT
+         MVC   FUNC,=CL4'CHKP'
+         CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
+*
+         CVD   R5,DWORK
+         UNPK  WMSG+12(8),DWORK
+         OI    WMSG+19,X'F0'
+         MVC   WMSG(12),=C'PROCESSADOS='
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         B     EXIT
+*
+CHKERR   MVC   WMSG(10),=C'CHKP ERRO='
+         MVC   WMSG+10(2),0(R9)
+         WTO   MF=(E,WTOMSG)
+         LA    R15,12
+         B     EXIT
+*
+STERR    MVC   WMSG(10),=C'DLI  ERRO='
+         MVC   WMSG+10(2),0(R10)
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+SVCOUNT  DS    F
+FUNC     DS    CL4
+RSTID    DS    CL8
+IOAREA   DS    CL500
+SSA1     DS    CL40
+WMSG     DS    CL60
+BLANKS40 DC    CL40' '
+BLANKS250 DC   CL250' '
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMICHK1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMICHK1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : BMP BATCH COM CHECKPOINT/RESTART EM ASSEMBLER
+*            CHKP PERIODICO + XRST PARA RECUPERACAO
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMICHK1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMICHK1         SET BASE (RELATIVE)
+         USING ASMICHK1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         L     R9,0(R1)             IO PCB
+         L     R10,4(R1)            DB PCB
+*
+         MVC   FUNC,=CL4'XRST'
+         MVC   IOAREA,BLANKS250
+         MVC   RSTID,=CL8'ASMICHK1'
+*
+         CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
+         CLC   0(2,R9),=C'  '
+         JE    RESTARTED
+*
+         SR    R5,R5
+         J     PROCESS
+*
+RESTARTED DS   0H
+         L     R5,SVCOUNT
+*
+PROCESS  MVC   FUNC,=CL4'GN  '
+         MVC   SSA1,BLANKS40
+         MVC   SSA1(9),=C'TRANSACT'
+*
+MAINLP   CALL  ASMTDLI,(FUNC,R10,IOAREA,SSA1)
+         CLC   0(2,R10),=C'  '
+         JNE   ENDPROC
+*
+         LA    R5,1(R5)
+*
+         LR    R6,R5
+         N     R6,=F'511'
+         JNZ   MAINLP
+*
+         ST    R5,SVCOUNT
+         MVC   FUNC,=CL4'CHKP'
+         MVC   RSTID,=CL8'ASMICHK1'
+*
+         CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
+         CLC   0(2,R9),=C'  '
+         JNE   CHKERR
+*
+         MVC   FUNC,=CL4'GN  '
+         J     MAINLP
+*
+ENDPROC  CLC   0(2,R10),=C'QC'
+         JNE   STERR
+*
+         ST    R5,SVCOUNT
+         MVC   FUNC,=CL4'CHKP'
+         CALL  ASMTDLI,(FUNC,R9,IOAREA,RSTID)
+*
+         CVD   R5,DWORK
+         UNPK  WMSG+12(8),DWORK
+         OI    WMSG+19,X'F0'
+         MVC   WMSG(12),=C'PROCESSADOS='
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         J     EXIT
+*
+CHKERR   MVC   WMSG(10),=C'CHKP ERRO='
+         MVC   WMSG+10(2),0(R9)
+         WTO   MF=(E,WTOMSG)
+         LA    R15,12
+         J     EXIT
+*
+STERR    MVC   WMSG(10),=C'DLI  ERRO='
+         MVC   WMSG+10(2),0(R10)
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+SAVE     DS    18F
+DWORK    DS    D
+SVCOUNT  DS    F
+FUNC     DS    CL4
+RSTID    DS    CL8
+IOAREA   DS    CL500
+SSA1     DS    CL40
+WMSG     DS    CL60
+BLANKS40 DC    CL40' '
+BLANKS250 DC   CL250' '
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMICHK1`
+  },
   // ========================================================================
-  // VSAM (11 programas)
+  // VSAM (14 programas — 11 COBOL + 3 HLASM)
   // ========================================================================
 
   {
@@ -7474,6 +10975,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMCMP
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : COMPARADOR DE ARQUIVOS VSAM KSDS
@@ -7531,7 +11033,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-RPT-LINE            PIC X(132).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-OPEN-FILES
            PERFORM 1100-READ-MASTER
            PERFORM 1200-READ-COMPARE
@@ -7541,7 +11046,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 9000-CLOSE-FILES
            STOP RUN.
 
-       1000-OPEN-FILES.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-OPEN-FILES SECTION
+      *==========================================================*
+       1000-OPEN-FILES SECTION.
            OPEN INPUT  MASTER-FILE
            IF WS-FS-MASTER NOT = '00'
                DISPLAY 'ERRO OPEN MASTER: ' WS-FS-MASTER
@@ -7550,19 +11060,34 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            OPEN INPUT  COMPARE-FILE
            OPEN OUTPUT REPORT-FILE.
 
-       1100-READ-MASTER.
+       1000-OPEN-FILES-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-READ-MASTER SECTION
+      *==========================================================*
+       1100-READ-MASTER SECTION.
            READ MASTER-FILE
            IF WS-FS-MASTER = '10'
                SET EOF-MASTER TO TRUE
            END-IF.
 
-       1200-READ-COMPARE.
+       1100-READ-MASTER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1200-READ-COMPARE SECTION
+      *==========================================================*
+       1200-READ-COMPARE SECTION.
            READ COMPARE-FILE
            IF WS-FS-COMPARE = '10'
                SET EOF-COMPARE TO TRUE
            END-IF.
 
-       2000-COMPARE-LOOP.
+       1200-READ-COMPARE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-COMPARE-LOOP SECTION
+      *==========================================================*
+       2000-COMPARE-LOOP SECTION.
            EVALUATE TRUE
                WHEN EOF-MASTER AND NOT EOF-COMPARE
                    ADD 1 TO WS-CTR-ADD
@@ -7601,7 +11126,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    PERFORM 1200-READ-COMPARE
            END-EVALUATE.
 
-       3000-WRITE-SUMMARY.
+       2000-COMPARE-LOOP-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-WRITE-SUMMARY SECTION
+      *==========================================================*
+       3000-WRITE-SUMMARY SECTION.
            STRING 'RESUMO: ADD=' WS-CTR-ADD
                   ' DEL=' WS-CTR-DEL
                   ' CHG=' WS-CTR-CHG
@@ -7609,8 +11139,15 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                   DELIMITED SIZE INTO WS-RPT-LINE
            WRITE REPORT-REC FROM WS-RPT-LINE.
 
-       9000-CLOSE-FILES.
-           CLOSE MASTER-FILE COMPARE-FILE REPORT-FILE.`
+       3000-WRITE-SUMMARY-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-CLOSE-FILES SECTION
+      *==========================================================*
+       9000-CLOSE-FILES SECTION.
+           CLOSE MASTER-FILE COMPARE-FILE REPORT-FILE.
+       9000-CLOSE-FILES-EXIT.
+           EXIT.`
   },
 
   {
@@ -7623,6 +11160,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMEXT
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : EXTRATOR DE DADOS VSAM COM FILTROS
@@ -7675,7 +11213,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-CTR-EXTRACT         PIC 9(09) VALUE ZERO.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-INITIALIZE
            PERFORM 2000-POSITION-START
            PERFORM 3000-EXTRACT-LOOP
@@ -7683,7 +11224,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 9000-FINALIZE
            STOP RUN.
 
-       1000-INITIALIZE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-INITIALIZE SECTION
+      *==========================================================*
+       1000-INITIALIZE SECTION.
            MOVE 'CLI0001000' TO WS-KEY-FROM
            MOVE 'CLI0009999' TO WS-KEY-TO
            MOVE 'PF'         TO WS-FILTER-TIPO
@@ -7696,7 +11242,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
            OPEN OUTPUT SEQ-OUTPUT.
 
-       2000-POSITION-START.
+       1000-INITIALIZE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-POSITION-START SECTION
+      *==========================================================*
+       2000-POSITION-START SECTION.
            MOVE WS-KEY-FROM TO VI-KEY
            START VSAM-INPUT
                KEY IS NOT LESS THAN VI-KEY
@@ -7709,7 +11260,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-IF
            END-IF.
 
-       3000-EXTRACT-LOOP.
+       2000-POSITION-START-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-EXTRACT-LOOP SECTION
+      *==========================================================*
+       3000-EXTRACT-LOOP SECTION.
            READ VSAM-INPUT NEXT
            EVALUATE WS-FS-VSAM
                WHEN '00'
@@ -7726,7 +11282,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    SET END-OF-FILE TO TRUE
            END-EVALUATE.
 
-       3100-APPLY-FILTERS.
+       3000-EXTRACT-LOOP-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3100-APPLY-FILTERS SECTION
+      *==========================================================*
+       3100-APPLY-FILTERS SECTION.
            IF (WS-FILTER-TIPO = SPACES
                OR VI-TIPO = WS-FILTER-TIPO)
              AND (WS-FILTER-STATUS = SPACES
@@ -7736,10 +11297,17 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                WRITE SEQ-REC FROM VSAM-REC
            END-IF.
 
-       9000-FINALIZE.
+       3100-APPLY-FILTERS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-FINALIZE SECTION
+      *==========================================================*
+       9000-FINALIZE SECTION.
            DISPLAY 'REGISTROS LIDOS    : ' WS-CTR-READ
            DISPLAY 'REGISTROS EXTRAIDOS: ' WS-CTR-EXTRACT
-           CLOSE VSAM-INPUT SEQ-OUTPUT.`
+           CLOSE VSAM-INPUT SEQ-OUTPUT.
+       9000-FINALIZE-EXIT.
+           EXIT.`
   },
 
   {
@@ -7752,6 +11320,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMFSD
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : DECODIFICADOR DE FILE STATUS VSAM
@@ -7817,11 +11386,19 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        PROCEDURE DIVISION USING LS-FILE-STATUS
                                   LS-MENSAGEM
                                   LS-SEVERIDADE.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-DECODE-STATUS
            GOBACK.
 
-       1000-DECODE-STATUS.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-DECODE-STATUS SECTION
+      *==========================================================*
+       1000-DECODE-STATUS SECTION.
            MOVE 'N' TO WS-FOUND
            PERFORM VARYING WS-IDX FROM 1 BY 1
                UNTIL WS-IDX > 17 OR WS-FOUND = 'Y'
@@ -7837,7 +11414,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
            PERFORM 2000-SET-SEVERITY.
 
-       2000-SET-SEVERITY.
+       1000-DECODE-STATUS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-SET-SEVERITY SECTION
+      *==========================================================*
+       2000-SET-SEVERITY SECTION.
            EVALUATE LS-FILE-STATUS
                WHEN '00'
                WHEN '02'
@@ -7847,7 +11429,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    SET LS-SEV-WARNING TO TRUE
                WHEN OTHER
                    SET LS-SEV-ERROR   TO TRUE
-           END-EVALUATE.`
+           END-EVALUATE.
+       2000-SET-SEVERITY-EXIT.
+           EXIT.`
   },
 
   {
@@ -7860,6 +11444,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMSTAT
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : COLETOR DE ESTATISTICAS VSAM
@@ -7899,7 +11484,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-RPT-LINE            PIC X(80).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-OPEN-FILE
            PERFORM 2000-COLLECT-STATS
                UNTIL END-OF-FILE
@@ -7907,14 +11495,24 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 9000-CLOSE-FILE
            STOP RUN.
 
-       1000-OPEN-FILE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-OPEN-FILE SECTION
+      *==========================================================*
+       1000-OPEN-FILE SECTION.
            OPEN INPUT VSAM-FILE
            IF WS-FS NOT = '00'
                DISPLAY 'ERRO OPEN: ' WS-FS
                STOP RUN
            END-IF.
 
-       2000-COLLECT-STATS.
+       1000-OPEN-FILE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-COLLECT-STATS SECTION
+      *==========================================================*
+       2000-COLLECT-STATS SECTION.
            READ VSAM-FILE
            EVALUATE WS-FS
                WHEN '00'
@@ -7933,7 +11531,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    SET END-OF-FILE TO TRUE
            END-EVALUATE.
 
-       3000-PRINT-REPORT.
+       2000-COLLECT-STATS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-PRINT-REPORT SECTION
+      *==========================================================*
+       3000-PRINT-REPORT SECTION.
            DISPLAY '======================================'
            DISPLAY ' ESTATISTICAS DO ARQUIVO VSAM'
            DISPLAY '======================================'
@@ -7944,8 +11547,15 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    ' BYTES'
            DISPLAY '======================================'.
 
-       9000-CLOSE-FILE.
-           CLOSE VSAM-FILE.`
+       3000-PRINT-REPORT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-CLOSE-FILE SECTION
+      *==========================================================*
+       9000-CLOSE-FILE SECTION.
+           CLOSE VSAM-FILE.
+       9000-CLOSE-FILE-EXIT.
+           EXIT.`
   },
 
   {
@@ -7958,6 +11568,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMKSDS
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : CRUD COMPLETO EM VSAM KSDS
@@ -7999,7 +11610,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-MSG                 PIC X(50).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            OPEN I-O KSDS-FILE
            IF WS-FS NOT = '00'
                DISPLAY 'ERRO OPEN I-O: ' WS-FS
@@ -8013,7 +11627,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            CLOSE KSDS-FILE
            STOP RUN.
 
-       1000-INSERT-REC.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-INSERT-REC SECTION
+      *==========================================================*
+       1000-INSERT-REC SECTION.
            INITIALIZE KSDS-REC
            MOVE 'ACC00001' TO KF-KEY
            MOVE 'JOAO DA SILVA' TO KF-NOME
@@ -8030,7 +11649,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    DISPLAY 'ERRO WRITE: ' WS-FS
            END-EVALUATE.
 
-       2000-READ-RANDOM.
+       1000-INSERT-REC-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-READ-RANDOM SECTION
+      *==========================================================*
+       2000-READ-RANDOM SECTION.
            MOVE 'ACC00001' TO KF-KEY
            READ KSDS-FILE
            EVALUATE WS-FS
@@ -8043,7 +11667,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    DISPLAY 'ERRO READ: ' WS-FS
            END-EVALUATE.
 
-       3000-UPDATE-REC.
+       2000-READ-RANDOM-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-UPDATE-REC SECTION
+      *==========================================================*
+       3000-UPDATE-REC SECTION.
            MOVE 'ACC00001' TO KF-KEY
            READ KSDS-FILE
            IF WS-FS = '00'
@@ -8057,7 +11686,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-IF
            END-IF.
 
-       4000-BROWSE-SEQUENTIAL.
+       3000-UPDATE-REC-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-BROWSE-SEQUENTIAL SECTION
+      *==========================================================*
+       4000-BROWSE-SEQUENTIAL SECTION.
            MOVE LOW-VALUES TO KF-KEY
            START KSDS-FILE KEY NOT LESS THAN KF-KEY
            IF WS-FS NOT = '00'
@@ -8066,13 +11700,23 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                PERFORM 4100-READ-NEXT 5 TIMES
            END-IF.
 
-       4100-READ-NEXT.
+       4000-BROWSE-SEQUENTIAL-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4100-READ-NEXT SECTION
+      *==========================================================*
+       4100-READ-NEXT SECTION.
            READ KSDS-FILE NEXT
            IF WS-FS = '00'
                DISPLAY 'BROWSE: ' KF-KEY ' ' KF-NOME
            END-IF.
 
-       5000-DELETE-REC.
+       4100-READ-NEXT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 5000-DELETE-REC SECTION
+      *==========================================================*
+       5000-DELETE-REC SECTION.
            MOVE 'ACC00001' TO KF-KEY
            READ KSDS-FILE
            IF WS-FS = '00'
@@ -8082,7 +11726,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ELSE
                    DISPLAY 'ERRO DELETE: ' WS-FS
                END-IF
-           END-IF.`
+           END-IF.
+       5000-DELETE-REC-EXIT.
+           EXIT.`
   },
 
   {
@@ -8095,6 +11741,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMRRDS
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : GERENCIADOR DE ARQUIVO VSAM RRDS
@@ -8130,7 +11777,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-IDX                 PIC 9(08).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            OPEN I-O RRDS-FILE
            IF WS-FS NOT = '00' AND WS-FS NOT = '05'
                DISPLAY 'ERRO OPEN: ' WS-FS
@@ -8144,7 +11794,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            CLOSE RRDS-FILE
            STOP RUN.
 
-       1000-WRITE-BY-SLOT.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-WRITE-BY-SLOT SECTION
+      *==========================================================*
+       1000-WRITE-BY-SLOT SECTION.
            PERFORM VARYING WS-IDX FROM 1 BY 1
                UNTIL WS-IDX > 5
                MOVE WS-IDX TO WS-REL-KEY
@@ -8164,7 +11819,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-IF
            END-PERFORM.
 
-       2000-READ-BY-SLOT.
+       1000-WRITE-BY-SLOT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-READ-BY-SLOT SECTION
+      *==========================================================*
+       2000-READ-BY-SLOT SECTION.
            MOVE 3 TO WS-REL-KEY
            READ RRDS-FILE
            EVALUATE WS-FS
@@ -8176,7 +11836,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    DISPLAY 'ERRO READ: ' WS-FS
            END-EVALUATE.
 
-       3000-UPDATE-SLOT.
+       2000-READ-BY-SLOT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-UPDATE-SLOT SECTION
+      *==========================================================*
+       3000-UPDATE-SLOT SECTION.
            MOVE 3 TO WS-REL-KEY
            READ RRDS-FILE
            IF WS-FS = '00'
@@ -8190,7 +11855,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-IF
            END-IF.
 
-       4000-SEQUENTIAL-READ.
+       3000-UPDATE-SLOT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-SEQUENTIAL-READ SECTION
+      *==========================================================*
+       4000-SEQUENTIAL-READ SECTION.
            MOVE 1 TO WS-REL-KEY
            START RRDS-FILE KEY NOT LESS THAN WS-REL-KEY
            IF WS-FS = '00'
@@ -8203,7 +11873,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-PERFORM
            END-IF.
 
-       5000-DELETE-SLOT.
+       4000-SEQUENTIAL-READ-EXIT.
+           EXIT.
+      *==========================================================*
+      * 5000-DELETE-SLOT SECTION
+      *==========================================================*
+       5000-DELETE-SLOT SECTION.
            MOVE 2 TO WS-REL-KEY
            READ RRDS-FILE
            IF WS-FS = '00'
@@ -8213,7 +11888,9 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ELSE
                    DISPLAY 'ERRO DELETE: ' WS-FS
                END-IF
-           END-IF.`
+           END-IF.
+       5000-DELETE-SLOT-EXIT.
+           EXIT.`
   },
 
   {
@@ -8226,6 +11903,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMAIX
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : ACESSO VIA INDICE ALTERNATIVO (AIX)
@@ -8279,7 +11957,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-CTR                 PIC 9(03) VALUE ZERO.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-OPEN-FILES
            PERFORM 2000-READ-BY-PRIMARY
            PERFORM 3000-READ-BY-AIX
@@ -8287,7 +11968,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 9000-CLOSE-FILES
            STOP RUN.
 
-       1000-OPEN-FILES.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-OPEN-FILES SECTION
+      *==========================================================*
+       1000-OPEN-FILES SECTION.
            OPEN INPUT KSDS-BASE
            IF WS-FS-BASE NOT = '00'
                DISPLAY 'ERRO OPEN BASE: ' WS-FS-BASE
@@ -8299,7 +11985,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                STOP RUN
            END-IF.
 
-       2000-READ-BY-PRIMARY.
+       1000-OPEN-FILES-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-READ-BY-PRIMARY SECTION
+      *==========================================================*
+       2000-READ-BY-PRIMARY SECTION.
            MOVE 'CLI00001' TO KB-KEY-PRI
            READ KSDS-BASE
            EVALUATE WS-FS-BASE
@@ -8313,7 +12004,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    DISPLAY 'ERRO READ BASE: ' WS-FS-BASE
            END-EVALUATE.
 
-       3000-READ-BY-AIX.
+       2000-READ-BY-PRIMARY-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-READ-BY-AIX SECTION
+      *==========================================================*
+       3000-READ-BY-AIX SECTION.
            MOVE '12345678901' TO KP-KEY-CPF
            READ KSDS-PATH
            EVALUATE WS-FS-PATH
@@ -8330,7 +12026,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    DISPLAY 'ERRO READ PATH: ' WS-FS-PATH
            END-EVALUATE.
 
-       4000-BROWSE-BY-AIX.
+       3000-READ-BY-AIX-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-BROWSE-BY-AIX SECTION
+      *==========================================================*
+       4000-BROWSE-BY-AIX SECTION.
            MOVE '12345678901' TO KP-KEY-CPF
            START KSDS-PATH KEY NOT LESS THAN KP-KEY-CPF
            IF WS-FS-PATH = '00'
@@ -8346,8 +12047,15 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-PERFORM
            END-IF.
 
-       9000-CLOSE-FILES.
-           CLOSE KSDS-BASE KSDS-PATH.`
+       4000-BROWSE-BY-AIX-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-CLOSE-FILES SECTION
+      *==========================================================*
+       9000-CLOSE-FILES SECTION.
+           CLOSE KSDS-BASE KSDS-PATH.
+       9000-CLOSE-FILES-EXIT.
+           EXIT.`
   },
 
   {
@@ -8360,6 +12068,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMSEQ
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : PROCESSAMENTO SEQUENCIAL AVANCADO
@@ -8404,7 +12113,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-PREV-KEY            PIC X(08).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-INITIALIZE
            PERFORM 2000-START-BROWSE
            PERFORM 3000-PROCESS-LOOP
@@ -8412,7 +12124,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 9000-FINALIZE
            STOP RUN.
 
-       1000-INITIALIZE.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-INITIALIZE SECTION
+      *==========================================================*
+       1000-INITIALIZE SECTION.
            MOVE 'ACC00100' TO WS-START-KEY
            MOVE 'ACC'      TO WS-END-PREFIX
            MOVE 'X'        TO WS-SKIP-STATUS
@@ -8422,7 +12139,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                STOP RUN
            END-IF.
 
-       2000-START-BROWSE.
+       1000-INITIALIZE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-START-BROWSE SECTION
+      *==========================================================*
+       2000-START-BROWSE SECTION.
            MOVE WS-START-KEY TO VF-KEY
            START VSAM-FILE
                KEY IS GREATER THAN VF-KEY
@@ -8437,7 +12159,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    SET END-OF-FILE TO TRUE
            END-EVALUATE.
 
-       3000-PROCESS-LOOP.
+       2000-START-BROWSE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-PROCESS-LOOP SECTION
+      *==========================================================*
+       3000-PROCESS-LOOP SECTION.
            READ VSAM-FILE NEXT
            EVALUATE WS-FS
                WHEN '00'
@@ -8453,7 +12180,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    SET END-OF-FILE TO TRUE
            END-EVALUATE.
 
-       3100-CHECK-AND-PROCESS.
+       3000-PROCESS-LOOP-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3100-CHECK-AND-PROCESS SECTION
+      *==========================================================*
+       3100-CHECK-AND-PROCESS SECTION.
            IF VF-STATUS = WS-SKIP-STATUS
                ADD 1 TO WS-CTR-SKIP
            ELSE
@@ -8463,10 +12195,17 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
            MOVE VF-KEY TO WS-PREV-KEY.
 
-       9000-FINALIZE.
+       3100-CHECK-AND-PROCESS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-FINALIZE SECTION
+      *==========================================================*
+       9000-FINALIZE SECTION.
            DISPLAY 'PROCESSADOS: ' WS-CTR-PROC
            DISPLAY 'IGNORADOS  : ' WS-CTR-SKIP
-           CLOSE VSAM-FILE.`
+           CLOSE VSAM-FILE.
+       9000-FINALIZE-EXIT.
+           EXIT.`
   },
 
   {
@@ -8479,6 +12218,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMUPD
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : ATUALIZACAO BATCH DE VSAM KSDS
@@ -8544,7 +12284,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-ERR-LINE            PIC X(200).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-OPEN-FILES
            PERFORM 2000-PROCESS-TRANS
                UNTIL END-OF-TRANS
@@ -8552,7 +12295,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 9000-CLOSE-FILES
            STOP RUN.
 
-       1000-OPEN-FILES.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-OPEN-FILES SECTION
+      *==========================================================*
+       1000-OPEN-FILES SECTION.
            OPEN I-O    MASTER-KSDS
            IF WS-FS-MAS NOT = '00'
                DISPLAY 'ERRO OPEN MASTER: ' WS-FS-MAS
@@ -8561,7 +12309,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            OPEN INPUT  TRANS-FILE
            OPEN OUTPUT ERROR-FILE.
 
-       2000-PROCESS-TRANS.
+       1000-OPEN-FILES-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-PROCESS-TRANS SECTION
+      *==========================================================*
+       2000-PROCESS-TRANS SECTION.
            READ TRANS-FILE
            IF WS-FS-TRN = '10'
                SET END-OF-TRANS TO TRUE
@@ -8579,7 +12332,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                END-EVALUATE
            END-IF.
 
-       2100-DO-INSERT.
+       2000-PROCESS-TRANS-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-DO-INSERT SECTION
+      *==========================================================*
+       2100-DO-INSERT SECTION.
            MOVE TR-KEY    TO MK-KEY
            MOVE TR-NOME   TO MK-NOME
            MOVE TR-VALOR  TO MK-VALOR
@@ -8595,7 +12353,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ADD 1 TO WS-CTR-ERR
            END-IF.
 
-       2200-DO-UPDATE.
+       2100-DO-INSERT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2200-DO-UPDATE SECTION
+      *==========================================================*
+       2200-DO-UPDATE SECTION.
            MOVE TR-KEY TO MK-KEY
            READ MASTER-KSDS
            IF WS-FS-MAS = '00'
@@ -8626,7 +12389,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ADD 1 TO WS-CTR-ERR
            END-IF.
 
-       2300-DO-DELETE.
+       2200-DO-UPDATE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2300-DO-DELETE SECTION
+      *==========================================================*
+       2300-DO-DELETE SECTION.
            MOVE TR-KEY TO MK-KEY
            READ MASTER-KSDS
            IF WS-FS-MAS = '00'
@@ -8648,14 +12416,24 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                ADD 1 TO WS-CTR-ERR
            END-IF.
 
-       2900-LOG-ERROR.
+       2300-DO-DELETE-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2900-LOG-ERROR SECTION
+      *==========================================================*
+       2900-LOG-ERROR SECTION.
            STRING 'OPER INVALIDA=' TR-OPER
                   ' KEY=' TR-KEY
                   DELIMITED SIZE INTO WS-ERR-LINE
            WRITE ERROR-REC FROM WS-ERR-LINE
            ADD 1 TO WS-CTR-ERR.
 
-       3000-PRINT-SUMMARY.
+       2900-LOG-ERROR-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-PRINT-SUMMARY SECTION
+      *==========================================================*
+       3000-PRINT-SUMMARY SECTION.
            DISPLAY '======================================'
            DISPLAY ' RESUMO ATUALIZACAO BATCH'
            DISPLAY '======================================'
@@ -8666,8 +12444,15 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            DISPLAY ' ERROS            : ' WS-CTR-ERR
            DISPLAY '======================================'.
 
-       9000-CLOSE-FILES.
-           CLOSE MASTER-KSDS TRANS-FILE ERROR-FILE.`
+       3000-PRINT-SUMMARY-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-CLOSE-FILES SECTION
+      *==========================================================*
+       9000-CLOSE-FILES SECTION.
+           CLOSE MASTER-KSDS TRANS-FILE ERROR-FILE.
+       9000-CLOSE-FILES-EXIT.
+           EXIT.`
   },
 
   {
@@ -8680,6 +12465,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMLSL
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : RECORD LEVEL SHARING (RLS)
@@ -8722,7 +12508,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                                   VALUE 250.00.
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            OPEN I-O VSAM-RLS
            IF WS-FS NOT = '00'
                DISPLAY 'ERRO OPEN: ' WS-FS
@@ -8738,7 +12527,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            CLOSE VSAM-RLS
            STOP RUN.
 
-       1000-READ-WITH-LOCK.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-READ-WITH-LOCK SECTION
+      *==========================================================*
+       1000-READ-WITH-LOCK SECTION.
            MOVE 'CLI0000001' TO VR-KEY
            MOVE ZERO TO WS-RETRY-COUNT
            SET LOCK-FAIL TO TRUE
@@ -8746,7 +12540,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                UNTIL LOCK-OK
                   OR WS-RETRY-COUNT >= WS-MAX-RETRIES.
 
-       1100-TRY-LOCK.
+       1000-READ-WITH-LOCK-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1100-TRY-LOCK SECTION
+      *==========================================================*
+       1100-TRY-LOCK SECTION.
            READ VSAM-RLS WITH LOCK
            EVALUATE WS-FS
                WHEN '00'
@@ -8766,11 +12565,21 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    MOVE WS-MAX-RETRIES TO WS-RETRY-COUNT
            END-EVALUATE.
 
-       1200-WAIT.
+       1100-TRY-LOCK-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1200-WAIT SECTION
+      *==========================================================*
+       1200-WAIT SECTION.
            DISPLAY 'AGUARDANDO ' WS-WAIT-SECONDS 's...'
            CONTINUE.
 
-       2000-UPDATE-AND-UNLOCK.
+       1200-WAIT-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-UPDATE-AND-UNLOCK SECTION
+      *==========================================================*
+       2000-UPDATE-AND-UNLOCK SECTION.
            IF VR-SALDO >= WS-DEBIT-AMT
                SUBTRACT WS-DEBIT-AMT FROM VR-SALDO
                MOVE FUNCTION CURRENT-DATE TO WS-TIMESTAMP
@@ -8788,13 +12597,20 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                PERFORM 2100-UNLOCK-RECORD
            END-IF.
 
-       2100-UNLOCK-RECORD.
+       2000-UPDATE-AND-UNLOCK-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2100-UNLOCK-RECORD SECTION
+      *==========================================================*
+       2100-UNLOCK-RECORD SECTION.
            UNLOCK VSAM-RLS
            IF WS-FS = '00'
                DISPLAY 'UNLOCK OK'
            ELSE
                DISPLAY 'ERRO UNLOCK: ' WS-FS
-           END-IF.`
+           END-IF.
+       2100-UNLOCK-RECORD-EXIT.
+           EXIT.`
   },
 
   {
@@ -8807,6 +12623,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["VSAM", "COBOL"],
     source:
 `      *================================================================*
+      *================================================================*
       * PROGRAMA : VSAMBKP
       * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
       * OBJETIVO : BACKUP E RESTORE DE VSAM KSDS
@@ -8876,7 +12693,10 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        01  WS-HASH-WORK           PIC 9(18).
 
        PROCEDURE DIVISION.
-       0000-MAIN.
+      *==========================================================*
+      * 0000-MAIN SECTION
+      *==========================================================*
+       0000-MAIN SECTION.
            PERFORM 1000-OPEN-FILES
            PERFORM 2000-WRITE-HEADER
            PERFORM 3000-BACKUP-LOOP
@@ -8885,7 +12705,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            PERFORM 9000-CLOSE-FILES
            STOP RUN.
 
-       1000-OPEN-FILES.
+       0000-MAIN-EXIT.
+           EXIT.
+      *==========================================================*
+      * 1000-OPEN-FILES SECTION
+      *==========================================================*
+       1000-OPEN-FILES SECTION.
            OPEN INPUT  VSAM-SOURCE
            IF WS-FS-VSAM NOT = '00'
                DISPLAY 'ERRO OPEN VSAM: ' WS-FS-VSAM
@@ -8893,7 +12718,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            END-IF
            OPEN OUTPUT BACKUP-FILE.
 
-       2000-WRITE-HEADER.
+       1000-OPEN-FILES-EXIT.
+           EXIT.
+      *==========================================================*
+      * 2000-WRITE-HEADER SECTION
+      *==========================================================*
+       2000-WRITE-HEADER SECTION.
            MOVE FUNCTION CURRENT-DATE
                TO WS-CURRENT-DATE
            STRING WS-CD-YEAR '-' WS-CD-MONTH '-'
@@ -8908,7 +12738,12 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                TO WH-DSNAME
            WRITE BACKUP-REC FROM WS-HEADER-REC.
 
-       3000-BACKUP-LOOP.
+       2000-WRITE-HEADER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3000-BACKUP-LOOP SECTION
+      *==========================================================*
+       3000-BACKUP-LOOP SECTION.
            READ VSAM-SOURCE
            EVALUATE WS-FS-VSAM
                WHEN '00'
@@ -8926,14 +12761,24 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    SET END-OF-FILE TO TRUE
            END-EVALUATE.
 
-       3100-UPDATE-CHECKSUM.
+       3000-BACKUP-LOOP-EXIT.
+           EXIT.
+      *==========================================================*
+      * 3100-UPDATE-CHECKSUM SECTION
+      *==========================================================*
+       3100-UPDATE-CHECKSUM SECTION.
            COMPUTE WS-HASH-WORK =
                FUNCTION ORD(VS-KEY(1:1)) *
                FUNCTION ORD(VS-KEY(2:1)) +
                WS-CTR-RECS
            ADD WS-HASH-WORK TO WS-CHECKSUM.
 
-       4000-WRITE-TRAILER.
+       3100-UPDATE-CHECKSUM-EXIT.
+           EXIT.
+      *==========================================================*
+      * 4000-WRITE-TRAILER SECTION
+      *==========================================================*
+       4000-WRITE-TRAILER SECTION.
            MOVE WS-CTR-RECS  TO WT-TOTAL-RECS
            MOVE WS-FIRST-KEY TO WT-FIRST-KEY
            MOVE WS-LAST-KEY  TO WT-LAST-KEY
@@ -8947,8 +12792,565 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
            DISPLAY ' CHECKSUM : ' WS-CHECKSUM
            DISPLAY '======================================'.
 
-       9000-CLOSE-FILES.
-           CLOSE VSAM-SOURCE BACKUP-FILE.`
-  }
+       4000-WRITE-TRAILER-EXIT.
+           EXIT.
+      *==========================================================*
+      * 9000-CLOSE-FILES SECTION
+      *==========================================================*
+       9000-CLOSE-FILES SECTION.
+           CLOSE VSAM-SOURCE BACKUP-FILE.
+       9000-CLOSE-FILES-EXIT.
+           EXIT.`
+  },
+
+  {
+    id: "ASMVSRD1",
+    tech: "vsam",
+    name: "Leitura Sequencial (ASM)",
+    desc: "VSAM nativo em Assembler — ACB, RPL, OPEN, GET sequencial e CLOSE com contagem de registros.",
+    level: "basic",
+    filename: "ASMVSRD1.hlasm",
+    tags: ["HLASM","VSAM","KSDS"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMVSRD1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : LEITURA SEQUENCIAL VSAM EM ASSEMBLER
+*            ACB + RPL + OPEN + GET SEQ + CLOSE
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMVSRD1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         OPEN  (VSAMACB)
+         LTR   R15,R15
+         BNZ   OPENERR
+*
+         SR    R5,R5
+*
+GETLOOP  GET   RPL=VSAMRPL
+         LTR   R15,R15
+         BNZ   GETEND
+*
+         LA    R5,1(R5)
+         B     GETLOOP
+*
+GETEND   CH    R15,=H'8'
+         BNE   GETERR
+         SHOWCB RPL=VSAMRPL,FIELDS=FDBK,AREA=FDBKAREA,        X
+               LENGTH=4
+         CLC   FDBKAREA,=F'4'
+         BNE   GETERR
+*
+         CLOSE (VSAMACB)
+*
+         CVD   R5,DWORK
+         UNPK  WMSG+5(8),DWORK
+         OI    WMSG+12,X'F0'
+         MVC   WMSG(5),=C'REGS='
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         B     EXIT
+*
+OPENERR  MVC   WMSG(10),=C'OPEN ERRO '
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+         B     EXIT
+GETERR   MVC   WMSG(10),=C'GET  ERRO '
+         WTO   MF=(E,WTOMSG)
+         LA    R15,12
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+VSAMACB  ACB   DDNAME=VSAMDD,MACRF=(SEQ,IN)
+VSAMRPL  RPL   ACB=VSAMACB,AREA=RECAREA,AREALEN=200,          X
+               OPTCD=(SEQ,MVE)
+*
+SAVE     DS    18F
+DWORK    DS    D
+FDBKAREA DS    F
+RECAREA  DS    CL200
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMVSRD1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMVSRD1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : LEITURA SEQUENCIAL VSAM EM ASSEMBLER
+*            ACB + RPL + OPEN + GET SEQ + CLOSE
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMVSRD1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMVSRD1         SET BASE (RELATIVE)
+         USING ASMVSRD1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         OPEN  (VSAMACB)
+         LTR   R15,R15
+         JNZ   OPENERR
+*
+         SR    R5,R5
+*
+GETLOOP  GET   RPL=VSAMRPL
+         LTR   R15,R15
+         JNZ   GETEND
+*
+         LA    R5,1(R5)
+         J     GETLOOP
+*
+GETEND   CH    R15,=H'8'
+         JNE   GETERR
+         SHOWCB RPL=VSAMRPL,FIELDS=FDBK,AREA=FDBKAREA,        X
+               LENGTH=4
+         CLC   FDBKAREA,=F'4'
+         JNE   GETERR
+*
+         CLOSE (VSAMACB)
+*
+         CVD   R5,DWORK
+         UNPK  WMSG+5(8),DWORK
+         OI    WMSG+12,X'F0'
+         MVC   WMSG(5),=C'REGS='
+         WTO   MF=(E,WTOMSG)
+*
+         SR    R15,R15
+         J     EXIT
+*
+OPENERR  MVC   WMSG(10),=C'OPEN ERRO '
+         WTO   MF=(E,WTOMSG)
+         LA    R15,8
+         J     EXIT
+GETERR   MVC   WMSG(10),=C'GET  ERRO '
+         WTO   MF=(E,WTOMSG)
+         LA    R15,12
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+VSAMACB  ACB   DDNAME=VSAMDD,MACRF=(SEQ,IN)
+VSAMRPL  RPL   ACB=VSAMACB,AREA=RECAREA,AREALEN=200,          X
+               OPTCD=(SEQ,MVE)
+*
+SAVE     DS    18F
+DWORK    DS    D
+FDBKAREA DS    F
+RECAREA  DS    CL200
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMVSRD1`
+  },
+
+  {
+    id: "ASMVKSD1",
+    tech: "vsam",
+    name: "KSDS Random I/O (ASM)",
+    desc: "VSAM KSDS em Assembler — GET por chave, PUT para inserção, PUT para update e ERASE.",
+    level: "intermediate",
+    filename: "ASMVKSD1.hlasm",
+    tags: ["HLASM","VSAM","KSDS","CRUD"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMVKSD1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : CRUD KSDS EM ASSEMBLER VIA MACROS VSAM
+*            GET/PUT/ERASE COM RPL OPTCD KEY,DIR
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMVKSD1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         OPEN  (VSAMACB)
+         LTR   R15,R15
+         BNZ   OPENERR
+*
+         MVC   KEYAREA,=CL10'KEY00100  '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD),           X
+               ARG=KEYAREA
+         GET   RPL=VSAMRPL
+         LTR   R15,R15
+         BNZ   RDERR
+*
+         MVC   WMSG(5),=C'READ='
+         MVC   WMSG+5(20),RECAREA
+         WTO   MF=(E,WTOMSG)
+*
+         MVC   RECAREA+10(20),=CL20'ATUALIZADO VIA ASM  '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD)
+         PUT   RPL=VSAMRPL
+         LTR   R15,R15
+         BNZ   UPDERR
+*
+         MVC   KEYAREA,=CL10'KEY09999  '
+         MVC   RECAREA(10),KEYAREA
+         MVC   RECAREA+10(20),=CL20'NOVO REGISTRO ASM   '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE),               X
+               ARG=KEYAREA
+         PUT   RPL=VSAMRPL
+         LTR   R15,R15
+         BNZ   INSERR
+*
+         MVC   KEYAREA,=CL10'KEY09999  '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD),           X
+               ARG=KEYAREA
+         GET   RPL=VSAMRPL
+         LTR   R15,R15
+         BNZ   DELERR
+         ERASE RPL=VSAMRPL
+         LTR   R15,R15
+         BNZ   DELERR
+*
+         CLOSE (VSAMACB)
+         SR    R15,R15
+         B     EXIT
+*
+OPENERR  LA    R15,8
+         B     EXIT
+RDERR    LA    R15,12
+         B     CLOSEX
+UPDERR   LA    R15,16
+         B     CLOSEX
+INSERR   LA    R15,20
+         B     CLOSEX
+DELERR   LA    R15,24
+CLOSEX   CLOSE (VSAMACB)
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+VSAMACB  ACB   DDNAME=VSAMDD,MACRF=(KEY,DIR,SEQ,OUT,IN)
+VSAMRPL  RPL   ACB=VSAMACB,AREA=RECAREA,AREALEN=200,          X
+               KEYLEN=10,OPTCD=(KEY,DIR,MVE)
+*
+SAVE     DS    18F
+KEYAREA  DS    CL10
+RECAREA  DS    CL200
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMVKSD1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMVKSD1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : CRUD KSDS EM ASSEMBLER VIA MACROS VSAM
+*            GET/PUT/ERASE COM RPL OPTCD KEY,DIR
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMVKSD1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMVKSD1         SET BASE (RELATIVE)
+         USING ASMVKSD1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         OPEN  (VSAMACB)
+         LTR   R15,R15
+         JNZ   OPENERR
+*
+         MVC   KEYAREA,=CL10'KEY00100  '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD),           X
+               ARG=KEYAREA
+         GET   RPL=VSAMRPL
+         LTR   R15,R15
+         JNZ   RDERR
+*
+         MVC   WMSG(5),=C'READ='
+         MVC   WMSG+5(20),RECAREA
+         WTO   MF=(E,WTOMSG)
+*
+         MVC   RECAREA+10(20),=CL20'ATUALIZADO VIA ASM  '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD)
+         PUT   RPL=VSAMRPL
+         LTR   R15,R15
+         JNZ   UPDERR
+*
+         MVC   KEYAREA,=CL10'KEY09999  '
+         MVC   RECAREA(10),KEYAREA
+         MVC   RECAREA+10(20),=CL20'NOVO REGISTRO ASM   '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE),               X
+               ARG=KEYAREA
+         PUT   RPL=VSAMRPL
+         LTR   R15,R15
+         JNZ   INSERR
+*
+         MVC   KEYAREA,=CL10'KEY09999  '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD),           X
+               ARG=KEYAREA
+         GET   RPL=VSAMRPL
+         LTR   R15,R15
+         JNZ   DELERR
+         ERASE RPL=VSAMRPL
+         LTR   R15,R15
+         JNZ   DELERR
+*
+         CLOSE (VSAMACB)
+         SR    R15,R15
+         J     EXIT
+*
+OPENERR  LA    R15,8
+         J     EXIT
+RDERR    LA    R15,12
+         J     CLOSEX
+UPDERR   LA    R15,16
+         J     CLOSEX
+INSERR   LA    R15,20
+         J     CLOSEX
+DELERR   LA    R15,24
+CLOSEX   CLOSE (VSAMACB)
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+VSAMACB  ACB   DDNAME=VSAMDD,MACRF=(KEY,DIR,SEQ,OUT,IN)
+VSAMRPL  RPL   ACB=VSAMACB,AREA=RECAREA,AREALEN=200,          X
+               KEYLEN=10,OPTCD=(KEY,DIR,MVE)
+*
+SAVE     DS    18F
+KEYAREA  DS    CL10
+RECAREA  DS    CL200
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMVKSD1`
+  },
+
+  {
+    id: "ASMVBRW1",
+    tech: "vsam",
+    name: "Browse com POINT (ASM)",
+    desc: "POINT + GET SEQ para browse posicional em VSAM KSDS — forward/backward com SHOWCB feedback.",
+    level: "advanced",
+    filename: "ASMVBRW1.hlasm",
+    tags: ["HLASM","VSAM","KSDS","BROWSE"],
+    sourceBase:
+`*================================================================*
+* PROGRAMA : ASMVBRW1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : BROWSE POSICIONAL VSAM EM ASSEMBLER
+*            POINT + GET SEQ FWD + GET SEQ BWD + SHOWCB
+* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*================================================================*
+ASMVBRW1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         BALR  R12,0                SET BASE
+         USING *,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         OPEN  (VSAMACB)
+         LTR   R15,R15
+         BNZ   OPENERR
+*
+         MVC   KEYAREA,=CL10'KEY00500  '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE),               X
+               ARG=KEYAREA
+         POINT RPL=VSAMRPL
+         LTR   R15,R15
+         BNZ   PNTERR
+*
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE,FWD)
+         SR    R5,R5
+         LA    R6,10
+*
+FWDLOOP  GET   RPL=VSAMRPL
+         LTR   R15,R15
+         BNZ   FWDEND
+*
+         LA    R5,1(R5)
+         CR    R5,R6
+         BNL   FWDEND
+         B     FWDLOOP
+*
+FWDEND   DS    0H
+         CVD   R5,DWORK
+         UNPK  WMSG+4(4),DWORK+6(2)
+         OI    WMSG+7,X'F0'
+         MVC   WMSG(4),=C'FWD='
+         WTO   MF=(E,WTOMSG)
+*
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE,BWD)
+         SR    R5,R5
+         LA    R6,5
+*
+BWDLOOP  GET   RPL=VSAMRPL
+         LTR   R15,R15
+         BNZ   BWDEND
+*
+         LA    R5,1(R5)
+         CR    R5,R6
+         BNL   BWDEND
+         B     BWDLOOP
+*
+BWDEND   DS    0H
+         CVD   R5,DWORK
+         UNPK  WMSG+4(4),DWORK+6(2)
+         OI    WMSG+7,X'F0'
+         MVC   WMSG(4),=C'BWD='
+         WTO   MF=(E,WTOMSG)
+*
+         SHOWCB RPL=VSAMRPL,                                   X
+               FIELDS=(FDBK,RBA,KEYLEN),                       X
+               AREA=CBAREA,LENGTH=12
+         MVC   WMSG(6),=C'FDBK= '
+         L     R3,CBAREA
+         CVD   R3,DWORK
+         UNPK  WMSG+5(4),DWORK+6(2)
+         OI    WMSG+8,X'F0'
+         WTO   MF=(E,WTOMSG)
+*
+         CLOSE (VSAMACB)
+         SR    R15,R15
+         B     EXIT
+*
+OPENERR  LA    R15,8
+         B     EXIT
+PNTERR   LA    R15,12
+         CLOSE (VSAMACB)
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+VSAMACB  ACB   DDNAME=VSAMDD,MACRF=(KEY,SEQ,DIR,IN)
+VSAMRPL  RPL   ACB=VSAMACB,AREA=RECAREA,AREALEN=200,          X
+               KEYLEN=10,OPTCD=(KEY,SEQ,MVE)
+*
+SAVE     DS    18F
+DWORK    DS    D
+CBAREA   DS    3F
+KEYAREA  DS    CL10
+RECAREA  DS    CL200
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMVBRW1`,
+    sourceRelative:
+`*================================================================*
+* PROGRAMA : ASMVBRW1
+* AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
+* OBJETIVO : BROWSE POSICIONAL VSAM EM ASSEMBLER
+*            POINT + GET SEQ FWD + GET SEQ BWD + SHOWCB
+* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+*================================================================*
+ASMVBRW1 CSECT
+         STM   R14,R12,12(R13)     SAVE REGISTERS
+         LARL  R12,ASMVBRW1         SET BASE (RELATIVE)
+         USING ASMVBRW1,R12
+         ST    R13,SAVE+4
+         LA    R13,SAVE
+*
+         OPEN  (VSAMACB)
+         LTR   R15,R15
+         JNZ   OPENERR
+*
+         MVC   KEYAREA,=CL10'KEY00500  '
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE),               X
+               ARG=KEYAREA
+         POINT RPL=VSAMRPL
+         LTR   R15,R15
+         JNZ   PNTERR
+*
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE,FWD)
+         SR    R5,R5
+         LA    R6,10
+*
+FWDLOOP  GET   RPL=VSAMRPL
+         LTR   R15,R15
+         JNZ   FWDEND
+*
+         LA    R5,1(R5)
+         CR    R5,R6
+         JNL   FWDEND
+         J     FWDLOOP
+*
+FWDEND   DS    0H
+         CVD   R5,DWORK
+         UNPK  WMSG+4(4),DWORK+6(2)
+         OI    WMSG+7,X'F0'
+         MVC   WMSG(4),=C'FWD='
+         WTO   MF=(E,WTOMSG)
+*
+         MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE,BWD)
+         SR    R5,R5
+         LA    R6,5
+*
+BWDLOOP  GET   RPL=VSAMRPL
+         LTR   R15,R15
+         JNZ   BWDEND
+*
+         LA    R5,1(R5)
+         CR    R5,R6
+         JNL   BWDEND
+         J     BWDLOOP
+*
+BWDEND   DS    0H
+         CVD   R5,DWORK
+         UNPK  WMSG+4(4),DWORK+6(2)
+         OI    WMSG+7,X'F0'
+         MVC   WMSG(4),=C'BWD='
+         WTO   MF=(E,WTOMSG)
+*
+         SHOWCB RPL=VSAMRPL,                                   X
+               FIELDS=(FDBK,RBA,KEYLEN),                       X
+               AREA=CBAREA,LENGTH=12
+         MVC   WMSG(6),=C'FDBK= '
+         L     R3,CBAREA
+         CVD   R3,DWORK
+         UNPK  WMSG+5(4),DWORK+6(2)
+         OI    WMSG+8,X'F0'
+         WTO   MF=(E,WTOMSG)
+*
+         CLOSE (VSAMACB)
+         SR    R15,R15
+         J     EXIT
+*
+OPENERR  LA    R15,8
+         J     EXIT
+PNTERR   LA    R15,12
+         CLOSE (VSAMACB)
+*
+EXIT     L     R13,SAVE+4
+         LM    R14,R12,12(R13)
+         BR    R14
+*
+VSAMACB  ACB   DDNAME=VSAMDD,MACRF=(KEY,SEQ,DIR,IN)
+VSAMRPL  RPL   ACB=VSAMACB,AREA=RECAREA,AREALEN=200,          X
+               KEYLEN=10,OPTCD=(KEY,SEQ,MVE)
+*
+SAVE     DS    18F
+DWORK    DS    D
+CBAREA   DS    3F
+KEYAREA  DS    CL10
+RECAREA  DS    CL200
+WMSG     DS    CL60
+WTOMSG   WTO   '                                              X
+                                              ',MF=L
+         YREGS
+         END   ASMVBRW1`
+  },
 
 ];

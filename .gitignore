@@ -3,14 +3,35 @@
 Thumbs.db
 Desktop.ini
 
-# Editor
+# Editors / IDEs
 .vscode/
+.idea/
 *.swp
 *.swo
 *~
+*.sublime-workspace
+*.sublime-project
 
 # Dependencies
 node_modules/
 
 # Build
 dist/
+build/
+.cache/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Temporary local cruft
+.delete
+*.tmp
+*.bak

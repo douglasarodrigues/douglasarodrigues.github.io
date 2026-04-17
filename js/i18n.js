@@ -19,16 +19,23 @@
     skip: "Skip to main content",
 
     // -- Index page --
-    "idx.title": "Douglas Assunçao Rodrigues | Mainframe Developer",
+    "idx.title": "Douglas Assunção Rodrigues | Mainframe Developer",
     "idx.meta.desc":
       "Specialist in COBOL, DB2, CICS, and JCL for mission-critical banking systems. Explore my career, certifications, and get in touch.",
     "idx.headline":
       'Mainframe <span class="text-accent">Developer</span> | Banking systems that can\'t stop',
     "idx.status": "Open to Opportunities",
     "idx.bio":
-      "80% of banking transactions in Brazil run on mainframes.<br>I write, optimize, and support the COBOL, DB2, and CICS code behind them.<br>Want to know how? It's all in the links below.",
+      "90% of banking transactions in Brazil run on mainframes.<br>I write, optimize, and support the COBOL, DB2, and CICS code behind them.<br>Want to know how? It's all in the links below.",
+    "idx.section.links": "Next Steps",
+    "idx.skills.extra.title": "Complementary Skills",
+    "idx.cta.cv": "View Résumé",
+    "idx.cta.linkedin": "LinkedIn",
+    "idx.heroStat.years": "Years of experience",
+    "idx.heroStat.programs": "Authored programs",
+    "idx.heroStat.incidents": "P1/P2 Incidents resolved",
     "idx.link1.title": "Mainframe Lab",
-    "idx.link1.desc": "85 original programs - see in practice what I master",
+    "idx.link1.desc": "97 original programs - see in practice what I master",
     "idx.link2.title": "My Full Journey",
     "idx.link2.desc":
       "Experience, recommendations, and what doesn't fit on a résumé",
@@ -46,16 +53,17 @@
 
     // -- Lab page --
     "lab.title":
-      "Mainframe Lab | Douglas Assunçao Rodrigues - COBOL, JCL, DB2, CICS Programs & Quick Reference",
+      "Mainframe Lab | Douglas Assunção Rodrigues - COBOL, JCL, DB2, CICS Programs & Quick Reference",
     "lab.meta.desc":
-      "Douglas Assunçao Rodrigues's technical portfolio: 85 reusable mainframe modules in COBOL, HLASM, JCL, CICS, DB2, IMS, and VSAM - utility tools for the mainframe developer.",
+      "Douglas Assunção Rodrigues's technical portfolio: 97 reusable mainframe modules in COBOL, HLASM, JCL, CICS, DB2, IMS, and VSAM - utility tools for the mainframe developer.",
     "lab.back": "Back to Home",
     "lab.breadcrumb.current": "Mainframe Lab",
     "lab.header.desc":
-      "85 reusable modules I wrote, tested, and refined. Browse the code and see, in practice, utility tools that accelerate mainframe development.",
+      "97 reusable modules I wrote, tested, and refined. Browse the code and see, in practice, utility tools that accelerate mainframe development.",
     "lab.stat.programs": "Programs in Lab",
-    "lab.stat.available": "Available",
-    "lab.stat.coming": "Coming Soon",
+    "lab.stat.techs": "Technologies",
+    "lab.stat.years": "Years of experience",
+    "lab.stat.incidents": "P1/P2 Incidents resolved",
     "lab.search.placeholder": "Search by name, technology, or description...",
     "lab.tab.ref": "Quick Reference",
     "lab.footer": "Mainframe Lab - Code, reference, and precision.",
@@ -121,9 +129,9 @@
 
     // Certifications page --
     "cert.title":
-      "Certifications | Douglas Assunçao Rodrigues - Validated Credentials",
+      "Certifications | Douglas Assunção Rodrigues - Validated Credentials",
     "cert.meta.desc":
-      "Professional certifications from Douglas Assunçao Rodrigues: Azure AZ-900 and validated credentials proving technical expertise in mission-critical technologies.",
+      "Professional certifications from Douglas Assunção Rodrigues: Azure AZ-900 and validated credentials proving technical expertise in mission-critical technologies.",
     "cert.back": "Back to Home",
     "cert.breadcrumb.current": "Certifications",
     "cert.header.desc":
@@ -133,8 +141,8 @@
       "Cloud computing fundamentals, Azure services, security, privacy, compliance, and pricing models.",
     "cert.btn.view": "View Certificate",
     "cert.btn.verify": "Verify on Credly",
-    "cert.ocjp.title": "Oracle Certified Java Programmer (OCJP)",
-    "cert.ocjp.desc":
+    "cert.scjp.title": "Oracle Certified Java Programmer (SCJP)",
+    "cert.scjp.desc":
       "Certification validating advanced Java SE 6 proficiency: object-oriented programming, collections, threads, generics, I/O, and exception handling.",
     "cert.note":
       "New certifications in progress. This page is updated as new credentials are earned.",
@@ -144,67 +152,79 @@
     "cv.title":
       "Résumé | Douglas Assunção Rodrigues - Software Engineer III Mainframe",
     "cv.meta.desc":
-      "Résumé of Douglas Assunção Rodrigues: 18+ years in Mainframe software engineering for mission-critical financial systems. Assembler z/OS, COBOL, DB2, CICS specialist.",
+      "Résumé of Douglas Assunção Rodrigues: 10+ years in Mainframe software engineering for mission-critical financial systems. Assembler z/OS, COBOL, DB2, CICS specialist.",
     "cv.back": "Back to Home",
     "cv.breadcrumb.current": "Résumé",
     "cv.subtitle": "Software Engineer III - Mainframe",
     "cv.summary":
-      "Mainframe Software Engineer with 18+ years of experience in mission-critical financial systems. Specialist in Assembler z/OS, COBOL, DB2, and CICS, with a proven track record of reducing incident resolution time and driving revenue growth. Deep expertise in VISA and Elo card systems based on ISO 8583, operating in high-availability, high-volume environments.",
+      "Mainframe Software Engineer with 10+ years of experience in mission-critical financial systems. Specialist in Assembler z/OS, COBOL, DB2, and CICS, with a proven track record of reducing incident resolution time and driving revenue growth. Deep expertise in VISA and Elo card systems based on ISO 8583, operating in high-availability, high-volume environments.",
     "cv.section.exp": "Professional Experience",
     "cv.current": "Present",
-    "cv.job1.title": "Software Engineer III",
-    "cv.job1.desc":
+
+    // Job 0 - Banco Bradesco (Apr 2024 - Present)
+    "cv.job0.role": "Software Engineer III",
+    "cv.job0.company":
       "One of the largest private banks in Latin America, with over 70 million customers and mission-critical Mainframe infrastructure.",
-    "cv.job1.bul1":
+    "cv.job0.h1":
       "Ensures the stability of the Current Accounts system, safeguarding operations that impact millions of customers daily.",
-    "cv.job1.bul2":
-      "Responsible for analysis, diagnosis, and resolution of P1 and P2 incidents in high-volume Mainframe z/OS environments.",
-    "cv.job1.bul3":
+    "cv.job0.h2":
+      "Responsible for analysis, diagnosis, and resolution of P3 and P4 incidents in high-volume Mainframe z/OS environments.",
+    "cv.job0.h3":
       "Technical reference in Assembler z/OS within the team, serving as focal point for low-level analysis and complex ABEND debugging.",
-    "cv.job1.bul4":
+    "cv.job0.h4":
       "Created automation macros for repetitive team tasks, significantly reducing time spent on recurring operational activities.",
-    "cv.job1.bul5":
-      "Developed an AI multi-agent system to optimize development and analysis workflow, reducing delivery time by up to 30%.",
-    "cv.job2.title": "Solutions Consultant IV",
-    "cv.job2.desc":
-      "Multinational digital transformation company, present in 40+ countries with a focus on technology solutions for the financial sector.",
-    "cv.job2.bul1":
-      "Assigned as an on-site senior consultant for Accounts System sustainability, handling critical incidents under strict SLAs.",
-    "cv.job2.bul2":
+    "cv.job0.h5":
+      "Developed an AI multi-agent system to optimize development and analysis workflow, reducing delivery time by up to 40%.",
+
+    // Job 1 - Capgemini (Nov 2023 - Apr 2024)
+    "cv.job1.role": "Solutions Consultant IV",
+    "cv.job1.company":
+      "Leading multinational consultancy in digital transformation, present in 50+ countries with a focus on technology solutions for the financial sector.",
+    "cv.job1.h1":
+      "Assigned to Banco Bradesco as a senior consultant for Accounts System sustainability, handling critical incidents under strict SLAs.",
+    "cv.job1.h2":
       "Recognized as the Assembler z/OS reference in the team, performing deep dump and trace analysis for hard-to-diagnose issues.",
-    "cv.job2.bul3":
-      "Productivity index 25% above team average: 10.5h per incident (avg: 14h), focused on root cause analysis and recurrence prevention.",
-    "cv.job3.title": "Senior Systems Analyst / Mainframe Developer",
-    "cv.job3.desc":
+    "cv.job1.h3":
+      "Productivity index 22% above team average: 19.52h per incident (avg: 25h), focused on root cause analysis and recurrence prevention.",
+
+    // Job 2 - Prover Solucoes (Oct 2010 - Nov 2023)
+    "cv.job2.role":
+      "Project Manager / Systems Analyst / Mainframe Developer",
+    "cv.job2.company":
       "Technology company specialized in financial systems for card processors and banking institutions.",
-    "cv.job3.bul1":
-      "Spearheaded technical development for Elo payment network projects that drove company revenue growth by +30% annually for 11 consecutive years.",
-    "cv.job3.bul2":
-      "Led the adoption of Agile methodologies (Scrum) in the Mainframe team, optimizing deliveries and saving ~$150,000/year in rework hours.",
-    "cv.job3.bul3":
+    "cv.job2.h1":
+      "Architected and developed Mainframe financial systems that drove company revenue growth by approximately 10% per year for 13 consecutive years.",
+    "cv.job2.h2":
+      "Led the adoption of Agile methodologies (Scrum) in the Mainframe team, optimizing deliveries and saving around R$20,000 per year in rework hours.",
+    "cv.job2.h3":
       "Hands-on involvement in the full development lifecycle: requirements gathering, analysis, coding, testing, and production deployment.",
-    "cv.job4.title": "Systems Analyst / Mainframe Developer",
-    "cv.job4.desc":
+
+    // Job 3 - INFOserver (Jul 2007 - Oct 2010)
+    "cv.job3.role": "Systems Analyst and Developer",
+    "cv.job3.company":
       "Technology company specialized in solutions for the financial market and electronic transaction processing.",
-    "cv.job4.bul1":
+    "cv.job3.h1":
       "Developed and maintained Mainframe systems for credit and debit card transaction processing (VISA/ELO).",
-    "cv.job4.bul2":
+    "cv.job3.h2":
       "Implemented financial reconciliation routines and payment network interfaces based on ISO 8583.",
+
     "cv.section.skills": "Technical Skills",
-    "cv.skills.desc": "Technologies and Methods",
+    "cv.skills.dev": "Development",
+    "cv.skills.tools": "Tools & Methods",
     "cv.section.edu": "Education",
-    "cv.edu.degree1": "Postgraduate in IT Management and Governance",
-    "cv.edu.degree2": "Bachelor in Computer Science",
+    "cv.edu0.degree": "Postgraduate in IT Management and Governance",
+    "cv.edu1.degree": "Technologist in IT Management",
     "cv.section.certs": "Certifications",
-    "cv.section.langs": "Languages",
+    "cv.section.lang": "Languages",
     "cv.lang.pt": "Portuguese",
     "cv.lang.pt.level": "Native",
     "cv.lang.en": "English",
     "cv.lang.en.level":
-      "Advanced (reading/listening) - Intermediate (speaking/writing)",
+      "Advanced (reading/writing), Intermediate (speaking)",
     "cv.footer": "One page with what truly matters.",
+    "cv.cta.print": "Print / Save as PDF",
 
-    // -- Card names & descriptions (85 cards) --
+    // -- Card names & descriptions (97 cards) --
     // COBOL (13)
     "card.COB01001.name": "Field Formatter",
     "card.COB01001.desc":
@@ -279,7 +299,47 @@
     "card.ASM01011.name": "Dynamic Program Load",
     "card.ASM01011.desc":
       "Uses LOAD, DELETE, LINK, and XCTL for dynamic manipulation of load modules.",
-    // JCL (12)
+    // HLASM-CICS hybrid (3)
+    "card.ASMCENV1.name": "CICS Environment Inspector (HLASM)",
+    "card.ASMCENV1.desc":
+      "HLASM routine that inspects the CICS environment via EXEC CICS ASSIGN in Assembler.",
+    "card.ASMCBMS1.name": "CICS BMS Map (HLASM)",
+    "card.ASMCBMS1.desc":
+      "BMS map handling in Assembler with SEND MAP/RECEIVE MAP and attribute byte manipulation.",
+    "card.ASMCABD1.name": "CICS Abend Handler (HLASM)",
+    "card.ASMCABD1.desc":
+      "HANDLE ABEND in Assembler with formatted diagnostic capture for low-level recovery.",
+    // HLASM-DB2 hybrid (3)
+    "card.ASMDSEL1.name": "DB2 SELECT (HLASM)",
+    "card.ASMDSEL1.desc":
+      "Static SQL SELECT in Assembler with SQLCA processing and result handling.",
+    "card.ASMDCUR1.name": "DB2 Cursor (HLASM)",
+    "card.ASMDCUR1.desc":
+      "Cursor DECLARE/OPEN/FETCH/CLOSE in Assembler with positioned UPDATE.",
+    "card.ASMDDYN1.name": "DB2 Dynamic SQL (HLASM)",
+    "card.ASMDDYN1.desc":
+      "PREPARE and EXECUTE of dynamic SQL in Assembler with parameter markers.",
+    // HLASM-IMS hybrid (3)
+    "card.ASMIGN01.name": "IMS GN/GU (HLASM)",
+    "card.ASMIGN01.desc":
+      "IMS GU/GN in Assembler with SSA construction and PCB processing.",
+    "card.ASMIHNV1.name": "IMS Hierarchy Navigator (HLASM)",
+    "card.ASMIHNV1.desc":
+      "Navigates IMS hierarchical levels in Assembler with command code handling.",
+    "card.ASMICHK1.name": "IMS Checkpoint (HLASM)",
+    "card.ASMICHK1.desc":
+      "CHKP/XRST in Assembler for BMP restart with position control.",
+    // HLASM-VSAM hybrid (3)
+    "card.ASMVSRD1.name": "VSAM Sequential Read (HLASM)",
+    "card.ASMVSRD1.desc":
+      "Sequential VSAM read in Assembler with ACB/RPL and feedback decoding.",
+    "card.ASMVKSD1.name": "VSAM KSDS (HLASM)",
+    "card.ASMVKSD1.desc":
+      "KSDS operations in Assembler: keyed GET/PUT/ERASE via ACB and RPL.",
+    "card.ASMVBRW1.name": "VSAM Browse (HLASM)",
+    "card.ASMVBRW1.desc":
+      "VSAM browse in Assembler with positioning (POINT) and sequential scan.",
+    // JCL (13)
     "card.JCL01001.name": "Compile-Link-Go",
     "card.JCL01001.desc":
       "Standard JCL to compile COBOL source, link-edit objects, and execute load module in one job.",
@@ -309,12 +369,6 @@
     "card.JCL01010.name": "Conditional Execution",
     "card.JCL01010.desc":
       "IF/THEN/ELSE/ENDIF for advanced flow control with SET of symbolic variables.",
-    "card.JCL01011.name": "VSAM Management",
-    "card.JCLCOND01.desc":
-      "IF/THEN/ELSE/ENDIF for advanced flow control with SET of symbolic variables.",
-    "card.JCLGDG01.name": "GDG Management",
-    "card.JCLGDG01.desc":
-      "Defines GDG base, creates generations (+1), copies data, and lists with IDCAMS LISTCAT.",
     "card.JCLSORT02.name": "DFSORT with OUTFIL",
     "card.JCLSORT02.desc":
       "Advanced SORT with multiple OUTFIL, INCLUDE/OMIT, BUILD, SECTIONS, and TRAILER for subtotals.",
@@ -324,9 +378,6 @@
     "card.JCLIDCAM2.name": "IDCAMS Multi-Ops",
     "card.JCLIDCAM2.desc":
       "IDCAMS with DELETE/DEFINE CLUSTER/AIX/PATH, REPRO, LISTCAT, and VERIFY in a single step.",
-    "card.JCLSYMB01.name": "Symbolic Parameters",
-    "card.JCLSYMB01.desc":
-      "SET for job variables (&ENV, &HLQ, &DATE), conditional execution by environment.",
     // CICS (13)
     "card.CICSABDL.name": "Abend Handler",
     "card.CICSABDL.desc":
@@ -482,17 +533,24 @@
     skip: "Saltar al contenido principal",
 
     // -- Index page --
-    "idx.title": "Douglas Assunçao Rodrigues | Desarrollador Mainframe",
+    "idx.title": "Douglas Assunção Rodrigues | Desarrollador Mainframe",
     "idx.meta.desc":
       "Especialista en COBOL, DB2, CICS y JCL para sistemas bancarios de misión crítica. Conozca mi trayectoria, certificaciones y contacto.",
     "idx.headline":
       'Desarrollador <span class="text-accent">Mainframe</span> | Sistemas bancarios que no pueden parar',
     "idx.status": "Abierto a Propuestas",
     "idx.bio":
-      "El 80% de las transacciones bancarias en Brasil pasan por mainframes.<br>Yo escribo, optimizo y mantengo el código COBOL, DB2 y CICS detrás de ellos.<br>¿Quiere saber cómo? Todo está en los enlaces abajo.",
-    "idx.link1.title": "Préstamos Pasos",
+      "El 90% de las transacciones bancarias en Brasil pasan por mainframes.<br>Yo escribo, optimizo y mantengo el código COBOL, DB2 y CICS detrás de ellos.<br>¿Quiere saber cómo? Todo está en los enlaces abajo.",
+    "idx.section.links": "Próximos Pasos",
+    "idx.skills.extra.title": "Conocimientos Complementarios",
+    "idx.cta.cv": "Ver Currículum",
+    "idx.cta.linkedin": "LinkedIn",
+    "idx.heroStat.years": "Años de experiencia",
+    "idx.heroStat.programs": "Programas autorales",
+    "idx.heroStat.incidents": "Incidentes P1/P2 resueltos",
+    "idx.link1.title": "Mainframe Lab",
     "idx.link1.desc":
-      "85 programas originales - vea en la práctica lo que domino",
+      "97 programas originales - vea en la práctica lo que domino",
     "idx.link2.title": "Mi Trayectoria Completa",
     "idx.link2.desc":
       "Experiencia, recomendaciones y lo que no cabe en un currículum",
@@ -512,16 +570,17 @@
 
     // -- Lab page --
     "lab.title":
-      "Mainframe Lab | Douglas Assunçao Rodrigues - Programas COBOL, JCL, DB2, CICS y Referencia Rápida",
+      "Mainframe Lab | Douglas Assunção Rodrigues - Programas COBOL, JCL, DB2, CICS y Referencia Rápida",
     "lab.meta.desc":
-      "Portafolio técnico de Douglas Assunçao Rodrigues: 85 módulos mainframe reutilizables en COBOL, HLASM, JCL, CICS, DB2, IMS y VSAM - herramientas utilitarias para el desarrollador mainframe.",
+      "Portafolio técnico de Douglas Assunção Rodrigues: 97 módulos mainframe reutilizables en COBOL, HLASM, JCL, CICS, DB2, IMS y VSAM - herramientas utilitarias para el desarrollador mainframe.",
     "lab.back": "Volver al Inicio",
     "lab.breadcrumb.current": "Mainframe Lab",
     "lab.header.desc":
-      "85 módulos reutilizables que escribí, probé y refiné. Navegue por el código y vea, en la práctica, herramientas utilitarias que aceleran el desarrollo mainframe.",
+      "97 módulos reutilizables que escribí, probé y refiné. Navegue por el código y vea, en la práctica, herramientas utilitarias que aceleran el desarrollo mainframe.",
     "lab.stat.programs": "Programas en Lab",
-    "lab.stat.available": "Disponible",
-    "lab.stat.coming": "Próximamente",
+    "lab.stat.techs": "Tecnologías",
+    "lab.stat.years": "Años de experiencia",
+    "lab.stat.incidents": "Incidentes P1/P2 resueltos",
     "lab.search.placeholder": "Buscar por nombre, tecnología o descripción...",
     "lab.tab.ref": "Referencia Rápida",
     "lab.footer": "Mainframe Lab - Código, referencia y precisión.",
@@ -590,9 +649,9 @@
 
     // Certifications page --
     "cert.title":
-      "Certificaciones | Douglas Assunçao Rodrigues - Credenciales Validadas",
+      "Certificaciones | Douglas Assunção Rodrigues - Credenciales Validadas",
     "cert.meta.desc":
-      "Certificaciones profesionales de Douglas Assunçao Rodrigues: Azure AZ-900 y credenciales validadas que comprueban dominio técnico en tecnologías de misión crítica.",
+      "Certificaciones profesionales de Douglas Assunção Rodrigues: Azure AZ-900 y credenciales validadas que comprueban dominio técnico en tecnologías de misión crítica.",
     "cert.back": "Volver al Inicio",
     "cert.breadcrumb.current": "Certificaciones",
     "cert.header.desc":
@@ -602,8 +661,8 @@
       "Fundamentos de computación en nube, servicios Azure, seguridad, privacidad, cumplimiento y modelos de precios.",
     "cert.btn.view": "Ver Certificado",
     "cert.btn.verify": "Verificar en Credly",
-    "cert.ocjp.title": "Oracle Certified Java Programmer (OCJP)",
-    "cert.ocjp.desc":
+    "cert.scjp.title": "Oracle Certified Java Programmer (SCJP)",
+    "cert.scjp.desc":
       "Certificación que valida dominio avanzado del lenguaje Java SE 6: orientación a objetos, collections, threads, generics, I/O y manejo de excepciones.",
     "cert.note":
       "Nuevas certificaciones en curso. Esta página se actualiza conforme se obtienen nuevas credenciales.",
@@ -611,25 +670,242 @@
 
     // -- Curriculum page --
     "cv.title":
-      "Currículum | Douglas Assunçao Rodrigues - Software Engineer III Mainframe",
+      "Currículum | Douglas Assunção Rodrigues - Software Engineer III Mainframe",
     "cv.meta.desc":
-      "Currículum de Douglas Assunçao Rodrigues: +18 años en ingeniería de software Mainframe para sistemas financieros de misión crítica. Especialista en Assembler z/OS, COBOL, DB2, CICS.",
+      "Currículum de Douglas Assunção Rodrigues: +10 años en ingeniería de software Mainframe para sistemas financieros de misión crítica. Especialista en Assembler z/OS, COBOL, DB2, CICS.",
     "cv.back": "Volver al Inicio",
     "cv.breadcrumb.current": "Currículum",
     "cv.subtitle": "Software Engineer III - Mainframe",
     "cv.summary":
-      "Ingeniero de Software Mainframe con más de 18 años de experiencia en sistemas financieros de misión crítica. Especialista en Assembler z/OS, COBOL, DB2 y CICS, con historial comprobado de reducción de tiempo de resolución de incidentes y crecimiento de ingresos. Profundo dominio de sistemas de tarjetas VISA y Elo basados en ISO 8583, operando en entornos de alta disponibilidad y volumen.",
+      "Ingeniero de Software Mainframe con más de 10 años de experiencia en sistemas financieros de misión crítica. Especialista en Assembler z/OS, COBOL, DB2 y CICS, con historial comprobado de reducción de tiempo de resolución de incidentes y crecimiento de ingresos. Profundo dominio de sistemas de tarjetas VISA y Elo basados en ISO 8583, operando en entornos de alta disponibilidad y volumen.",
     "cv.section.exp": "Experiencia Profesional",
     "cv.current": "Actual",
-    "cv.job1.title": "Software Engineer III",
-    "cv.job1.desc":
+
+    // Job 0 - Banco Bradesco (Abr 2024 - Actual)
+    "cv.job0.role": "Software Engineer III",
+    "cv.job0.company":
       "Uno de los mayores bancos privados de América Latina, con más de 70 millones de clientes e infraestructura Mainframe de misión crítica.",
-    "cv.job1.bul1":
+    "cv.job0.h1":
       "Garantiza la estabilidad del sistema de Cuentas Corrientes, asegurando operaciones que impactan a millones de clientes diariamente.",
-    "cv.job1.bul2":
-      "Responsable del análisis, diagnóstico y resolución de incidentes P1 y P2 en entornos Mainframe z/OS de alto volumen.",
-    "cv.job1.bul3":
+    "cv.job0.h2":
+      "Responsable del análisis, diagnóstico y resolución de incidentes P3 y P4 en entornos Mainframe z/OS de alto volumen.",
+    "cv.job0.h3":
       "Referencia técnica en Assembler z/OS en el equipo, actuando como punto focal para análisis de bajo nivel y debugging de ABENDs complejos.",
+    "cv.job0.h4":
+      "Creó macros de automatización para tareas repetitivas del equipo, reduciendo significativamente el tiempo dedicado a actividades operativas recurrentes.",
+    "cv.job0.h5":
+      "Desarrolló un sistema multiagente de IA para optimizar el flujo de desarrollo y análisis, reduciendo el tiempo de entrega en hasta 40%.",
+
+    // Job 1 - Capgemini (Nov 2023 - Abr 2024)
+    "cv.job1.role": "Consultor de Soluciones IV",
+    "cv.job1.company":
+      "Consultora multinacional líder en transformación digital, con presencia en más de 50 países y foco en soluciones tecnológicas para el sector financiero.",
+    "cv.job1.h1":
+      "Asignado al Banco Bradesco como consultor sénior para sustentabilidad del sistema de Cuentas, actuando en incidentes críticos con SLA estrictos.",
+    "cv.job1.h2":
+      "Reconocido como referencia en Assembler z/OS en el equipo, realizando análisis de dumps y traces para resolución de problemas de difícil diagnóstico.",
+    "cv.job1.h3":
+      "Índice de productividad 22% por encima del promedio del equipo: 19,52h por incidente (promedio: 25h), con enfoque en análisis de causa raíz y prevención de recurrencia.",
+
+    // Job 2 - Prover Soluciones (Oct 2010 - Nov 2023)
+    "cv.job2.role":
+      "Gerente de Proyectos / Analista de Sistemas / Desarrollador Mainframe",
+    "cv.job2.company":
+      "Empresa de tecnología especializada en sistemas financieros para procesadoras de tarjetas e instituciones bancarias.",
+    "cv.job2.h1":
+      "Arquitectó y desarrolló sistemas financieros Mainframe que impulsaron los ingresos de la empresa aproximadamente 10% al año durante 13 años consecutivos.",
+    "cv.job2.h2":
+      "Lideró la implementación de metodologías ágiles (Scrum) en el equipo Mainframe, optimizando entregas y ahorrando cerca de R$ 20.000 anuales en horas de retrabajo.",
+    "cv.job2.h3":
+      "Actuación hands-on en el ciclo completo de desarrollo: levantamiento de requisitos, análisis, codificación, pruebas e implementación en producción.",
+
+    // Job 3 - INFOserver (Jul 2007 - Oct 2010)
+    "cv.job3.role": "Analista y Desarrollador de Sistemas",
+    "cv.job3.company":
+      "Empresa de tecnología especializada en soluciones para el mercado financiero y procesamiento de transacciones electrónicas.",
+    "cv.job3.h1":
+      "Desarrollo y mantenimiento de sistemas Mainframe para procesamiento de transacciones de tarjetas de crédito y débito (VISA/ELO).",
+    "cv.job3.h2":
+      "Implementación de rutinas de conciliación financiera e interfaces con redes de pagos basadas en ISO 8583.",
+
+    "cv.section.skills": "Habilidades Técnicas",
+    "cv.skills.dev": "Desarrollo",
+    "cv.skills.tools": "Herramientas y Métodos",
+    "cv.section.edu": "Formación Académica",
+    "cv.edu0.degree": "Postgrado en Gestión y Gobernanza de TI",
+    "cv.edu1.degree": "Tecnólogo en Gestión de TI",
+    "cv.section.certs": "Certificaciones",
+    "cv.section.lang": "Idiomas",
+    "cv.lang.pt": "Portugués",
+    "cv.lang.pt.level": "Nativo",
+    "cv.lang.en": "Inglés",
+    "cv.lang.en.level":
+      "Avanzado (lectura/escritura), Intermedio (habla)",
+    "cv.footer": "Una página con lo que realmente importa.",
+    "cv.cta.print": "Imprimir / Guardar como PDF",
+
+    // -- Card names & descriptions (97 cards) --
+    // COBOL (13)
+    "card.COB01001.name": "Formateador de Campos",
+    "card.COB01001.desc":
+      "Subprograma para LTRIM, RTRIM, LPAD, RPAD y CENTER de campos alfanuméricos vía LINKAGE SECTION.",
+    "card.COB01002.name": "Conversor de Fechas",
+    "card.COB01002.desc":
+      "Convierte entre GREGORIAN, JULIAN, YYYY-MM-DD y juliano CYYDDD con validación y día de la semana.",
+    "card.COB01003.name": "Logger Estructurado",
+    "card.COB01003.desc":
+      "Escribe timestamp, severidad y módulo de origen en archivo secuencial vía OPEN/WRITE/CLOSE.",
+    "card.COB01004.name": "Parser CSV",
+    "card.COB01004.desc":
+      "Separa una línea CSV en campos individuales con delimitador configurable y soporte a campos entre comillas.",
+    "card.COB01005.name": "Búsqueda en Tabla en Memoria",
+    "card.COB01005.desc":
+      "Carga pares clave-valor de un archivo de parámetros en una tabla interna consultable (LOAD/FIND/COUNT).",
+    "card.COB01006.name": "Enmascaramiento de Datos",
+    "card.COB01006.desc":
+      "Anonimiza campos sensibles usando estrategias TOTAL, PARTIAL, HASH, EMAIL y PHONE para cumplimiento LGPD.",
+    "card.COB01007.name": "Sort y Merge",
+    "card.COB01007.desc":
+      "SORT con INPUT/OUTPUT PROCEDURE, validación de registros y eliminación de duplicados por clave.",
+    "card.COB01008.name": "Reporte con Control Break",
+    "card.COB01008.desc":
+      "Control break en 3 niveles (sucursal/depto/empleado) con subtotales, cabecera de página y ASA.",
+    "card.COB01009.name": "Gestión de Tablas",
+    "card.COB01009.desc":
+      "Tabla interna con SEARCH ALL (binaria) y SEARCH secuencial, inserción/remoción con mantenimiento de orden.",
+    "card.COB01010.name": "Conversor Numérico",
+    "card.COB01010.desc":
+      "Convierte números a palabras en portugués, formatea moneda (R$), calcula porcentajes y redondea.",
+    "card.COB01011.name": "Motor de Reportes",
+    "card.COB01011.desc":
+      "Generador de reportes con cabecera, pie, page overflow, acumuladores y control de carro ASA.",
+    "card.COB01012.name": "Transaction Watchdog",
+    "card.COB01012.desc":
+      "Watch/merge master-transacción con operaciones de I/O, centinela HIGH-VALUES y reporte de excepciones.",
+    "card.COB01013.name": "Manipulación de Strings",
+    "card.COB01013.desc":
+      "Operaciones UPPER, LOWER, SPLIT, JOIN, SUBSTR, COUNT y REPLACE usando INSPECT/STRING/UNSTRING.",
+
+    // HLASM (11 base)
+    "card.ASM01001.name": "Utilidad de Hex Dump",
+    "card.ASM01001.desc":
+      "Rutina para dump hexadecimal de áreas de memoria - esencial para debugging de bajo nivel.",
+    "card.ASM01002.name": "Logger de Return Code",
+    "card.ASM01002.desc":
+      "Registra el RC del programa en WTO con nombre del step e indicador de severidad.",
+    "card.ASM01003.name": "Formateador de Timestamp",
+    "card.ASM01003.desc":
+      "Obtiene el TOD clock del sistema y convierte al formato legible YYYY-MM-DD HH:MM:SS.",
+    "card.ASM01004.name": "Conversor EBCDIC a ASCII",
+    "card.ASM01004.desc":
+      "Convierte buffers entre EBCDIC y ASCII usando tablas de traducción TR de 256 bytes.",
+    "card.ASM01005.name": "Operaciones Bit a Bit",
+    "card.ASM01005.desc":
+      "Rutina para testear, setear, limpiar y alternar bits individuales usando NI, OI, XI y TM.",
+    "card.ASM01006.name": "Búsqueda Binaria en Tabla",
+    "card.ASM01006.desc":
+      "Tabla de búsqueda binaria optimizada con comparación CLC y división SRL.",
+    "card.ASM01007.name": "Conversor Pack/Unpack",
+    "card.ASM01007.desc":
+      "Convierte entre formatos zoned, packed y binario usando PACK, UNPK, CVD y CVB.",
+    "card.ASM01008.name": "Comparación de Buffers",
+    "card.ASM01008.desc":
+      "Mueve y compara bloques largos con MVCL, CLCL y técnica de propagación MVC.",
+    "card.ASM01009.name": "Traducción de Caracteres",
+    "card.ASM01009.desc":
+      "Tres técnicas de búsqueda en tabla: TRT (translate and test), BALR y BAS.",
+    "card.ASM01010.name": "Linkage de Subrutinas",
+    "card.ASM01010.desc":
+      "Save area estándar, lista de parámetros y CALL para subrutinas internas y externas.",
+    "card.ASM01011.name": "Carga Dinámica de Programas",
+    "card.ASM01011.desc":
+      "Usa LOAD, DELETE, LINK y XCTL para manipulación dinámica de load modules.",
+
+    // HLASM-CICS híbrido (3)
+    "card.ASMCENV1.name": "Inspector de Ambiente CICS (HLASM)",
+    "card.ASMCENV1.desc":
+      "Rutina HLASM que inspecciona el ambiente CICS vía EXEC CICS ASSIGN en Assembler.",
+    "card.ASMCBMS1.name": "Mapa BMS CICS (HLASM)",
+    "card.ASMCBMS1.desc":
+      "Manipulación de mapas BMS en Assembler con SEND MAP/RECEIVE MAP y manejo de bytes de atributo.",
+    "card.ASMCABD1.name": "Manejador de Abend CICS (HLASM)",
+    "card.ASMCABD1.desc":
+      "HANDLE ABEND en Assembler con captura de diagnóstico formateado para recovery de bajo nivel.",
+
+    // HLASM-DB2 híbrido (3)
+    "card.ASMDSEL1.name": "DB2 SELECT (HLASM)",
+    "card.ASMDSEL1.desc":
+      "SELECT SQL estático en Assembler con procesamiento de SQLCA y manejo de resultados.",
+    "card.ASMDCUR1.name": "Cursor DB2 (HLASM)",
+    "card.ASMDCUR1.desc":
+      "Cursor DECLARE/OPEN/FETCH/CLOSE en Assembler con UPDATE posicionado.",
+    "card.ASMDDYN1.name": "SQL Dinámico DB2 (HLASM)",
+    "card.ASMDDYN1.desc":
+      "PREPARE y EXECUTE de SQL dinámico en Assembler con marcadores de parámetros.",
+
+    // HLASM-IMS híbrido (3)
+    "card.ASMIGN01.name": "IMS GN/GU (HLASM)",
+    "card.ASMIGN01.desc":
+      "IMS GU/GN en Assembler con construcción de SSA y procesamiento de PCB.",
+    "card.ASMIHNV1.name": "Navegador de Jerarquía IMS (HLASM)",
+    "card.ASMIHNV1.desc":
+      "Navega niveles jerárquicos de IMS en Assembler con manejo de command codes.",
+    "card.ASMICHK1.name": "Checkpoint IMS (HLASM)",
+    "card.ASMICHK1.desc":
+      "CHKP/XRST en Assembler para reinicio de BMP con control de posición.",
+
+    // HLASM-VSAM híbrido (3)
+    "card.ASMVSRD1.name": "Lectura Secuencial VSAM (HLASM)",
+    "card.ASMVSRD1.desc":
+      "Lectura secuencial VSAM en Assembler con ACB/RPL y decodificación de feedback.",
+    "card.ASMVKSD1.name": "VSAM KSDS (HLASM)",
+    "card.ASMVKSD1.desc":
+      "Operaciones KSDS en Assembler: GET/PUT/ERASE con clave vía ACB y RPL.",
+    "card.ASMVBRW1.name": "Browse VSAM (HLASM)",
+    "card.ASMVBRW1.desc":
+      "Browse VSAM en Assembler con posicionamiento (POINT) y scan secuencial.",
+
+    // JCL (13)
+    "card.JCL01001.name": "Compile-Link-Go",
+    "card.JCL01001.desc":
+      "JCL estándar para compilar fuente COBOL, link-editar objetos y ejecutar el load module en un único job.",
+    "card.JCL01002.name": "Copia de Dataset",
+    "card.JCL01002.desc":
+      "Copia datasets secuenciales y miembros de PDS usando IEBGENER e IEBCOPY con ejemplos prácticos.",
+    "card.JCL01003.name": "Definición KSDS con IDCAMS",
+    "card.JCL01003.desc":
+      "Define e inicializa un VSAM KSDS con parámetros específicos de dimensionamiento e indexación.",
+    "card.JCL01004.name": "Formateo con DFSORT",
+    "card.JCL01004.desc":
+      "Genera reporte formateado a partir de archivo de entrada usando DFSORT con OUTFIL y HEADER/TRAILER.",
+    "card.JCL01005.name": "Estadísticas con ICETOOL",
+    "card.JCL01005.desc":
+      "Demuestra operaciones ICETOOL: SELECT, SORT, SPLICE, DISPLAY, STATS y OCCUR.",
+    "card.JCL01006.name": "Backup/Restore",
+    "card.JCL01006.desc":
+      "Usa ADRDSSU para backup (DUMP) de datasets y verificación post-restauración.",
+    "card.JCL01007.name": "Gestión de GDG",
+    "card.JCL01007.desc":
+      "Define y gestiona bases GDG usando IDCAMS.",
+    "card.JCL01008.name": "Opciones SORT/MERGE",
+    "card.JCL01008.desc":
+      "Ordenación avanzada usando PARM='MSGPRT=ALL, DYNALLOC, LIST' y diversas opciones.",
+    "card.JCL01009.name": "Joins con DFSORT",
+    "card.JCL01009.desc":
+      "JOINKEYS avanzado: une dos archivos por clave con JOIN UNPAIRED y campos REFORMAT.",
+    "card.JCL01010.name": "Ejecución Condicional",
+    "card.JCL01010.desc":
+      "IF/THEN/ELSE/ENDIF para control de flujo avanzado con SET de variables simbólicas.",
+    "card.JCLSORT02.name": "DFSORT con OUTFIL",
+    "card.JCLSORT02.desc":
+      "SORT avanzado con múltiples OUTFIL, INCLUDE/OMIT, BUILD, SECTIONS y TRAILER para subtotales.",
+    "card.JCLPROC02.name": "Procedure con Overrides",
+    "card.JCLPROC02.desc":
+      "Define PROC catalogada con simbólicos, ejecuta con overrides de DD y parámetros.",
+    "card.JCLIDCAM2.name": "IDCAMS Multi-Operaciones",
+    "card.JCLIDCAM2.desc":
+      "IDCAMS con DELETE/DEFINE CLUSTER/AIX/PATH, REPRO, LISTCAT y VERIFY en un único step.",
+
     // CICS (13)
     "card.CICSABDL.name": "Manejador de Abend",
     "card.CICSABDL.desc":
@@ -892,8 +1168,17 @@
       restore(statusBadge);
     }
     t(q(".profile-bio"), "idx.bio", dict);
-    t(q(".links-title"), "idx.links.title", dict);
-    t(q(".skills-title"), "idx.skills.title", dict);
+
+    // Index section titles (Proximos Passos / Dominio Tecnico / Conhecimentos Complementares)
+    const idxSectionTitles = qa(".container > section .section-title");
+    const idxSectionKeys = [
+      "idx.section.links",
+      "idx.skills.title",
+      "idx.skills.extra.title",
+    ];
+    idxSectionTitles.forEach((el, i) => {
+      if (idxSectionKeys[i]) t(el, idxSectionKeys[i], dict);
+    });
 
     // Index Link cards (ordered)
     const linkCards = qa(".links-list .link-card");
@@ -917,7 +1202,7 @@
       if (dict && dict["idx.footer"]) {
         storeAndReplace(
           idxFooter,
-          `&copy; 2026 Douglas Assunçao Rodrigues &middot; ` +
+          `&copy; 2026 Douglas Assunção Rodrigues &middot; ` +
             dict["idx.footer"],
         );
       } else {
@@ -935,12 +1220,14 @@
     t(q(".lab-breadcrumb-current"), "lab.breadcrumb.current", dict);
     t(q(".lab-header-desc"), "lab.header.desc", dict);
 
-    // Stats labels
+    // Stats labels (ordered to match the four cards in mainframe-lab.html:
+    // 1) Programas  2) Tecnologias  3) Anos de experiencia  4) Incidentes P1/P2)
     const statLabels = qa(".lab-stat-label");
     const statKeys = [
       "lab.stat.programs",
-      "lab.stat.available",
-      "lab.stat.coming",
+      "lab.stat.techs",
+      "lab.stat.years",
+      "lab.stat.incidents",
     ];
     statLabels.forEach((el, i) => {
       if (statKeys[i]) t(el, statKeys[i], dict);
@@ -971,7 +1258,7 @@
       if (dict && dict["lab.footer"]) {
         storeAndReplace(
           labFooter,
-          `&copy; 2026 Douglas Assunçao Rodrigues &middot; ` +
+          `&copy; 2026 Douglas Assunção Rodrigues &middot; ` +
             dict["lab.footer"],
         );
       } else {
@@ -997,10 +1284,15 @@
       }
     }
 
-    // Cert card data-i18n elements
+    // Generic data-i18n elements (cert.*, cv.*, idx.*)
     qa("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
-      if (key && key.startsWith("cert.")) {
+      if (!key) return;
+      if (
+        key.startsWith("cert.") ||
+        key.startsWith("cv.") ||
+        key.startsWith("idx.")
+      ) {
         t(el, key, dict);
       }
     });
@@ -1011,7 +1303,7 @@
       if (dict && dict["cert.footer"]) {
         storeAndReplace(
           certFooter,
-          `&copy; 2026 Douglas Assunçao Rodrigues &middot; ` +
+          `&copy; 2026 Douglas Assunção Rodrigues &middot; ` +
             dict["cert.footer"],
         );
       } else {
@@ -1037,21 +1329,13 @@
       }
     }
 
-    // CV data-i18n elements
-    qa("[data-i18n]").forEach((el) => {
-      const key = el.getAttribute("data-i18n");
-      if (key && key.startsWith("cv.")) {
-        t(el, key, dict);
-      }
-    });
-
     // CV footer
     const cvFooter = q(".cv-container .site-footer p");
     if (cvFooter) {
       if (dict && dict["cv.footer"]) {
         storeAndReplace(
           cvFooter,
-          `&copy; 2026 Douglas Assunçao Rodrigues &middot; ` +
+          `&copy; 2026 Douglas Assunção Rodrigues &middot; ` +
             dict["cv.footer"],
         );
       } else {
@@ -1134,7 +1418,7 @@
       });
     }
 
-    // -- PROGRAM CARDS (85 cards) --
+    // -- PROGRAM CARDS (97 cards) --
     qa(".lab-card-program-id").forEach((idEl) => {
       const id = idEl.textContent.trim();
       const card = idEl.closest(".lab-card");

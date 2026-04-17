@@ -441,3 +441,119 @@
     text-align: start;
   }
 }
+
+/* --- PRINT / PDF BUTTON --- */
+.cv-print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-block-start: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background var(--transition-hover),
+    border-color var(--transition-hover),
+    color var(--transition-hover),
+    transform var(--transition-hover);
+}
+
+.cv-print-btn:hover {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.cv-print-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.35);
+}
+
+/* --- PRINT STYLESHEET (Save as PDF) --- */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  /* Hide decorative / navigational chrome */
+  #particles-canvas,
+  .cursor-glow,
+  .bg-hero-layer,
+  .skip-link,
+  .cv-breadcrumb,
+  .cv-back-link,
+  .cv-print-btn,
+  .site-footer,
+  .i18n-switcher,
+  .lang-switcher {
+    display: none !important;
+  }
+
+  .cv-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .cv-header-title,
+  .cv-section-title,
+  .cv-job-role,
+  .cv-job-company,
+  .cv-job-highlights li,
+  .cv-skill-group li,
+  .cv-edu-degree,
+  .cv-edu-school,
+  .cv-cert-name,
+  .cv-lang-name,
+  .cv-lang-level,
+  .cv-summary,
+  .cv-header-subtitle,
+  .cv-contact-item,
+  .cv-contact-link {
+    color: #0f172a !important;
+    text-shadow: none !important;
+  }
+
+  /* Flatten glass / dark cards */
+  .cv-job,
+  .cv-edu-item,
+  .cv-cert-item,
+  .cv-lang-item,
+  .cv-skill-group,
+  .cv-summary-card {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+  }
+
+  .cv-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .cv-job,
+  .cv-edu-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  a[href]::after {
+    content: "";
+  }
+}
