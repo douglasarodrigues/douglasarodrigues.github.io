@@ -8518,40 +8518,62 @@ BLANKS   DC    CL80' '
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : SELECT INTO EM ASSEMBLER COM DB2
 *            BUSCA REGISTRO POR CHAVE E EXIBE VIA WTO
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : DB2 FOR z/OS (PRECOMPILADOR DSNHASM)
+*----------------------------------------------------------------*
+* FLUXO: MONTA CHAVE 'EMP0001' -> SELECT INTO HOST VARS ->
+*        SE SQLCODE=0, EXIBE NOME VIA WTO.
+*        SE SQLCODE<>0, CONVERTE O CODIGO PARA ZONED DECIMAL
+*        E DEVOLVE MENSAGEM DE ERRO VIA WTO COM RC=8.
 *================================================================*
 ASMDSEL1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* PREPARA A CHAVE DE BUSCA (HOST VARIABLE HCHAVE).              *
+*---------------------------------------------------------------*
          MVC   HCHAVE,=CL10'EMP0001   '
-*
+*---------------------------------------------------------------*
+* SELECT INTO: DB2 PREENCHE HNOME/HDEPTO/HSAL A PARTIR DA       *
+* TABELA EMPREGADOS PELA CHAVE FORNECIDA.                       *
+*---------------------------------------------------------------*
          EXEC SQL SELECT NOME, DEPTO, SALARIO                 X
                INTO :HNOME, :HDEPTO, :HSAL                    X
                FROM EMPREGADOS                                 X
                WHERE CHAVE = :HCHAVE
-*
+*---------------------------------------------------------------*
+* VALIDA SQLCODE. QUALQUER VALOR <>0 DESVIA PARA SQLERR.        *
+*---------------------------------------------------------------*
          CLC   SQLCODE,=F'0'
          BNE   SQLERR
-*
+*---------------------------------------------------------------*
+* SUCESSO: MONTA MENSAGEM E EXIBE NOME DO EMPREGADO VIA WTO.    *
+*---------------------------------------------------------------*
          MVC   WMSG(6),=C'NOME= '
          MVC   WMSG+6(30),HNOME
          WTO   MF=(E,WTOMSG)
 *
-         SR    R15,R15
+         SR    R15,R15             RC=0
          B     EXIT
-*
+*---------------------------------------------------------------*
+* ERRO: CONVERTE SQLCODE BINARIO EM ZONED 6 DIGITOS E EXIBE.    *
+*---------------------------------------------------------------*
 SQLERR   MVC   WMSG(16),=C'SQLCODE ERRO:   '
          L     R3,SQLCODE
          CVD   R3,DWORK
          UNPK  WMSG+14(6),DWORK+5(3)
-         OI    WMSG+19,X'F0'
+         OI    WMSG+19,X'F0'       AJUSTA SINAL DO ULTIMO DIG
          WTO   MF=(E,WTOMSG)
-         LA    R15,8
-*
+         LA    R15,8               RC=8
+*---------------------------------------------------------------*
+* EPILOGO: RESTAURA REGISTRADORES E RETORNA AO CHAMADOR.        *
+*---------------------------------------------------------------*
 EXIT     L     R13,SAVE+4
          LM    R14,R12,12(R13)
          BR    R14
@@ -8574,31 +8596,43 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : SELECT INTO EM ASSEMBLER COM DB2
 *            BUSCA REGISTRO POR CHAVE E EXIBE VIA WTO
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : DB2 FOR z/OS (PRECOMPILADOR DSNHASM)
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE, COM DESVIOS PC-RELATIVOS (JNE,J).
 *================================================================*
 ASMDSEL1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO (LARL + USING).                              *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMDSEL1         SET BASE (RELATIVE)
+         LARL  R12,ASMDSEL1         SET BASE (PC-RELATIVE)
          USING ASMDSEL1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* MONTA CHAVE HOST E EXECUTA SELECT INTO.                       *
+*---------------------------------------------------------------*
          MVC   HCHAVE,=CL10'EMP0001   '
 *
          EXEC SQL SELECT NOME, DEPTO, SALARIO                 X
                INTO :HNOME, :HDEPTO, :HSAL                    X
                FROM EMPREGADOS                                 X
                WHERE CHAVE = :HCHAVE
-*
+*---------------------------------------------------------------*
+* VALIDA SQLCODE (DESVIO RELATIVO JNE).                         *
+*---------------------------------------------------------------*
          CLC   SQLCODE,=F'0'
-         JNE   SQLERR
-*
+         JNE   SQLERR               (RELATIVO)
+*---------------------------------------------------------------*
+* SUCESSO: EXIBE O NOME E SAI COM RC=0.                         *
+*---------------------------------------------------------------*
          MVC   WMSG(6),=C'NOME= '
          MVC   WMSG+6(30),HNOME
          WTO   MF=(E,WTOMSG)
 *
          SR    R15,R15
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 *
 SQLERR   MVC   WMSG(16),=C'SQLCODE ERRO:   '
          L     R3,SQLCODE
@@ -8640,56 +8674,87 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : PROCESSAMENTO DE CURSOR DB2 EM ASSEMBLER
 *            DECLARE, OPEN, FETCH LOOP, CLOSE COM COMMIT
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : DB2 FOR z/OS
+*----------------------------------------------------------------*
+* FLUXO:
+*   1. DECLARE CURSOR SOBRE EMPREGADOS (FILTRO POR DEPTO).
+*   2. ABRE CURSOR E INICIALIZA CONTADOR R5=0.
+*   3. LOOP FETCH: INCREMENTA CONTADOR; A CADA 128 LINHAS EMITE
+*      COMMIT (CHECKPOINT DE LOG/LOCKS).
+*   4. SQLCODE=100 ENCERRA O LOOP; OUTROS VALORES GERAM ERRO.
+*   5. CLOSE + WTO COM TOTAL PROCESSADO.
+*
+* TECNICA DO CHECKPOINT: R5 E' COPIADO EM R6 E MASCARADO
+*   (N R6,=F'127'). SE R6 ZERA, A QUANTIDADE E' MULTIPLO DE 128.
 *================================================================*
 ASMDCUR1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* DECLARA O CURSOR (DIRETIVA DE PRECOMPILADOR).                 *
+*---------------------------------------------------------------*
          EXEC SQL DECLARE CSR1 CURSOR FOR                      X
                SELECT CHAVE, NOME, DEPTO                       X
                FROM EMPREGADOS                                 X
                WHERE DEPTO = :HDEPTO                           X
                ORDER BY CHAVE
-*
+*---------------------------------------------------------------*
+* PARAMETROS DE BUSCA E INICIALIZA CONTADOR DE LINHAS (R5=0).   *
+*---------------------------------------------------------------*
          MVC   HDEPTO,=CL6'FIN   '
-         SR    R5,R5
-*
+         SR    R5,R5               R5 = CONTADOR DE FETCHES
+*---------------------------------------------------------------*
+* ABRE O CURSOR; ERRO DESVIA PARA OPENERR.                      *
+*---------------------------------------------------------------*
          EXEC SQL OPEN CSR1
          CLC   SQLCODE,=F'0'
          BNE   OPENERR
-*
+*---------------------------------------------------------------*
+* LOOP DE FETCH.                                                *
+*---------------------------------------------------------------*
 FLOOP    EXEC SQL FETCH CSR1                                   X
                INTO :HCHAVE, :HNOME, :HDEPTO
 *
          CLC   SQLCODE,=F'0'
-         BNE   ENDFTCH
+         BNE   ENDFTCH             SQLCODE<>0 ENCERRA O LOOP
 *
-         LA    R5,1(R5)
-*
+         LA    R5,1(R5)            INCREMENTA CONTADOR
+*---------------------------------------------------------------*
+* COMMIT A CADA 128 REGISTROS (R5 MULTIPLO DE 128).             *
+*---------------------------------------------------------------*
          LR    R6,R5
          N     R6,=F'127'
          BNZ   FLOOP
          EXEC SQL COMMIT
          B     FLOOP
-*
+*---------------------------------------------------------------*
+* FIM DO LOOP: ESPERAMOS SQLCODE=100 (NO MORE ROWS).            *
+*---------------------------------------------------------------*
 ENDFTCH  CLC   SQLCODE,=F'100'
          BNE   FTCHERR
 *
          EXEC SQL CLOSE CSR1
-*
+*---------------------------------------------------------------*
+* MONTA MENSAGEM 'PROCESSADOS=nnnnnn' E EMITE VIA WTO.          *
+*---------------------------------------------------------------*
          CVD   R5,DWORK
          UNPK  WMSG+12(6),DWORK+5(3)
          OI    WMSG+17,X'F0'
          MVC   WMSG(12),=C'PROCESSADOS='
          WTO   MF=(E,WTOMSG)
 *
-         SR    R15,R15
+         SR    R15,R15             RC=0
          B     EXIT
-*
+*---------------------------------------------------------------*
+* ROTAS DE ERRO: RC=8 (OPEN) OU RC=12 (FETCH).                  *
+*---------------------------------------------------------------*
 OPENERR  LA    R15,8
          B     EXIT
 FTCHERR  LA    R15,12
@@ -8715,44 +8780,63 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : PROCESSAMENTO DE CURSOR DB2 EM ASSEMBLER
 *            DECLARE, OPEN, FETCH LOOP, CLOSE COM COMMIT
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : DB2 FOR z/OS
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE. TODOS OS DESVIOS DE CONTROLE SAO
+* PC-RELATIVOS (JNE, JNZ, J), EVITANDO BASE+DESLOCAMENTO.
 *================================================================*
 ASMDCUR1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMDCUR1         SET BASE (RELATIVE)
+         LARL  R12,ASMDCUR1         SET BASE (PC-RELATIVE)
          USING ASMDCUR1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* DECLARACAO DO CURSOR.                                         *
+*---------------------------------------------------------------*
          EXEC SQL DECLARE CSR1 CURSOR FOR                      X
                SELECT CHAVE, NOME, DEPTO                       X
                FROM EMPREGADOS                                 X
                WHERE DEPTO = :HDEPTO                           X
                ORDER BY CHAVE
-*
+*---------------------------------------------------------------*
+* PARAMETROS E CONTADOR.                                        *
+*---------------------------------------------------------------*
          MVC   HDEPTO,=CL6'FIN   '
          SR    R5,R5
-*
+*---------------------------------------------------------------*
+* OPEN CURSOR + VALIDACAO DE SQLCODE.                           *
+*---------------------------------------------------------------*
          EXEC SQL OPEN CSR1
          CLC   SQLCODE,=F'0'
-         JNE   OPENERR
-*
+         JNE   OPENERR              (RELATIVO)
+*---------------------------------------------------------------*
+* LOOP DE FETCH.                                                *
+*---------------------------------------------------------------*
 FLOOP    EXEC SQL FETCH CSR1                                   X
                INTO :HCHAVE, :HNOME, :HDEPTO
 *
          CLC   SQLCODE,=F'0'
-         JNE   ENDFTCH
+         JNE   ENDFTCH              (RELATIVO)
 *
          LA    R5,1(R5)
-*
+*---------------------------------------------------------------*
+* COMMIT A CADA 128 LINHAS.                                     *
+*---------------------------------------------------------------*
          LR    R6,R5
          N     R6,=F'127'
-         JNZ   FLOOP
+         JNZ   FLOOP                (RELATIVO)
          EXEC SQL COMMIT
-         J     FLOOP
-*
+         J     FLOOP                (RELATIVO)
+*---------------------------------------------------------------*
+* FIM DO CURSOR (SQLCODE=100 ESPERADO).                         *
+*---------------------------------------------------------------*
 ENDFTCH  CLC   SQLCODE,=F'100'
-         JNE   FTCHERR
+         JNE   FTCHERR              (RELATIVO)
 *
          EXEC SQL CLOSE CSR1
 *
@@ -8801,29 +8885,50 @@ WTOMSG   WTO   '                                              X
 * OBJETIVO : SQL DINAMICO EM ASSEMBLER
 *            PREPARE + EXECUTE COM PARAMETER MARKERS
 *            EXECUTE IMMEDIATE PARA DDL
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : DB2 FOR z/OS
+*----------------------------------------------------------------*
+* CENARIO:
+*   1. CRIA TABELA TEMPORARIA (EXECUTE IMMEDIATE - DDL).
+*   2. PREPARA INSERT COM PARAMETER MARKERS (?,?)
+*   3. EXECUTA TRES VEZES, VARIANDO HCHAVE/HDESC (EXECUTE USING).
+*   4. PREPARA E ABRE CURSOR DINAMICO PARA LER O RESULTADO.
+*   5. COMMIT AO FINAL; ROLLBACK EM QUALQUER ERRO.
+*----------------------------------------------------------------*
+* SQL DINAMICO vs ESTATICO: O COMANDO FICA EM CL256 (WSQL).
+*   - EXECUTE IMMEDIATE: util para DDL (compilacao + exec 1x).
+*   - PREPARE + EXECUTE: util para SQL repetitivo com binds.
 *================================================================*
 ASMDDYN1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* 1) DDL: CRIA TABELA TEMPORARIA VIA EXECUTE IMMEDIATE.         *
+*---------------------------------------------------------------*
          MVC   WSQL,BLANKS
          MVC   WSQL(L'CRETMP),CRETMP
 *
          EXEC SQL EXECUTE IMMEDIATE :WSQL
          CLC   SQLCODE,=F'0'
          BNE   SQLERR
-*
+*---------------------------------------------------------------*
+* 2) PREPARA INSERT COM PARAMETER MARKERS.                      *
+*---------------------------------------------------------------*
          MVC   WSQL,BLANKS
          MVC   WSQL(L'INSSQL),INSSQL
 *
          EXEC SQL PREPARE STMT1 FROM :WSQL
          CLC   SQLCODE,=F'0'
          BNE   SQLERR
-*
+*---------------------------------------------------------------*
+* 3) EXECUTA 3X VARIANDO OS HOST VARS DE BIND.                  *
+*---------------------------------------------------------------*
          MVC   HCHAVE,=CL10'K001      '
          MVC   HDESC,=CL30'PRIMEIRO REGISTRO DINAMICO    '
          EXEC SQL EXECUTE STMT1 USING :HCHAVE, :HDESC
@@ -8838,14 +8943,18 @@ ASMDDYN1 CSECT
 *
          CLC   SQLCODE,=F'0'
          BNE   SQLERR
-*
+*---------------------------------------------------------------*
+* 4) PREPARA SELECT E ABRE CURSOR DINAMICO.                     *
+*---------------------------------------------------------------*
          MVC   WSQL,BLANKS
          MVC   WSQL(L'SELSQL),SELSQL
 *
          EXEC SQL PREPARE STMT2 FROM :WSQL
          EXEC SQL DECLARE DCSR CURSOR FOR STMT2
          EXEC SQL OPEN DCSR
-*
+*---------------------------------------------------------------*
+* LOOP DE FETCH: EXIBE CHAVE+DESCRICAO VIA WTO.                 *
+*---------------------------------------------------------------*
 DLOOP    EXEC SQL FETCH DCSR INTO :HCHAVE, :HDESC
          CLC   SQLCODE,=F'0'
          BNE   DENDLP
@@ -8853,13 +8962,17 @@ DLOOP    EXEC SQL FETCH DCSR INTO :HCHAVE, :HDESC
          MVC   WMSG+11(30),HDESC
          WTO   MF=(E,WTOMSG)
          B     DLOOP
-*
+*---------------------------------------------------------------*
+* 5) ENCERRA CURSOR E COMITA TRANSACAO.                         *
+*---------------------------------------------------------------*
 DENDLP   EXEC SQL CLOSE DCSR
          EXEC SQL COMMIT
 *
-         SR    R15,R15
+         SR    R15,R15              RC=0
          B     EXIT
-*
+*---------------------------------------------------------------*
+* TRATAMENTO DE ERRO: CONVERTE SQLCODE EM ZONED E ROLLBACK.     *
+*---------------------------------------------------------------*
 SQLERR   L     R3,SQLCODE
          CVD   R3,DWORK
          UNPK  WMSG(8),DWORK+4(4)
@@ -8867,7 +8980,7 @@ SQLERR   L     R3,SQLCODE
          MVC   WMSG+9(10),=C'SQLCODE ER'
          WTO   MF=(E,WTOMSG)
          EXEC SQL ROLLBACK
-         LA    R15,8
+         LA    R15,8                RC=8
 *
 EXIT     L     R13,SAVE+4
          LM    R14,R12,12(R13)
@@ -8897,28 +9010,39 @@ WTOMSG   WTO   '                                              X
 * OBJETIVO : SQL DINAMICO EM ASSEMBLER
 *            PREPARE + EXECUTE COM PARAMETER MARKERS
 *            EXECUTE IMMEDIATE PARA DDL
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : DB2 FOR z/OS
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE. DESVIOS CONDICIONAIS USAM JNE
+* (PC-RELATIVO) E INCONDICIONAIS USAM J.
 *================================================================*
 ASMDDYN1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMDDYN1         SET BASE (RELATIVE)
+         LARL  R12,ASMDDYN1         SET BASE (PC-RELATIVE)
          USING ASMDDYN1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* 1) DDL VIA EXECUTE IMMEDIATE.                                 *
+*---------------------------------------------------------------*
          MVC   WSQL,BLANKS
          MVC   WSQL(L'CRETMP),CRETMP
 *
          EXEC SQL EXECUTE IMMEDIATE :WSQL
          CLC   SQLCODE,=F'0'
-         JNE   SQLERR
-*
+         JNE   SQLERR               (RELATIVO)
+*---------------------------------------------------------------*
+* 2) PREPARA INSERT.                                            *
+*---------------------------------------------------------------*
          MVC   WSQL,BLANKS
          MVC   WSQL(L'INSSQL),INSSQL
 *
          EXEC SQL PREPARE STMT1 FROM :WSQL
          CLC   SQLCODE,=F'0'
-         JNE   SQLERR
+         JNE   SQLERR               (RELATIVO)
 *
          MVC   HCHAVE,=CL10'K001      '
          MVC   HDESC,=CL30'PRIMEIRO REGISTRO DINAMICO    '
@@ -8933,28 +9057,34 @@ ASMDDYN1 CSECT
          EXEC SQL EXECUTE STMT1 USING :HCHAVE, :HDESC
 *
          CLC   SQLCODE,=F'0'
-         JNE   SQLERR
-*
+         JNE   SQLERR               (RELATIVO)
+*---------------------------------------------------------------*
+* 4) PREPARA SELECT E ABRE CURSOR DINAMICO.                     *
+*---------------------------------------------------------------*
          MVC   WSQL,BLANKS
          MVC   WSQL(L'SELSQL),SELSQL
 *
          EXEC SQL PREPARE STMT2 FROM :WSQL
          EXEC SQL DECLARE DCSR CURSOR FOR STMT2
          EXEC SQL OPEN DCSR
-*
+*---------------------------------------------------------------*
+* LOOP DE FETCH DO CURSOR DINAMICO.                             *
+*---------------------------------------------------------------*
 DLOOP    EXEC SQL FETCH DCSR INTO :HCHAVE, :HDESC
          CLC   SQLCODE,=F'0'
-         JNE   DENDLP
+         JNE   DENDLP               (RELATIVO)
          MVC   WMSG(10),HCHAVE
          MVC   WMSG+11(30),HDESC
          WTO   MF=(E,WTOMSG)
-         J     DLOOP
-*
+         J     DLOOP                (RELATIVO)
+*---------------------------------------------------------------*
+* 5) ENCERRA CURSOR + COMMIT.                                   *
+*---------------------------------------------------------------*
 DENDLP   EXEC SQL CLOSE DCSR
          EXEC SQL COMMIT
 *
          SR    R15,R15
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 *
 SQLERR   L     R3,SQLCODE
          CVD   R3,DWORK
