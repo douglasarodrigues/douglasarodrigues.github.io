@@ -13651,35 +13651,59 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : LEITURA SEQUENCIAL VSAM EM ASSEMBLER
 *            ACB + RPL + OPEN + GET SEQ + CLOSE
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : VSAM ESDS/KSDS (ACCESS SEQUENTIAL)
+*----------------------------------------------------------------*
+* MACROS VSAM UTILIZADAS:
+*   ACB (ACCESS METHOD CONTROL BLOCK) - DESCRITOR DO DATASET.
+*   RPL (REQUEST PARAMETER LIST)      - DESCRITOR DE CADA I/O.
+*   OPEN/GET/CLOSE/SHOWCB             - OPERACOES DE ACESSO.
+*
+* FLUXO:
+*   1. OPEN ACB. R15 INDICA SUCESSO (=0) OU FALHA.
+*   2. LOOP GET SEQ: R5 CONTA REGISTROS ATE R15<>0.
+*   3. SHOWCB FDBK=4 IDENTIFICA FIM DE ARQUIVO (EOF), QUE E'
+*      O UNICO ERRO ESPERADO. OUTROS SAO TRATADOS COMO GETERR.
+*   4. CLOSE E EMISSAO DO TOTAL.
 *================================================================*
 ASMVSRD1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* ABRE O DATASET. LTR R15,R15 TESTA RC (NAO-ZERO = ERRO).       *
+*---------------------------------------------------------------*
          OPEN  (VSAMACB)
          LTR   R15,R15
          BNZ   OPENERR
 *
-         SR    R5,R5
-*
+         SR    R5,R5                CONTADOR DE REGISTROS
+*---------------------------------------------------------------*
+* LOOP DE LEITURA SEQUENCIAL. R15<>0 SAI DO LOOP.               *
+*---------------------------------------------------------------*
 GETLOOP  GET   RPL=VSAMRPL
          LTR   R15,R15
          BNZ   GETEND
 *
          LA    R5,1(R5)
          B     GETLOOP
-*
+*---------------------------------------------------------------*
+* VALIDA O FIM DE ARQUIVO: R15=8 + FDBK=4 E' EOF NORMAL.        *
+*---------------------------------------------------------------*
 GETEND   CH    R15,=H'8'
          BNE   GETERR
          SHOWCB RPL=VSAMRPL,FIELDS=FDBK,AREA=FDBKAREA,        X
                LENGTH=4
          CLC   FDBKAREA,=F'4'
          BNE   GETERR
-*
+*---------------------------------------------------------------*
+* CLOSE + MENSAGEM 'REGS=nnnnnnnn'.                             *
+*---------------------------------------------------------------*
          CLOSE (VSAMACB)
 *
          CVD   R5,DWORK
@@ -13690,7 +13714,9 @@ GETEND   CH    R15,=H'8'
 *
          SR    R15,R15
          B     EXIT
-*
+*---------------------------------------------------------------*
+* ROTAS DE ERRO.                                                *
+*---------------------------------------------------------------*
 OPENERR  MVC   WMSG(10),=C'OPEN ERRO '
          WTO   MF=(E,WTOMSG)
          LA    R15,8
@@ -13722,35 +13748,49 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : LEITURA SEQUENCIAL VSAM EM ASSEMBLER
 *            ACB + RPL + OPEN + GET SEQ + CLOSE
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : VSAM ESDS/KSDS
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE, COM DESVIOS PC-RELATIVOS (JNZ,JNE,J).
 *================================================================*
 ASMVSRD1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMVSRD1         SET BASE (RELATIVE)
+         LARL  R12,ASMVSRD1         SET BASE (PC-RELATIVE)
          USING ASMVSRD1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* OPEN + VALIDACAO DE RC.                                       *
+*---------------------------------------------------------------*
          OPEN  (VSAMACB)
          LTR   R15,R15
-         JNZ   OPENERR
+         JNZ   OPENERR              (RELATIVO)
 *
          SR    R5,R5
-*
+*---------------------------------------------------------------*
+* LOOP SEQUENCIAL DE LEITURA.                                   *
+*---------------------------------------------------------------*
 GETLOOP  GET   RPL=VSAMRPL
          LTR   R15,R15
-         JNZ   GETEND
+         JNZ   GETEND               (RELATIVO)
 *
          LA    R5,1(R5)
-         J     GETLOOP
-*
+         J     GETLOOP              (RELATIVO)
+*---------------------------------------------------------------*
+* VALIDA EOF (R15=8 + FDBK=4).                                  *
+*---------------------------------------------------------------*
 GETEND   CH    R15,=H'8'
-         JNE   GETERR
+         JNE   GETERR               (RELATIVO)
          SHOWCB RPL=VSAMRPL,FIELDS=FDBK,AREA=FDBKAREA,        X
                LENGTH=4
          CLC   FDBKAREA,=F'4'
-         JNE   GETERR
-*
+         JNE   GETERR               (RELATIVO)
+*---------------------------------------------------------------*
+* CLOSE + MENSAGEM FINAL.                                       *
+*---------------------------------------------------------------*
          CLOSE (VSAMACB)
 *
          CVD   R5,DWORK
@@ -13760,12 +13800,14 @@ GETEND   CH    R15,=H'8'
          WTO   MF=(E,WTOMSG)
 *
          SR    R15,R15
-         J     EXIT
-*
+         J     EXIT                 (RELATIVO)
+*---------------------------------------------------------------*
+* ERROS.                                                        *
+*---------------------------------------------------------------*
 OPENERR  MVC   WMSG(10),=C'OPEN ERRO '
          WTO   MF=(E,WTOMSG)
          LA    R15,8
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 GETERR   MVC   WMSG(10),=C'GET  ERRO '
          WTO   MF=(E,WTOMSG)
          LA    R15,12
@@ -13803,19 +13845,36 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CRUD KSDS EM ASSEMBLER VIA MACROS VSAM
 *            GET/PUT/ERASE COM RPL OPTCD KEY,DIR
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : VSAM KSDS (ACCESS DIRECT BY KEY)
+*----------------------------------------------------------------*
+* DEMONSTRA AS 4 OPERACOES CLASSICAS CRUD SOBRE UM KSDS:
+*   1. READ  : GET COM OPTCD=KEY,DIR,UPD (POR CHAVE).
+*   2. UPDATE: MODIFICA O RECORD LIDO E FAZ PUT.
+*   3. INSERT: PREPARA NOVO REGISTRO E FAZ PUT SEM UPD.
+*   4. DELETE: GET COM UPD + ERASE.
+*
+* OBS: MODCB E' USADO PARA ALTERAR FLAGS DO RPL EM TEMPO DE
+*      EXECUCAO SEM REABRIR A ACB.
 *================================================================*
 ASMVKSD1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* OPEN.                                                         *
+*---------------------------------------------------------------*
          OPEN  (VSAMACB)
          LTR   R15,R15
          BNZ   OPENERR
-*
+*---------------------------------------------------------------*
+* 1) READ: GET COM UPDATE PARA PERMITIR UPDATE POSTERIOR.       *
+*---------------------------------------------------------------*
          MVC   KEYAREA,=CL10'KEY00100  '
          MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD),           X
                ARG=KEYAREA
@@ -13826,13 +13885,17 @@ ASMVKSD1 CSECT
          MVC   WMSG(5),=C'READ='
          MVC   WMSG+5(20),RECAREA
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* 2) UPDATE: MODIFICA OS BYTES 10..30 E DA' PUT.                *
+*---------------------------------------------------------------*
          MVC   RECAREA+10(20),=CL20'ATUALIZADO VIA ASM  '
          MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD)
          PUT   RPL=VSAMRPL
          LTR   R15,R15
          BNZ   UPDERR
-*
+*---------------------------------------------------------------*
+* 3) INSERT: NOVO REGISTRO COM CHAVE INEXISTENTE.               *
+*---------------------------------------------------------------*
          MVC   KEYAREA,=CL10'KEY09999  '
          MVC   RECAREA(10),KEYAREA
          MVC   RECAREA+10(20),=CL20'NOVO REGISTRO ASM   '
@@ -13841,7 +13904,9 @@ ASMVKSD1 CSECT
          PUT   RPL=VSAMRPL
          LTR   R15,R15
          BNZ   INSERR
-*
+*---------------------------------------------------------------*
+* 4) DELETE: GET COM UPD + ERASE (EXCLUI O RECEM-INSERIDO).     *
+*---------------------------------------------------------------*
          MVC   KEYAREA,=CL10'KEY09999  '
          MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD),           X
                ARG=KEYAREA
@@ -13851,11 +13916,15 @@ ASMVKSD1 CSECT
          ERASE RPL=VSAMRPL
          LTR   R15,R15
          BNZ   DELERR
-*
+*---------------------------------------------------------------*
+* ENCERRAMENTO NORMAL.                                          *
+*---------------------------------------------------------------*
          CLOSE (VSAMACB)
          SR    R15,R15
          B     EXIT
-*
+*---------------------------------------------------------------*
+* ROTAS DE ERRO COM RCs DISTINTOS POR OPERACAO.                 *
+*---------------------------------------------------------------*
 OPENERR  LA    R15,8
          B     EXIT
 RDERR    LA    R15,12
@@ -13889,36 +13958,51 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CRUD KSDS EM ASSEMBLER VIA MACROS VSAM
 *            GET/PUT/ERASE COM RPL OPTCD KEY,DIR
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : VSAM KSDS
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE. TODOS OS DESVIOS SAO PC-RELATIVOS
+* (JNZ, J).
 *================================================================*
 ASMVKSD1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMVKSD1         SET BASE (RELATIVE)
+         LARL  R12,ASMVKSD1         SET BASE (PC-RELATIVE)
          USING ASMVKSD1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* OPEN.                                                         *
+*---------------------------------------------------------------*
          OPEN  (VSAMACB)
          LTR   R15,R15
-         JNZ   OPENERR
-*
+         JNZ   OPENERR              (RELATIVO)
+*---------------------------------------------------------------*
+* 1) READ (GET COM UPD).                                        *
+*---------------------------------------------------------------*
          MVC   KEYAREA,=CL10'KEY00100  '
          MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD),           X
                ARG=KEYAREA
          GET   RPL=VSAMRPL
          LTR   R15,R15
-         JNZ   RDERR
+         JNZ   RDERR                (RELATIVO)
 *
          MVC   WMSG(5),=C'READ='
          MVC   WMSG+5(20),RECAREA
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* 2) UPDATE.                                                    *
+*---------------------------------------------------------------*
          MVC   RECAREA+10(20),=CL20'ATUALIZADO VIA ASM  '
          MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD)
          PUT   RPL=VSAMRPL
          LTR   R15,R15
-         JNZ   UPDERR
-*
+         JNZ   UPDERR               (RELATIVO)
+*---------------------------------------------------------------*
+* 3) INSERT.                                                    *
+*---------------------------------------------------------------*
          MVC   KEYAREA,=CL10'KEY09999  '
          MVC   RECAREA(10),KEYAREA
          MVC   RECAREA+10(20),=CL20'NOVO REGISTRO ASM   '
@@ -13926,30 +14010,36 @@ ASMVKSD1 CSECT
                ARG=KEYAREA
          PUT   RPL=VSAMRPL
          LTR   R15,R15
-         JNZ   INSERR
-*
+         JNZ   INSERR               (RELATIVO)
+*---------------------------------------------------------------*
+* 4) DELETE (GET UPD + ERASE).                                  *
+*---------------------------------------------------------------*
          MVC   KEYAREA,=CL10'KEY09999  '
          MODCB RPL=VSAMRPL,OPTCD=(KEY,DIR,MVE,UPD),           X
                ARG=KEYAREA
          GET   RPL=VSAMRPL
          LTR   R15,R15
-         JNZ   DELERR
+         JNZ   DELERR               (RELATIVO)
          ERASE RPL=VSAMRPL
          LTR   R15,R15
-         JNZ   DELERR
-*
+         JNZ   DELERR               (RELATIVO)
+*---------------------------------------------------------------*
+* CLOSE E SAIDA NORMAL.                                         *
+*---------------------------------------------------------------*
          CLOSE (VSAMACB)
          SR    R15,R15
-         J     EXIT
-*
+         J     EXIT                 (RELATIVO)
+*---------------------------------------------------------------*
+* ROTAS DE ERRO.                                                *
+*---------------------------------------------------------------*
 OPENERR  LA    R15,8
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 RDERR    LA    R15,12
-         J     CLOSEX
+         J     CLOSEX               (RELATIVO)
 UPDERR   LA    R15,16
-         J     CLOSEX
+         J     CLOSEX               (RELATIVO)
 INSERR   LA    R15,20
-         J     CLOSEX
+         J     CLOSEX               (RELATIVO)
 DELERR   LA    R15,24
 CLOSEX   CLOSE (VSAMACB)
 *
@@ -13985,29 +14075,48 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : BROWSE POSICIONAL VSAM EM ASSEMBLER
 *            POINT + GET SEQ FWD + GET SEQ BWD + SHOWCB
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : VSAM KSDS (POINT/FWD/BWD)
+*----------------------------------------------------------------*
+* DEMONSTRA UM BROWSE BIDIRECIONAL:
+*   1. POINT POSICIONA O CURSOR EM 'KEY00500' (SEM LER).
+*   2. 10 GETs FWD (AVANCA).
+*   3. 5  GETs BWD (RETROCEDE).
+*   4. SHOWCB EXIBE FDBK, RBA E KEYLEN DO ULTIMO RPL.
+*
+* TECNICA: MODCB ALTERA OPTCD PARA ALTERNAR FWD <-> BWD SEM
+*          REABRIR A ACB.
 *================================================================*
 ASMVBRW1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* OPEN.                                                         *
+*---------------------------------------------------------------*
          OPEN  (VSAMACB)
          LTR   R15,R15
          BNZ   OPENERR
-*
+*---------------------------------------------------------------*
+* POINT: POSICIONA EM 'KEY00500' SEM FAZER I/O DE DADOS.        *
+*---------------------------------------------------------------*
          MVC   KEYAREA,=CL10'KEY00500  '
          MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE),               X
                ARG=KEYAREA
          POINT RPL=VSAMRPL
          LTR   R15,R15
          BNZ   PNTERR
-*
+*---------------------------------------------------------------*
+* BROWSE FORWARD: LE 10 REGISTROS NA ORDEM ASCENDENTE.          *
+*---------------------------------------------------------------*
          MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE,FWD)
-         SR    R5,R5
-         LA    R6,10
+         SR    R5,R5                CONTADOR
+         LA    R6,10                LIMITE
 *
 FWDLOOP  GET   RPL=VSAMRPL
          LTR   R15,R15
@@ -14015,7 +14124,7 @@ FWDLOOP  GET   RPL=VSAMRPL
 *
          LA    R5,1(R5)
          CR    R5,R6
-         BNL   FWDEND
+         BNL   FWDEND               R5>=10 => SAI
          B     FWDLOOP
 *
 FWDEND   DS    0H
@@ -14024,7 +14133,9 @@ FWDEND   DS    0H
          OI    WMSG+7,X'F0'
          MVC   WMSG(4),=C'FWD='
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* BROWSE BACKWARD: LE 5 REGISTROS NA ORDEM DESCENDENTE.         *
+*---------------------------------------------------------------*
          MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE,BWD)
          SR    R5,R5
          LA    R6,5
@@ -14035,7 +14146,7 @@ BWDLOOP  GET   RPL=VSAMRPL
 *
          LA    R5,1(R5)
          CR    R5,R6
-         BNL   BWDEND
+         BNL   BWDEND               R5>=5 => SAI
          B     BWDLOOP
 *
 BWDEND   DS    0H
@@ -14044,7 +14155,9 @@ BWDEND   DS    0H
          OI    WMSG+7,X'F0'
          MVC   WMSG(4),=C'BWD='
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* SHOWCB: EXIBE INFORMACOES DO RPL (FEEDBACK/RBA/KEYLEN).       *
+*---------------------------------------------------------------*
          SHOWCB RPL=VSAMRPL,                                   X
                FIELDS=(FDBK,RBA,KEYLEN),                       X
                AREA=CBAREA,LENGTH=12
@@ -14054,11 +14167,15 @@ BWDEND   DS    0H
          UNPK  WMSG+5(4),DWORK+6(2)
          OI    WMSG+8,X'F0'
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* ENCERRAMENTO.                                                 *
+*---------------------------------------------------------------*
          CLOSE (VSAMACB)
          SR    R15,R15
          B     EXIT
-*
+*---------------------------------------------------------------*
+* ERROS.                                                        *
+*---------------------------------------------------------------*
 OPENERR  LA    R15,8
          B     EXIT
 PNTERR   LA    R15,12
@@ -14088,38 +14205,51 @@ WTOMSG   WTO   '                                              X
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : BROWSE POSICIONAL VSAM EM ASSEMBLER
 *            POINT + GET SEQ FWD + GET SEQ BWD + SHOWCB
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : VSAM KSDS
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE, TODOS OS DESVIOS PC-RELATIVOS
+* (JNZ, JNL, J).
 *================================================================*
 ASMVBRW1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMVBRW1         SET BASE (RELATIVE)
+         LARL  R12,ASMVBRW1         SET BASE (PC-RELATIVE)
          USING ASMVBRW1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* OPEN.                                                         *
+*---------------------------------------------------------------*
          OPEN  (VSAMACB)
          LTR   R15,R15
-         JNZ   OPENERR
-*
+         JNZ   OPENERR              (RELATIVO)
+*---------------------------------------------------------------*
+* POINT NO 'KEY00500'.                                          *
+*---------------------------------------------------------------*
          MVC   KEYAREA,=CL10'KEY00500  '
          MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE),               X
                ARG=KEYAREA
          POINT RPL=VSAMRPL
          LTR   R15,R15
-         JNZ   PNTERR
-*
+         JNZ   PNTERR               (RELATIVO)
+*---------------------------------------------------------------*
+* BROWSE FORWARD (10 LEITURAS).                                 *
+*---------------------------------------------------------------*
          MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE,FWD)
          SR    R5,R5
          LA    R6,10
 *
 FWDLOOP  GET   RPL=VSAMRPL
          LTR   R15,R15
-         JNZ   FWDEND
+         JNZ   FWDEND               (RELATIVO)
 *
          LA    R5,1(R5)
          CR    R5,R6
-         JNL   FWDEND
-         J     FWDLOOP
+         JNL   FWDEND               (RELATIVO)
+         J     FWDLOOP              (RELATIVO)
 *
 FWDEND   DS    0H
          CVD   R5,DWORK
@@ -14127,19 +14257,21 @@ FWDEND   DS    0H
          OI    WMSG+7,X'F0'
          MVC   WMSG(4),=C'FWD='
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* BROWSE BACKWARD (5 LEITURAS).                                 *
+*---------------------------------------------------------------*
          MODCB RPL=VSAMRPL,OPTCD=(KEY,SEQ,MVE,BWD)
          SR    R5,R5
          LA    R6,5
 *
 BWDLOOP  GET   RPL=VSAMRPL
          LTR   R15,R15
-         JNZ   BWDEND
+         JNZ   BWDEND               (RELATIVO)
 *
          LA    R5,1(R5)
          CR    R5,R6
-         JNL   BWDEND
-         J     BWDLOOP
+         JNL   BWDEND               (RELATIVO)
+         J     BWDLOOP              (RELATIVO)
 *
 BWDEND   DS    0H
          CVD   R5,DWORK
@@ -14147,7 +14279,9 @@ BWDEND   DS    0H
          OI    WMSG+7,X'F0'
          MVC   WMSG(4),=C'BWD='
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* SHOWCB.                                                       *
+*---------------------------------------------------------------*
          SHOWCB RPL=VSAMRPL,                                   X
                FIELDS=(FDBK,RBA,KEYLEN),                       X
                AREA=CBAREA,LENGTH=12
@@ -14157,13 +14291,17 @@ BWDEND   DS    0H
          UNPK  WMSG+5(4),DWORK+6(2)
          OI    WMSG+8,X'F0'
          WTO   MF=(E,WTOMSG)
-*
+*---------------------------------------------------------------*
+* CLOSE E SAIDA.                                                *
+*---------------------------------------------------------------*
          CLOSE (VSAMACB)
          SR    R15,R15
-         J     EXIT
-*
+         J     EXIT                 (RELATIVO)
+*---------------------------------------------------------------*
+* ERROS.                                                        *
+*---------------------------------------------------------------*
 OPENERR  LA    R15,8
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 PNTERR   LA    R15,12
          CLOSE (VSAMACB)
 *
