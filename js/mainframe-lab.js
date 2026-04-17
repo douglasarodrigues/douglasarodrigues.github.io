@@ -600,6 +600,18 @@
     });
   }
 
+  /** Search text from live DOM so i18n updates to names/descriptions stay searchable. */
+  function getCardSearchText(card) {
+    const id = (qs(".lab-card-program-id", card)?.textContent || "").trim();
+    const name = (qs(".lab-card-name", card)?.textContent || "").trim();
+    const desc = (qs(".lab-card-desc", card)?.textContent || "").trim();
+    const tech = (card.dataset.tech || "").trim();
+    const tags = qsa(".lab-tech-badge", card)
+      .map((t) => t.textContent.trim())
+      .join(" ");
+    return `${id} ${name} ${desc} ${tech} ${tags}`.replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
   function initSearch() {
     const input = qs("#lab-search-input");
     const clearBtn = qs(".lab-search-clear");
@@ -611,8 +623,8 @@
       const allCards = qsa(".lab-card");
       let visible = 0;
 
-      allCards.forEach(card => {
-        const text = card.dataset.search || "";
+      allCards.forEach((card) => {
+        const text = getCardSearchText(card);
         const match = !query || text.includes(query);
         card.hidden = !match;
         if (match) visible++;
@@ -620,9 +632,31 @@
 
       if (noResults) noResults.hidden = visible > 0 || !query;
       if (clearBtn) clearBtn.hidden = !query;
+
+      /* Matches may live only in another tech tab — switch so results are visible */
+      if (query.length > 0 && visible > 0) {
+        const activePanel = qs(".lab-tabpanel:not([hidden])");
+        if (activePanel) {
+          const inActive = qsa(".lab-card", activePanel);
+          const activeShowsMatch = inActive.some((c) => !c.hidden);
+          if (activeShowsMatch) return;
+        }
+        for (const tech of TECH_ORDER) {
+          const panel = qs("#panel-" + tech);
+          if (!panel) continue;
+          const cardsIn = qsa(".lab-card", panel);
+          if (!cardsIn.some((c) => !c.hidden)) continue;
+          const tabId = panel.getAttribute("aria-labelledby");
+          const tabBtn = tabId ? qs("#" + tabId) : null;
+          if (tabBtn) activateTab(tabBtn);
+          break;
+        }
+      }
     };
 
     input.addEventListener("input", doSearch);
+    input.addEventListener("search", doSearch);
+    document.addEventListener("langchange", doSearch);
     if (clearBtn) {
       clearBtn.addEventListener("click", () => {
         input.value = "";
