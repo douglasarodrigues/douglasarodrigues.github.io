@@ -6097,23 +6097,39 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : INSPETOR DE AMBIENTE CICS EM ASSEMBLER
 *            COLETA USERID, TERMINAL, TRANSACAO VIA ASSIGN
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+*            E ENVIA O RESUMO PARA O TERMINAL.
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : CICS / EIBRESP / DFHEIBLK
+* SAIDA    : TELA COM USER=xxxxxxxx TERM=xxxx TRAN=xxxx
+*----------------------------------------------------------------*
+* TECNICA: EXEC CICS ASSIGN LE CAMPOS DA EIB. VERIFICAMOS O
+*          RESP VIA DFHRESP(NORMAL) E, SE OK, MONTAMOS A LINHA
+*          COM MVC E DEVOLVEMOS AO TERMINAL VIA SEND TEXT.
 *================================================================*
 ASMCENV1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO CLASSICO BALR+USING.                                  *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* ASSIGN - COLETA USERID, FACILITY (TERM) E RESP CODE.          *
+*---------------------------------------------------------------*
          EXEC CICS ASSIGN                                      X
                USERID(WUSER)                                   X
                FACILITY(WTERM)                                 X
                RESP(WRESP)
-*
+*---------------------------------------------------------------*
+* VALIDA O RESPONSE CODE; SE ERRO, DESVIA PARA ERRASSN.         *
+*---------------------------------------------------------------*
          CLC   WRESP,DFHRESP(NORMAL)
          BNE   ERRASSN
-*
+*---------------------------------------------------------------*
+* MONTA A LINHA DE TEXTO COM OS 3 CAMPOS COLETADOS (+ EIBTRNID).*
+*---------------------------------------------------------------*
          MVC   WLINE,BLANKS
          MVC   WLINE(5),=C'USER='
          MVC   WLINE+5(8),WUSER
@@ -6153,22 +6169,31 @@ BLANKS   DC    CL80' '
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : INSPETOR DE AMBIENTE CICS EM ASSEMBLER
 *            COLETA USERID, TERMINAL, TRANSACAO VIA ASSIGN
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : CICS / EIBRESP / DFHEIBLK
+*----------------------------------------------------------------*
+* TECNICA: IDENTICA A V. BASE, PORE'M COM BASE VIA LARL E
+*          DESVIO JNE (RELATIVO) PARA O TRATAMENTO DE ERRO.
 *================================================================*
 ASMCENV1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMCENV1         SET BASE (RELATIVE)
+         LARL  R12,ASMCENV1         SET BASE (PC-RELATIVE)
          USING ASMCENV1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* ASSIGN + VALIDACAO DE RESP (DESVIO RELATIVO JNE).             *
+*---------------------------------------------------------------*
          EXEC CICS ASSIGN                                      X
                USERID(WUSER)                                   X
                FACILITY(WTERM)                                 X
                RESP(WRESP)
 *
          CLC   WRESP,DFHRESP(NORMAL)
-         JNE   ERRASSN
+         JNE   ERRASSN              (RELATIVO)
 *
          MVC   WLINE,BLANKS
          MVC   WLINE(5),=C'USER='
@@ -6217,20 +6242,37 @@ BLANKS   DC    CL80' '
 `*================================================================*
 * PROGRAMA : ASMCBMS1
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
-* OBJETIVO : TRANSACAO PSEUDO-CONVERSACIONAL COM BMS EM ASSEMBLER
+* OBJETIVO : TRANSACAO CICS PSEUDO-CONVERSACIONAL (BMS)
 *            SEND MAP / RECEIVE MAP / RETURN TRANSID
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : CICS / DFHEIBLK / MAPSET 'MSINQ' / MAP 'MAPINQ'
+*----------------------------------------------------------------*
+* FLUXO PSEUDO-CONVERSACIONAL:
+*   1. EIBCALEN=0 -> PRIMEIRA VEZ, ENVIA MAPA EM BRANCO.
+*   2. EIBCALEN>0 -> USUARIO VOLTOU COM DADOS DIGITADOS:
+*        - RECEBE O MAPA
+*        - VALIDA A CHAVE
+*        - DEVOLVE RESPOSTA E RETURN COM TRANSID = 'INQ1'
+*   3. RETURN TRANSID -> CICS CHAMA ESTE PGM NOVAMENTE NA
+*      PROXIMA TECLA DE ENTER.
 *================================================================*
 ASMCBMS1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* TESTA COMMAREA: EIBCALEN=0 SIGNIFICA PRIMEIRA INVOCACAO.      *
+*---------------------------------------------------------------*
          CLC   EIBCALEN,=H'0'
          BE    PRIMVEZ
-*
+*---------------------------------------------------------------*
+* RECEIVE MAP: LE OS DADOS DIGITADOS NO TERMINAL.               *
+*---------------------------------------------------------------*
          EXEC CICS RECEIVE MAP('MAPINQ')                      X
                MAPSET('MSINQ')                                 X
                INTO(MAPAREA)                                   X
@@ -6238,30 +6280,43 @@ ASMCBMS1 CSECT
 *
          CLC   WRESP,DFHRESP(NORMAL)
          BNE   MAPERR
-*
+*---------------------------------------------------------------*
+* VALIDA A CHAVE DIGITADA (NAO PODE VIR EM BRANCO).             *
+*---------------------------------------------------------------*
          CLC   MAPKEY,BLANKS
          BE    SENDERR
 *
          MVC   MAPOUT,=CL40'REGISTRO ENCONTRADO COM SUCESSO'
          B     SENDMAP
-*
+*---------------------------------------------------------------*
+* TRAILER: MENSAGEM DE ERRO DE VALIDACAO.                       *
+*---------------------------------------------------------------*
 SENDERR  MVC   MAPOUT,=CL40'ERRO: CHAVE NAO INFORMADA'
-*
+*---------------------------------------------------------------*
+* SEND MAP: ENTREGA O MAPA AO TERMINAL E LIMPA A TELA.          *
+*---------------------------------------------------------------*
 SENDMAP  EXEC CICS SEND MAP('MAPINQ')                         X
                MAPSET('MSINQ')                                 X
                FROM(MAPAREA)                                   X
                ERASE FREEKB                                    X
                RESP(WRESP)
-*
+*---------------------------------------------------------------*
+* RETURN TRANSID: FINALIZA A TAREFA MAS MANTE'M A SESSAO        *
+* PSEUDO-CONVERSACIONAL ATIVA (PROXIMA ENTER REINVOCA O PGM).   *
+*---------------------------------------------------------------*
          EXEC CICS RETURN                                      X
                TRANSID('INQ1')                                 X
                COMMAREA(WCOMM)                                 X
                LENGTH(WCOMMLN)
-*
+*---------------------------------------------------------------*
+* PRIMEIRA INVOCACAO: LIMPA AREA, PEDE A CHAVE E ENVIA MAPA.    *
+*---------------------------------------------------------------*
 PRIMVEZ  XC    MAPAREA,MAPAREA
          MVC   MAPOUT,=CL40'INFORME A CHAVE DE CONSULTA'
          B     SENDMAP
-*
+*---------------------------------------------------------------*
+* ERRO NO RECEIVE MAP.                                          *
+*---------------------------------------------------------------*
 MAPERR   MVC   MAPOUT,=CL40'ERRO AO RECEBER MAPA'
          B     SENDMAP
 *
@@ -6281,53 +6336,76 @@ BLANKS   DC    CL10' '
 `*================================================================*
 * PROGRAMA : ASMCBMS1
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
-* OBJETIVO : TRANSACAO PSEUDO-CONVERSACIONAL COM BMS EM ASSEMBLER
+* OBJETIVO : TRANSACAO CICS PSEUDO-CONVERSACIONAL (BMS)
 *            SEND MAP / RECEIVE MAP / RETURN TRANSID
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : CICS / DFHEIBLK / MAPSET 'MSINQ' / MAP 'MAPINQ'
+*----------------------------------------------------------------*
+* FLUXO IDE'NTICO A' VERSAO BASE, PORE'M TODOS OS DESVIOS SAO
+* PC-RELATIVOS (J, JE, JNE) E A BASE E' CARREGADA COM LARL.
 *================================================================*
 ASMCBMS1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO (LARL + USING).                              *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMCBMS1         SET BASE (RELATIVE)
+         LARL  R12,ASMCBMS1         SET BASE (PC-RELATIVE)
          USING ASMCBMS1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* TESTA COMMAREA (EIBCALEN=0 -> PRIMEIRA VEZ).                  *
+*---------------------------------------------------------------*
          CLC   EIBCALEN,=H'0'
-         JE    PRIMVEZ
-*
+         JE    PRIMVEZ              (RELATIVO)
+*---------------------------------------------------------------*
+* RECEIVE MAP + VALIDACAO DE RESP.                              *
+*---------------------------------------------------------------*
          EXEC CICS RECEIVE MAP('MAPINQ')                      X
                MAPSET('MSINQ')                                 X
                INTO(MAPAREA)                                   X
                RESP(WRESP)
 *
          CLC   WRESP,DFHRESP(NORMAL)
-         JNE   MAPERR
-*
+         JNE   MAPERR               (RELATIVO)
+*---------------------------------------------------------------*
+* VALIDA CHAVE DIGITADA.                                        *
+*---------------------------------------------------------------*
          CLC   MAPKEY,BLANKS
-         JE    SENDERR
+         JE    SENDERR              (RELATIVO)
 *
          MVC   MAPOUT,=CL40'REGISTRO ENCONTRADO COM SUCESSO'
-         J     SENDMAP
-*
+         J     SENDMAP              (RELATIVO)
+*---------------------------------------------------------------*
+* MENSAGEM DE ERRO DE VALIDACAO.                                *
+*---------------------------------------------------------------*
 SENDERR  MVC   MAPOUT,=CL40'ERRO: CHAVE NAO INFORMADA'
-*
+*---------------------------------------------------------------*
+* SEND MAP (LIMPA TELA E DEVOLVE O MAPA).                       *
+*---------------------------------------------------------------*
 SENDMAP  EXEC CICS SEND MAP('MAPINQ')                         X
                MAPSET('MSINQ')                                 X
                FROM(MAPAREA)                                   X
                ERASE FREEKB                                    X
                RESP(WRESP)
-*
+*---------------------------------------------------------------*
+* RETURN TRANSID (MANTE'M CONVERSACAO PSEUDO).                  *
+*---------------------------------------------------------------*
          EXEC CICS RETURN                                      X
                TRANSID('INQ1')                                 X
                COMMAREA(WCOMM)                                 X
                LENGTH(WCOMMLN)
-*
+*---------------------------------------------------------------*
+* PRIMEIRA INVOCACAO.                                           *
+*---------------------------------------------------------------*
 PRIMVEZ  XC    MAPAREA,MAPAREA
          MVC   MAPOUT,=CL40'INFORME A CHAVE DE CONSULTA'
-         J     SENDMAP
-*
+         J     SENDMAP              (RELATIVO)
+*---------------------------------------------------------------*
+* ERRO NO RECEIVE MAP.                                          *
+*---------------------------------------------------------------*
 MAPERR   MVC   MAPOUT,=CL40'ERRO AO RECEBER MAPA'
-         J     SENDMAP
+         J     SENDMAP              (RELATIVO)
 *
 SAVE     DS    18F
 WRESP    DS    F
@@ -6357,18 +6435,34 @@ BLANKS   DC    CL10' '
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : TRATADOR DE ABEND CICS EM ASSEMBLER
 *            HANDLE ABEND -> CAPTURA -> LOG TDQ -> RETURN
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* AMBIENTE : CICS / DFHEIBLK / VSAM FILE 'CADMSTR'
+*----------------------------------------------------------------*
+* ESTRATEGIA: HANDLE ABEND INSTALA O ROTULO ABDHAND COMO
+*             MANIPULADOR. NO FLUXO NORMAL, FAZEMOS ASSIGN E
+*             READ FILE. SE O READ FALHAR, O CICS DESVIA
+*             AUTOMATICAMENTE PARA ABDHAND, ONDE:
+*               - CAPTURAMOS O CODIGO DO ABEND (ABCODE)
+*               - MONTAMOS UMA LINHA DE LOG TIMESTAMPADA
+*               - GRAVAMOS NA FILA TD 'CSML' (SYSLOG)
 *================================================================*
 ASMCABD1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
          BALR  R12,0                SET BASE
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* HANDLE ABEND: DEFINE O LABEL ABDHAND COMO MANIPULADOR.        *
+*---------------------------------------------------------------*
          EXEC CICS HANDLE ABEND                                X
                LABEL(ABDHAND)
-*
+*---------------------------------------------------------------*
+* FLUXO NORMAL: COLETA AMBIENTE E LE VSAM.                      *
+*---------------------------------------------------------------*
          EXEC CICS ASSIGN                                      X
                USERID(WUSER)                                   X
                FACILITY(WTERM)                                 X
@@ -6381,17 +6475,23 @@ ASMCABD1 CSECT
                RESP(WRESP)
 *
          EXEC CICS RETURN
-*
+*---------------------------------------------------------------*
+* ROTINA DE TRATAMENTO DE ABEND (INVOCADA PELO CICS).           *
+*---------------------------------------------------------------*
 ABDHAND  DS    0H
          EXEC CICS ASSIGN ABCODE(WABCD)                       X
                RESP(WRESP)
-*
+*---------------------------------------------------------------*
+* OBTEM TIMESTAMP FORMATADO DD/MM/AAAA HH:MM:SS.                *
+*---------------------------------------------------------------*
          EXEC CICS ASKTIME ABSTIME(WABSTM)
          EXEC CICS FORMATTIME ABSTIME(WABSTM)                 X
                DATESEP('/') TIMESEP(':')                       X
                DDMMYYYY(WTSTAMP)                               X
                TIME(WTSTAMP+12)
-*
+*---------------------------------------------------------------*
+* MONTA LINHA DE LOG: TIMESTAMP|TRAN|USER|ABCODE|MSG            *
+*---------------------------------------------------------------*
          MVC   WLOGMSG,BLANKS
          MVC   WLOGMSG(19),WTSTAMP
          MVI   WLOGMSG+19,C'|'
@@ -6402,7 +6502,9 @@ ABDHAND  DS    0H
          MVC   WLOGMSG+34(4),WABCD
          MVI   WLOGMSG+38,C'|'
          MVC   WLOGMSG+39(20),=CL20'ABEND CAPTURADO ASM'
-*
+*---------------------------------------------------------------*
+* GRAVA NA TRANSIENT DATA QUEUE 'CSML' (LOG DO CICS).           *
+*---------------------------------------------------------------*
          EXEC CICS WRITEQ TD                                   X
                QUEUE('CSML')                                   X
                FROM(WLOGMSG)                                   X
@@ -6433,18 +6535,30 @@ BLANKS   DC    CL80' '
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : TRATADOR DE ABEND CICS EM ASSEMBLER
 *            HANDLE ABEND -> CAPTURA -> LOG TDQ -> RETURN
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* AMBIENTE : CICS / DFHEIBLK / VSAM FILE 'CADMSTR'
+*----------------------------------------------------------------*
+* MESMO FLUXO DA VERSAO BASE, COM BASE CARREGADA VIA LARL.
+* AS MACROS CICS JA RESOLVEM LABELS DE FORMA RELOCATAVEL,
+* PORTANTO NAO EXISTE DESVIO BASE+DESLOCAMENTO NO FONTE.
 *================================================================*
 ASMCABD1 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE REGISTERS
-         LARL  R12,ASMCABD1         SET BASE (RELATIVE)
+         LARL  R12,ASMCABD1         SET BASE (PC-RELATIVE)
          USING ASMCABD1,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* INSTALA O MANIPULADOR DE ABEND (ABDHAND).                     *
+*---------------------------------------------------------------*
          EXEC CICS HANDLE ABEND                                X
                LABEL(ABDHAND)
-*
+*---------------------------------------------------------------*
+* FLUXO NORMAL: ASSIGN + READ VSAM.                             *
+*---------------------------------------------------------------*
          EXEC CICS ASSIGN                                      X
                USERID(WUSER)                                   X
                FACILITY(WTERM)                                 X
@@ -6457,7 +6571,9 @@ ASMCABD1 CSECT
                RESP(WRESP)
 *
          EXEC CICS RETURN
-*
+*---------------------------------------------------------------*
+* MANIPULADOR DE ABEND (CHAMADO PELO CICS).                     *
+*---------------------------------------------------------------*
 ABDHAND  DS    0H
          EXEC CICS ASSIGN ABCODE(WABCD)                       X
                RESP(WRESP)
