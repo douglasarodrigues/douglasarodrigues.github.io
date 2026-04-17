@@ -3243,25 +3243,41 @@ SAVE     DS    18F
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CONVERSAO ENTRE FORMATOS NUMERICOS
 *            ZONED <-> PACKED <-> BINARIO
-* R1 -> PARMLIST: @INPUT, @OUTPUT, @INLEN(FW), @CONV_TYPE
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
-* CONV_TYPE: 'ZP'=ZONED->PACKED, 'PZ'=PACKED->ZONED,
-*            'PB'=PACKED->BINARY, 'BP'=BINARY->PACKED,
-*            'ZB'=ZONED->BINARY,  'BZ'=BINARY->ZONED
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0  = @INPUT
+*                            +4  = @OUTPUT
+*                            +8  = @INLEN     (FULLWORD)
+*                            +12 = @CONV_TYPE (C'ZP','PZ',...)
+* CONV_TYPE: 'ZP'=ZONED->PACKED   'PZ'=PACKED->ZONED
+*            'PB'=PACKED->BINARY  'BP'=BINARY->PACKED
+*            'ZB'=ZONED->BINARY   'BZ'=BINARY->ZONED
+* SAIDA    : R15 = 0 (OK) OU 8 (TIPO INVALIDO)
+*----------------------------------------------------------------*
+* TECNICA: PACK/UNPK/CVD/CVB EXECUTAM AS CONVERSOES.  PACK E
+*          UNPK TEM COMPRIMENTO VARIAVEL NO OPCODE, POR ISSO
+*          USAM EX + BCTR (LEN-1) EM TEMPO DE EXECUCAO.
 *================================================================*
 ASMPCK01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* LE PARMLIST:                                                  *
+*  R2 = @INPUT  R3 = @OUTPUT  R4 = LEN  R5 = @CONV_TYPE         *
+*---------------------------------------------------------------*
          L     R2,0(R1)            INPUT ADDR
          L     R3,4(R1)            OUTPUT ADDR
          L     R4,8(R1)            LENGTH ADDR
          L     R4,0(R4)            ACTUAL LENGTH
          L     R5,12(R1)           CONV TYPE ADDR
-*
+*---------------------------------------------------------------*
+* DESPACHA CONFORME O CONV_TYPE (CLC DE 2 BYTES).               *
+*---------------------------------------------------------------*
          CLC   0(2,R5),=C'ZP'     ZONED TO PACKED
          BE    ZTOP
          CLC   0(2,R5),=C'PZ'     PACKED TO ZONED
@@ -3321,19 +3337,30 @@ DWORK    DS    D
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CONVERSAO ENTRE FORMATOS NUMERICOS
 *            ZONED <-> PACKED <-> BINARIO
-* R1 -> PARMLIST: @INPUT, @OUTPUT, @INLEN(FW), @CONV_TYPE
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
-* CONV_TYPE: 'ZP'=ZONED->PACKED, 'PZ'=PACKED->ZONED,
-*            'PB'=PACKED->BINARY, 'BP'=BINARY->PACKED,
-*            'ZB'=ZONED->BINARY,  'BZ'=BINARY->ZONED
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0  = @INPUT
+*                            +4  = @OUTPUT
+*                            +8  = @INLEN     (FULLWORD)
+*                            +12 = @CONV_TYPE
+* CONV_TYPE: 'ZP'/'PZ'/'PB'/'BP'/'ZB'/'BZ' (VER V. BASE)
+* SAIDA    : R15 = 0 (OK) OU 8 (TIPO INVALIDO)
+*----------------------------------------------------------------*
+* TECNICA: IDENTICA A V. BASE.  LARL ESTABELECE BASE PC-REL E
+*          TODOS OS DESVIOS USAM J/JE.  EX/BCTR CONTINUAM NO
+*          MESMO ESQUEMA (RR, SEM BASE+DESLOCAMENTO).
 *================================================================*
 ASMPCK01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
-         LARL  R12,ASMPCK01         
+         LARL  R12,ASMPCK01         SET BASE (PC-RELATIVE)
          USING ASMPCK01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* LE PARMLIST E DESPACHA POR CONV_TYPE (DESVIOS RELATIVOS).     *
+*---------------------------------------------------------------*
          L     R2,0(R1)            INPUT ADDR
          L     R3,4(R1)            OUTPUT ADDR
          L     R4,8(R1)            LENGTH ADDR
@@ -3341,7 +3368,7 @@ ASMPCK01 CSECT
          L     R5,12(R1)           CONV TYPE ADDR
 *
          CLC   0(2,R5),=C'ZP'     ZONED TO PACKED
-         JE    ZTOP
+         JE    ZTOP                 (RELATIVO)
          CLC   0(2,R5),=C'PZ'     PACKED TO ZONED
          JE    PTOZ
          CLC   0(2,R5),=C'PB'     PACKED TO BINARY
@@ -3409,18 +3436,33 @@ DWORK    DS    D
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : OPERACOES COM BUFFERS LONGOS
 *            MVCL (MOVE), CLCL (COMPARE), MVC PROPAGATION
-* R1 -> PARMLIST: @OP(1), @BUF1, @BUF2, @LEN(FW), @PAD(1)
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
-* OP: 'M'=MOVE, 'C'=COMPARE, 'F'=FILL(PROPAGATION)
-* R15: COMPARE->0=EQUAL,1=B1<B2,2=B1>B2 | OTHERS->0=OK
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0  = @OP     (1 BYTE)
+*                            +4  = @BUF1
+*                            +8  = @BUF2
+*                            +12 = @LEN    (FULLWORD)
+*                            +16 = @PAD    (1 BYTE)
+* OPERACOES: 'M'=MOVE  'C'=COMPARE  'F'=FILL (PROPAGATION)
+* SAIDA    : COMPARE -> R15 = 0 (=), 1 (<), 2 (>)
+*            MOVE/FILL -> R15 = 0 (OK)   ;   INVALIDO -> R15=8
+*----------------------------------------------------------------*
+* TECNICA: MVCL/CLCL MOVEM/COMPARAM ATE 16MB (OPERANDOS EM PARES
+*          DE REGISTRADORES PARES+IMPARES).  FILL USA A
+*          TECNICA CLASSICA DE MVC-PROPAGATION: O PRIMEIRO BYTE
+*          E SETADO E UM MVC OVERLAPPING PROPAGA O MESMO BYTE.
 *================================================================*
 ASMBUF01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* LE PARMLIST E DESPACHA POR OPERACAO.                          *
+*---------------------------------------------------------------*
          L     R5,0(R1)            OP ADDRESS
          L     R2,4(R1)            BUF1 ADDRESS
          L     R3,8(R1)            BUF2 ADDRESS
@@ -3459,7 +3501,11 @@ CMPEQ    SR    R15,R15             EQUAL
 CMPLT    LA    R15,1               BUF1 < BUF2
          B     EXIT
 *
-* FILL VIA MVC PROPAGATION: SET FIRST BYTE, MVC REST
+*---------------------------------------------------------------*
+* FILL VIA MVC-PROPAGATION: SETA O PRIMEIRO BYTE COM O PAD E    *
+* USA MVC OVERLAPPING (DEST=SRC+1) PARA PROPAGAR O VALOR.       *
+* EX + DUPLO BCTR CALCULAM (LEN-1) PARA O MVC DINAMICO.         *
+*---------------------------------------------------------------*
 DOFILL   MVC   0(1,R2),0(R6)       SET FIRST BYTE = PAD
          BCTR  R4,0                LEN-1
          BCTR  R4,0                LEN-2
@@ -3468,7 +3514,9 @@ DOFILL   MVC   0(1,R2),0(R6)       SET FIRST BYTE = PAD
          B     EXIT
 *
 EXMVC    MVC   1(0,R2),0(R2)       EXECUTED PROPAGATION
-*
+*---------------------------------------------------------------*
+* EPILOGO E AREAS DE TRABALHO.                                  *
+*---------------------------------------------------------------*
 EXIT     L     R13,SAVE+4
          LM    R14,R12,12(R13)
          BR    R14
@@ -3482,14 +3530,24 @@ SAVE     DS    18F
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : OPERACOES COM BUFFERS LONGOS
 *            MVCL (MOVE), CLCL (COMPARE), MVC PROPAGATION
-* R1 -> PARMLIST: @OP(1), @BUF1, @BUF2, @LEN(FW), @PAD(1)
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
-* OP: 'M'=MOVE, 'C'=COMPARE, 'F'=FILL(PROPAGATION)
-* R15: COMPARE->0=EQUAL,1=B1<B2,2=B1>B2 | OTHERS->0=OK
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0  = @OP     (1 BYTE)
+*                            +4  = @BUF1
+*                            +8  = @BUF2
+*                            +12 = @LEN    (FULLWORD)
+*                            +16 = @PAD    (1 BYTE)
+* OPERACOES: 'M'=MOVE  'C'=COMPARE  'F'=FILL (PROPAGATION)
+* SAIDA    : COMPARE -> R15 = 0/1/2 ;  DEMAIS -> R15 = 0 OU 8
+*----------------------------------------------------------------*
+* TECNICA: MESMA DA VERSAO BASE.  LARL PARA BASE E DESVIOS
+*          J/JE/JL PARA O CONTROLE DE FLUXO.                    *
 *================================================================*
 ASMBUF01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
-         LARL  R12,ASMBUF01         
+         LARL  R12,ASMBUF01         SET BASE (PC-RELATIVE)
          USING ASMBUF01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
@@ -3563,30 +3621,48 @@ SAVE     DS    18F
 `*================================================================*
 * PROGRAMA : ASMTRT01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
-* OBJETIVO : DEMONSTRA TRT (TRANSLATE AND TEST) PARA
-*            BUSCA DE CARACTERES ESPECIAIS EM BUFFER
-* R1 -> @BUFFER, @LEN(FW)
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
-* R15: 0=NENHUM ESPECIAL, 4=ENCONTRADO (R1->POSICAO)
+* OBJETIVO : DEMONSTRA TRT (TRANSLATE AND TEST) PARA LOCALIZAR
+*            CARACTERES ESPECIAIS ('<', '>', '&', '\\'') EM BUFFER
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0 = @BUFFER
+*                            +4 = @LEN (FULLWORD)
+* SAIDA    : R15 = 0 (NENHUM), 4 (ENCONTROU)
+*            QUANDO ENCONTRA: R1 -> POSICAO ; R2 = FUNCTION BYTE
+*----------------------------------------------------------------*
+* TECNICA: MONTA UMA TABELA DE 256 BYTES ZERADA (XC) E GRAVA
+*          BYTES FUNCAO NAS POSICOES CORRESPONDENTES AOS
+*          CARACTERES PROCURADOS.  TRT ENTAO VARRE O BUFFER
+*          PARANDO NO PRIMEIRO BYTE COM FUNCAO != 0.
 *================================================================*
 ASMTRT01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* PARAMETROS: R2 = @BUFFER, R3 = LEN.                           *
+*---------------------------------------------------------------*
          L     R2,0(R1)            BUFFER ADDR
          L     R3,4(R1)            LENGTH ADDR
          L     R3,0(R3)            ACTUAL LENGTH
-*
+*---------------------------------------------------------------*
+* MONTA A TABELA TRT DINAMICAMENTE (ZERA + MARCA 4 CARACTERES). *
+*---------------------------------------------------------------*
 * BUILD TRT TABLE - ZEROS EXCEPT FOR SPECIAL CHARS
          XC    TRTTAB,TRTTAB       CLEAR TABLE
          MVI   TRTTAB+C'<',X'01'  FLAG '<'
          MVI   TRTTAB+C'>',X'02'  FLAG '>'
          MVI   TRTTAB+C'&',X'03'  FLAG '&'
          MVI   TRTTAB+C'''',X'04' FLAG QUOTE
-*
+*---------------------------------------------------------------*
+* APLICA TRT VIA EX (TAMANHO VARIAVEL = LEN-1).                 *
+* TRT PARA NO PRIMEIRO BYTE COM FUNCAO NAO-ZERO: R1 APONTA      *
+* PARA ELE E R2 CONTEM A FUNCAO (X'01'/X'02'/X'03'/X'04').      *
+*---------------------------------------------------------------*
          BCTR  R3,0                LEN-1
          EX    R3,EXTRT            TRT BUFFER
          BZ    NOTFOUND            CC=0, NO MATCH
@@ -3598,7 +3674,9 @@ ASMTRT01 CSECT
 NOTFOUND SR    R15,R15             NOT FOUND
 *
 EXTRT    TRT   0(0,R2),TRTTAB     EXECUTED TRT
-*
+*---------------------------------------------------------------*
+* EPILOGO E AREAS.                                              *
+*---------------------------------------------------------------*
 EXIT     L     R13,SAVE+4
          LM    R14,R12,12(R13)
          BR    R14
@@ -3611,19 +3689,27 @@ TRTTAB   DS    XL256
 `*================================================================*
 * PROGRAMA : ASMTRT01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
-* OBJETIVO : DEMONSTRA TRT (TRANSLATE AND TEST) PARA
-*            BUSCA DE CARACTERES ESPECIAIS EM BUFFER
-* R1 -> @BUFFER, @LEN(FW)
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
-* R15: 0=NENHUM ESPECIAL, 4=ENCONTRADO (R1->POSICAO)
+* OBJETIVO : DEMONSTRA TRT (TRANSLATE AND TEST) PARA LOCALIZAR
+*            CARACTERES ESPECIAIS ('<', '>', '&', '\\'') EM BUFFER
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0 = @BUFFER
+*                            +4 = @LEN (FULLWORD)
+* SAIDA    : R15 = 0 (NENHUM), 4 (ENCONTROU)
+*----------------------------------------------------------------*
+* TECNICA: IDENTICA A V. BASE.  APENAS LARL + JZ/J RELATIVOS.   *
 *================================================================*
 ASMTRT01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
-         LARL  R12,ASMTRT01         
+         LARL  R12,ASMTRT01         SET BASE (PC-RELATIVE)
          USING ASMTRT01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* LE PARAMETROS E MONTA A TABELA TRT.                           *
+*---------------------------------------------------------------*
          L     R2,0(R1)            BUFFER ADDR
          L     R3,4(R1)            LENGTH ADDR
          L     R3,0(R3)            ACTUAL LENGTH
@@ -3634,14 +3720,16 @@ ASMTRT01 CSECT
          MVI   TRTTAB+C'>',X'02'  FLAG '>'
          MVI   TRTTAB+C'&',X'03'  FLAG '&'
          MVI   TRTTAB+C'''',X'04' FLAG QUOTE
-*
+*---------------------------------------------------------------*
+* APLICA TRT (DESVIOS RELATIVOS JZ/J).                          *
+*---------------------------------------------------------------*
          BCTR  R3,0                LEN-1
          EX    R3,EXTRT            TRT BUFFER
-         JZ    NOTFOUND             CC=0, NO MATCH
+         JZ    NOTFOUND             (RELATIVO) CC=0
 *
 * R1 -> FIRST SPECIAL, R2 = FUNCTION BYTE
          LA    R15,4               FOUND
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 *
 NOTFOUND SR    R15,R15             NOT FOUND
 *
@@ -3669,11 +3757,27 @@ TRTTAB   DS    XL256
 `*================================================================*
 * PROGRAMA : ASMLNK01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
-* OBJETIVO : DEMONSTRA LINKAGE CONVENTIONS DO Z/OS
-*            SAVE AREA 18F, PARM LIST, CALL INTERNO/EXTERNO
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* OBJETIVO : DEMONSTRA AS "LINKAGE CONVENTIONS" DO Z/OS:
+*            SAVE AREA 18F, PARM LIST, CALL INTERNO E EXTERNO
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, BAL, BALR)
+* ENTRADA  : R13 = @SAVE AREA DO CHAMADOR
+*            R14 = ENDERECO DE RETORNO
+*            R15 = ENTRY POINT ADDRESS (PROVIDO PELO CALLER)
+* SAIDA    : R15 = 0  ;  REGISTRADORES RESTAURADOS
+*----------------------------------------------------------------*
+* TECNICA (STANDARD SAVE-AREA LINKAGE):
+*   1. STM R14,R12,12(R13) -> SALVA REGS DO CALLER.
+*   2. CONSTROI BASE COM BALR R12,0 + USING *,R12.
+*   3. ENCADEIA A SAVE AREA LOCAL COM A DO CALLER (BWD/FWD).
+*   4. CHAMA SUB-ROTINA INTERNA VIA BAL (RX BASE+DESLOCAMENTO).
+*   5. CHAMA PROGRAMA EXTERNO VIA CALL MACRO (BALR R14,R15).
+*   6. LM R14,R12,12(R13) -> RESTAURA E RETORNA (BR R14).
 *================================================================*
 ASMLNK01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO STANDARD: SALVA REGS DO CALLER E ESTABELECE BASE      *
+* VIA BALR (TECNICA CLASSICA).                                  *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)     SAVE CALLER REGS
          BALR  R12,0                ESTABLISH BASE
          USING *,R12
@@ -3681,12 +3785,15 @@ ASMLNK01 CSECT
          ST    R13,SAVE+4           BACKWARD CHAIN
          ST    R11,8(R13)           FORWARD CHAIN
          LR    R13,R11              ACTIVATE MY SAVE
-*
-* CALL INTERNAL SUBROUTINE VIA BAL
+*---------------------------------------------------------------*
+* CHAMADA INTERNA VIA BAL (BRANCH AND LINK - RX FORMAT).        *
+* BAL USA BASE+DESLOCAMENTO PARA CALCULAR O ENDERECO-ALVO.      *
+*---------------------------------------------------------------*
          LA    R1,PARM1             LOAD PARM ADDRESS
-         BAL   R14,INTSUB           BRANCH AND LINK
-*
-* CALL EXTERNAL PROGRAM VIA CALL MACRO
+         BAL   R14,INTSUB           BRANCH AND LINK (BASE+DESL)
+*---------------------------------------------------------------*
+* CHAMADA EXTERNA: CARREGA EPA EM R15 E USA BALR R14,R15.       *
+*---------------------------------------------------------------*
          LA    R1,EXTPARMS          PARM LIST
          L     R15,=V(EXTPROG)      LOAD EPA
          BALR  R14,R15              BRANCH TO EXTERNAL
@@ -3793,24 +3900,40 @@ DATA2    DC    F'42'
 `*================================================================*
 * PROGRAMA : ASMDYN01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
-* OBJETIVO : CARGA DINAMICA DE MODULOS
-*            LOAD, DELETE, LINK, XCTL
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
+* OBJETIVO : CARGA DINAMICA DE MODULOS (LOAD, DELETE, LINK, XCTL)
+*            MOSTRA COMO CARREGAR E EXECUTAR UM PGM EM TEMPO DE
+*            EXECUCAO SEM LINK-EDIT ESTATICO.
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, BALR)
+* ENTRADA  : NENHUMA DIRETA (MACROS RESOLVEM VIA CSVQUERY/LLA)
+* SAIDA    : WTOS DE STATUS + RC=0
+*----------------------------------------------------------------*
+* TECNICA: MACROS LOAD/DELETE/LINK/XCTL DO Z/OS ENCAPSULAM AS
+*          SVCs SVC 8 (LOAD), SVC 9 (DELETE), SVC 6 (LINK) E
+*          SVC 7 (XCTL).  APOS LOAD, R0 = ENTRY POINT E R1
+*          CONTEM LENGTH/AUTHORIZATION FLAGS.                   *
 *================================================================*
 ASMDYN01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* LOAD - BUSCA UTILPGM NAS BIBLIOTECAS (STEPLIB/JOBLIB/LNKLST)  *
+* E CARREGA PARA A MEMORIA SEM EXECUTAR.                        *
+*---------------------------------------------------------------*
 * LOAD - CARREGA MODULO NA MEMORIA SEM EXECUTAR
          LOAD  EP=UTILPGM
          LR    R2,R0               ENTRY POINT
          LR    R3,R1               LENGTH/AUTH
          ST    R2,EPADDR            SAVE EP ADDR
          WTO   'ASMDYN01: MODULE LOADED'
-*
+*---------------------------------------------------------------*
+* EXECUTA O MODULO PREVIAMENTE CARREGADO VIA BALR R14,R15.      *
+*---------------------------------------------------------------*
 * CALL VIA SAVED EP
          L     R15,EPADDR
          LA    R1,PARMS
