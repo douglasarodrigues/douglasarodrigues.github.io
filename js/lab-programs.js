@@ -2651,17 +2651,32 @@ WORK     DS    CL19
 * PROGRAMA : ASMCNV01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CONVERSAO EBCDIC <-> ASCII VIA TR TABLE
-* R1 -> PARMLIST: @BUFFER, @LENGTH(FW), @DIRECTION(C'E'|C'A')
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
-* DIRECTION: 'A' = EBCDIC->ASCII, 'E' = ASCII->EBCDIC
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0 = @BUFFER
+*                            +4 = @LENGTH (FULLWORD)
+*                            +8 = @DIRECTION (C'A' OU C'E')
+* DIRECAO  : 'A' = EBCDIC->ASCII  'E' = ASCII->EBCDIC
+* SAIDA    : BUFFER CONVERTIDO IN-PLACE ; R15 = 0/8 (INVALIDO)
+*----------------------------------------------------------------*
+* TECNICA: TR (TRANSLATE) USA UMA TABELA DE 256 BYTES PARA FAZER
+*          A SUBSTITUICAO DE CADA BYTE.  COMO TR TEM TAMANHO
+*          VARIAVEL, USA-SE EX + BCTR (LENGTH-1) PARA APLICAR
+*          A LARGURA CORRETA EM TEMPO DE EXECUCAO.
 *================================================================*
 ASMCNV01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO CLASSICO BALR+USING.                                  *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* CARREGA OS 3 PARAMETROS DA PARMLIST (PONTEIROS).              *
+*  R2 = @BUFFER   R3 = LENGTH   R4 = @DIRECTION                 *
+* SE DIRECAO NAO FOR 'A' NEM 'E', RETORNA RC=8.                 *
+*---------------------------------------------------------------*
          L     R2,0(R1)            BUFFER ADDRESS
          L     R3,4(R1)            LENGTH ADDRESS
          L     R3,0(R3)            ACTUAL LENGTH
@@ -2672,7 +2687,10 @@ ASMCNV01 CSECT
          BE    TOEBCDIC
          LA    R15,8               INVALID DIRECTION
          B     EXIT
-*
+*---------------------------------------------------------------*
+* BCTR DECREMENTA R3 EM 1 (EX ESPERA LENGTH-1 NO CAMPO L2).     *
+* EX APLICA O TR NO BUFFER DE R2 COM A TABELA APROPRIADA.       *
+*---------------------------------------------------------------*
 TOASCII  BCTR  R3,0                LENGTH-1 FOR EX
          EX    R3,TRASC            TRANSLATE TO ASCII
          B     DONE
@@ -2715,34 +2733,48 @@ A2ETAB   DC    256X'40'            DEFAULT TO SPACE
 * PROGRAMA : ASMCNV01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : CONVERSAO EBCDIC <-> ASCII VIA TR TABLE
-* R1 -> PARMLIST: @BUFFER, @LENGTH(FW), @DIRECTION(C'E'|C'A')
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
-* DIRECTION: 'A' = EBCDIC->ASCII, 'E' = ASCII->EBCDIC
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0 = @BUFFER
+*                            +4 = @LENGTH (FULLWORD)
+*                            +8 = @DIRECTION (C'A' OU C'E')
+* DIRECAO  : 'A' = EBCDIC->ASCII  'E' = ASCII->EBCDIC
+* SAIDA    : BUFFER CONVERTIDO IN-PLACE ; R15 = 0/8 (INVALIDO)
+*----------------------------------------------------------------*
+* TECNICA: BASE VIA LARL (PC-RELATIVE).  TODOS OS DESVIOS SAO
+*          J/JE (PC-RELATIVO).  BCTR FOI MANTIDO PORQUE E RR
+*          (REGISTER-TO-REGISTER) E NAO USA BASE+DESLOCAMENTO.
 *================================================================*
 ASMCNV01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO: LARL PARA BASE.                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
-         LARL  R12,ASMCNV01         
+         LARL  R12,ASMCNV01         SET BASE (PC-RELATIVE)
          USING ASMCNV01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* LE PARAMETROS E VALIDA A DIRECAO.                             *
+*---------------------------------------------------------------*
          L     R2,0(R1)            BUFFER ADDRESS
          L     R3,4(R1)            LENGTH ADDRESS
          L     R3,0(R3)            ACTUAL LENGTH
          L     R4,8(R1)            DIRECTION ADDRESS
          CLI   0(R4),C'A'          EBCDIC TO ASCII?
-         JE    TOASCII
+         JE    TOASCII              (RELATIVO)
          CLI   0(R4),C'E'          ASCII TO EBCDIC?
-         JE    TOEBCDIC
+         JE    TOEBCDIC             (RELATIVO)
          LA    R15,8               INVALID DIRECTION
-         J     EXIT
-*
-TOASCII  BCTR  R3,0                LENGTH-1 FOR EX
+         J     EXIT                 (RELATIVO)
+*---------------------------------------------------------------*
+* APLICA TR COM TAMANHO VARIAVEL VIA EX (LENGTH-1).             *
+*---------------------------------------------------------------*
+TOASCII  BCTR  R3,0                LENGTH-1 FOR EX (RR)
          EX    R3,TRASC            TRANSLATE TO ASCII
-         J     DONE
-TOEBCDIC BCTR  R3,0
+         J     DONE                 (RELATIVO)
+TOEBCDIC BCTR  R3,0                LENGTH-1 FOR EX (RR)
          EX    R3,TREBC            TRANSLATE TO EBCDIC
-         J     DONE
+         J     DONE                 (RELATIVO)
 *
 TRASC    TR    0(0,R2),E2ATAB      EXECUTED
 TREBC    TR    0(0,R2),A2ETAB      EXECUTED
@@ -2788,31 +2820,50 @@ A2ETAB   DC    256X'40'            DEFAULT TO SPACE
 `*================================================================*
 * PROGRAMA : ASMBIT01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
-* OBJETIVO : OPERACOES BITWISE EM BYTE
-*            TEST, SET, CLEAR, TOGGLE VIA TM, OI, NI, XI
-* R1 -> PARMLIST: @BYTE, @BITNUM(0-7), @OPERATION(C'T/S/C/X')
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
-* R15: TEST -> 0=OFF,4=ON | OTHERS -> 0=OK
+* OBJETIVO : OPERACOES BITWISE EM UM BYTE
+*            TEST, SET, CLEAR, TOGGLE - USA MASCARA DE 1 BIT
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0 = @BYTE
+*                            +4 = @BITNUM   (0-7)
+*                            +8 = @OPERATION (C'T'|C'S'|C'C'|C'X')
+* SAIDA    : BYTE ALTERADO IN-PLACE.  R15:
+*            TEST  -> 0=OFF, 4=ON
+*            DEMAIS -> 0=OK, 8=OP INVALIDA
+*----------------------------------------------------------------*
+* TECNICA: GERA UMA MASCARA DINAMICA (LA + SLL) E USA TM/OR/AND/
+*          XR PARA TESTAR/SETAR/LIMPAR/INVERTER O BIT.  O TM
+*          E EXECUTADO VIA EX PORQUE A MASCARA SO E CONHECIDA
+*          EM RUN-TIME (NAO CABE NO OPCODE DO TM EM SI).
 *================================================================*
 ASMBIT01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING (BASE CLASSICA).                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* LE PARAMETROS DA PARMLIST:                                    *
+*  R2 = @BYTE   R3 = BITNUM (0-7)   R4 = @OPERATION             *
+*---------------------------------------------------------------*
          L     R2,0(R1)            BYTE ADDRESS
          L     R3,4(R1)            BIT NUMBER ADDRESS
          L     R3,0(R3)            ACTUAL BIT (0-7)
          L     R4,8(R1)            OPERATION ADDRESS
-*
-* BUILD BIT MASK (BIT 0 = X'80', BIT 7 = X'01')
+*---------------------------------------------------------------*
+* CONSTROI A MASCARA: BIT 0 -> X'80', BIT 7 -> X'01'.           *
+* DESLOCAMENTO = 7 - BITNUM -> ROTACIONA 1 PARA A ESQUERDA.     *
+*---------------------------------------------------------------*
          LA    R5,7
          SR    R5,R3               7 - BITNUM
          LA    R6,1
          SLL   R6,0(R5)            SHIFT 1 LEFT BY (7-N)
          STC   R6,MASK             STORE MASK BYTE
-*
+*---------------------------------------------------------------*
+* DESPACHA A OPERACAO (T/S/C/X).  OPERACAO INVALIDA -> RC=8.    *
+*---------------------------------------------------------------*
          CLI   0(R4),C'T'          TEST?
          BE    DOTEST
          CLI   0(R4),C'S'          SET?
@@ -2823,21 +2874,28 @@ ASMBIT01 CSECT
          BE    DOTOGGLE
          LA    R15,8               INVALID OP
          B     EXIT
-*
+*---------------------------------------------------------------*
+* TEST: USA TM VIA EX (MASCARA DINAMICA).                       *
+*  CC=0 (BIT OFF) -> RC=0 ;  CC!=0 (BIT ON) -> RC=4.            *
+*---------------------------------------------------------------*
 DOTEST   EX    R6,EXTM             TM 0(R2),MASK
          BZ    BITOFF
          LA    R15,4               BIT IS ON
          B     EXIT
 BITOFF   SR    R15,R15             BIT IS OFF
          B     EXIT
-*
+*---------------------------------------------------------------*
+* SET: BYTE = BYTE OR MASCARA.                                  *
+*---------------------------------------------------------------*
 DOSET    IC    R7,0(R2)            LOAD BYTE
          IC    R8,MASK             LOAD MASK
          OR    R7,R8               OR = SET
          STC   R7,0(R2)            STORE BACK
          SR    R15,R15
          B     EXIT
-*
+*---------------------------------------------------------------*
+* CLEAR: BYTE = BYTE AND (NOT MASCARA).                         *
+*---------------------------------------------------------------*
 DOCLEAR  IC    R7,0(R2)            LOAD BYTE
          IC    R8,MASK
          X     R8,=F'-1'           COMPLEMENT MASK
@@ -2845,7 +2903,9 @@ DOCLEAR  IC    R7,0(R2)            LOAD BYTE
          STC   R7,0(R2)
          SR    R15,R15
          B     EXIT
-*
+*---------------------------------------------------------------*
+* TOGGLE: BYTE = BYTE XOR MASCARA (INVERTE O BIT).              *
+*---------------------------------------------------------------*
 DOTOGGLE IC    R7,0(R2)            LOAD BYTE
          IC    R8,MASK
          XR    R7,R8               XOR = TOGGLE
@@ -2867,55 +2927,74 @@ MASK     DS    X
 `*================================================================*
 * PROGRAMA : ASMBIT01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
-* OBJETIVO : OPERACOES BITWISE EM BYTE
-*            TEST, SET, CLEAR, TOGGLE VIA TM, OI, NI, XI
-* R1 -> PARMLIST: @BYTE, @BITNUM(0-7), @OPERATION(C'T/S/C/X')
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
-* R15: TEST -> 0=OFF,4=ON | OTHERS -> 0=OK
+* OBJETIVO : OPERACOES BITWISE EM UM BYTE
+*            TEST, SET, CLEAR, TOGGLE - USA MASCARA DE 1 BIT
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0 = @BYTE
+*                            +4 = @BITNUM   (0-7)
+*                            +8 = @OPERATION (C'T'|C'S'|C'C'|C'X')
+* SAIDA    : BYTE ALTERADO IN-PLACE.  R15 CONFORME V. BASE.
+*----------------------------------------------------------------*
+* TECNICA: IDENTICA A VERSAO BASE, COM BASE VIA LARL E DESVIOS
+*          J/JE/JZ (PC-RELATIVOS).  NENHUM B/BE/BZ E NENHUM
+*          BCT NESTE MODULO - SO BCTR (RR, NAO CONTA COMO BASE+
+*          DESLOCAMENTO).
 *================================================================*
 ASMBIT01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
-         LARL  R12,ASMBIT01         
+         LARL  R12,ASMBIT01         SET BASE (PC-RELATIVE)
          USING ASMBIT01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* CARREGA PARMLIST.                                             *
+*---------------------------------------------------------------*
          L     R2,0(R1)            BYTE ADDRESS
          L     R3,4(R1)            BIT NUMBER ADDRESS
          L     R3,0(R3)            ACTUAL BIT (0-7)
          L     R4,8(R1)            OPERATION ADDRESS
-*
-* BUILD BIT MASK (BIT 0 = X'80', BIT 7 = X'01')
+*---------------------------------------------------------------*
+* MONTA MASCARA 1-BIT (MESMA LOGICA DA V. BASE).                *
+*---------------------------------------------------------------*
          LA    R5,7
          SR    R5,R3               7 - BITNUM
          LA    R6,1
          SLL   R6,0(R5)            SHIFT 1 LEFT BY (7-N)
          STC   R6,MASK             STORE MASK BYTE
-*
+*---------------------------------------------------------------*
+* DESPACHO DA OPERACAO VIA DESVIOS RELATIVOS (JE).              *
+*---------------------------------------------------------------*
          CLI   0(R4),C'T'          TEST?
-         JE    DOTEST
+         JE    DOTEST               (RELATIVO)
          CLI   0(R4),C'S'          SET?
-         JE    DOSET
+         JE    DOSET                (RELATIVO)
          CLI   0(R4),C'C'          CLEAR?
-         JE    DOCLEAR
+         JE    DOCLEAR              (RELATIVO)
          CLI   0(R4),C'X'          TOGGLE?
-         JE    DOTOGGLE
+         JE    DOTOGGLE             (RELATIVO)
          LA    R15,8               INVALID OP
-         J     EXIT
-*
+         J     EXIT                 (RELATIVO)
+*---------------------------------------------------------------*
+* TEST: TM DINAMICO VIA EX ; JZ -> BIT OFF.                     *
+*---------------------------------------------------------------*
 DOTEST   EX    R6,EXTM             TM 0(R2),MASK
-         JZ    BITOFF
+         JZ    BITOFF               (RELATIVO)
          LA    R15,4               BIT IS ON
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 BITOFF   SR    R15,R15             BIT IS OFF
-         J     EXIT
-*
+         J     EXIT                 (RELATIVO)
+*---------------------------------------------------------------*
+* SET / CLEAR / TOGGLE - MESMA LOGICA BITWISE.                  *
+*---------------------------------------------------------------*
 DOSET    IC    R7,0(R2)            LOAD BYTE
          IC    R8,MASK             LOAD MASK
          OR    R7,R8               OR = SET
          STC   R7,0(R2)            STORE BACK
          SR    R15,R15
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 *
 DOCLEAR  IC    R7,0(R2)            LOAD BYTE
          IC    R8,MASK
@@ -2923,14 +3002,14 @@ DOCLEAR  IC    R7,0(R2)            LOAD BYTE
          NR    R7,R8               AND = CLEAR
          STC   R7,0(R2)
          SR    R15,R15
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 *
 DOTOGGLE IC    R7,0(R2)            LOAD BYTE
          IC    R8,MASK
          XR    R7,R8               XOR = TOGGLE
          STC   R7,0(R2)
          SR    R15,R15
-         J     EXIT
+         J     EXIT                 (RELATIVO)
 *
 EXTM     TM    0(R2),0             EXECUTED INSTRUCTION
 *
@@ -2957,19 +3036,35 @@ MASK     DS    X
 * PROGRAMA : ASMBSR01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : BUSCA BINARIA EM TABELA ORDENADA
-*            CLC PARA COMPARACAO, SRL PARA DIVISAO
-* R1 -> PARMLIST: @TABLE, @ENTRIES(FW), @KEYLEN(FW),
-* VERSAO  : BASE + DESLOCAMENTO (BALR/USING)
-*                 @ENTRYLEN(FW), @SEARCHKEY
-* R15: 0=FOUND (R1->ENTRY), 4=NOT FOUND
+*            CLC PARA COMPARACAO, SRL PARA DIVIDIR INDICE
+* VERSAO   : BASE + DESLOCAMENTO (BALR/USING, B-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0  = @TABLE
+*                            +4  = @NUM_ENTRIES   (FULLWORD)
+*                            +8  = @KEY_LENGTH    (FULLWORD)
+*                            +12 = @ENTRY_LENGTH  (FULLWORD)
+*                            +16 = @SEARCH_KEY
+* SAIDA    : R1 -> ENTRY ENCONTRADA  ;  R15 = 0 (FOUND) / 4 (NF)
+*----------------------------------------------------------------*
+* TECNICA: ALGORITMO CLASSICO DE BUSCA BINARIA.  USA MR PARA
+*          MULTIPLICAR INDICE x ENTRY-LENGTH E CALCULAR OFFSET
+*          DA ENTRADA.  CLC COM EX APLICA A KEY-LEN VARIAVEL
+*          EM RUN-TIME.
 *================================================================*
 ASMBSR01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO BALR+USING.                                           *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
          BALR  R12,0
          USING *,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* LE OS 5 PARAMETROS DA PARMLIST.                               *
+*  R2 = @TABLE       R3 = N (NUM ENTRIES)                       *
+*  R4 = KEY LENGTH   R5 = ENTRY LENGTH                          *
+*  R6 = @SEARCH KEY                                             *
+*---------------------------------------------------------------*
          L     R2,0(R1)            TABLE START
          L     R3,4(R1)            NUM ENTRIES ADDR
          L     R3,0(R3)            NUM ENTRIES
@@ -2978,32 +3073,50 @@ ASMBSR01 CSECT
          L     R5,12(R1)           ENTRY LENGTH ADDR
          L     R5,0(R5)            ENTRY LENGTH
          L     R6,16(R1)           SEARCH KEY ADDR
-*
+*---------------------------------------------------------------*
+* INICIALIZA LIMITES: LOW=0, HIGH=N-1.                          *
+*---------------------------------------------------------------*
          SR    R7,R7               LOW = 0
          LR    R8,R3               HIGH = N
          BCTR  R8,0                HIGH = N-1
-*
+*---------------------------------------------------------------*
+* LOOP PRINCIPAL DA BUSCA BINARIA:                              *
+*  ENQUANTO LOW <= HIGH:                                        *
+*    MID = (LOW+HIGH)/2                                         *
+*    COMPARA SEARCH_KEY COM TABLE[MID]                          *
+*     ==> ACHOU  => RETURN 0                                    *
+*     > ==> LOW  = MID+1                                        *
+*     < ==> HIGH = MID-1                                        *
+*---------------------------------------------------------------*
 BSLOOP   CR    R7,R8               LOW > HIGH?
          BH    NOTFND              YES - NOT FOUND
 *
          LR    R9,R7               MID = LOW
          AR    R9,R8               MID = LOW + HIGH
          SRL   R9,1                MID = (LOW+HIGH)/2
-*
+*---------------------------------------------------------------*
+* CALCULA ENDERECO DA ENTRADA MID: TABLE + MID*ENTRYLEN.        *
+* MR (MULTIPLY REGISTER) USA PAR (R10,R11); RESULTADO EM R11.   *
+*---------------------------------------------------------------*
          LR    R10,R9              COPY MID
          MR    R10,R5              MID * ENTRYLEN (USE R11)
          LA    R10,0(R11,R2)       ADDR OF MID ENTRY
-*
+*---------------------------------------------------------------*
+* COMPARA CHAVE DE BUSCA COM CHAVE DA ENTRADA MID (CLC VIA EX). *
+*---------------------------------------------------------------*
          BCTR  R4,0                KEYLEN-1 FOR EX
          EX    R4,EXCLC            COMPARE KEYS
          BE    FOUND
          BH    GOHIGH
-*
-* SEARCH KEY < MID KEY -> HIGH = MID - 1
+*---------------------------------------------------------------*
+* SEARCH KEY < MID KEY -> METADE INFERIOR (HIGH = MID-1).       *
+*---------------------------------------------------------------*
          LR    R8,R9
          BCTR  R8,0
          B     BSLOOP
-*
+*---------------------------------------------------------------*
+* SEARCH KEY > MID KEY -> METADE SUPERIOR (LOW = MID+1).        *
+*---------------------------------------------------------------*
 GOHIGH   LR    R7,R9               LOW = MID + 1
          LA    R7,1(R7)
          B     BSLOOP
@@ -3028,19 +3141,31 @@ SAVE     DS    18F
 * PROGRAMA : ASMBSR01
 * AUTOR    : DOUGLAS ASSUMPCAO RODRIGUES
 * OBJETIVO : BUSCA BINARIA EM TABELA ORDENADA
-*            CLC PARA COMPARACAO, SRL PARA DIVISAO
-* R1 -> PARMLIST: @TABLE, @ENTRIES(FW), @KEYLEN(FW),
-* VERSAO  : ENDERECO RELATIVO (LARL/J-FORM)
-*                 @ENTRYLEN(FW), @SEARCHKEY
-* R15: 0=FOUND (R1->ENTRY), 4=NOT FOUND
+*            CLC PARA COMPARACAO, SRL PARA DIVIDIR INDICE
+* VERSAO   : ENDERECO RELATIVO (LARL / J-FORM)
+* ENTRADA  : R1 -> PARMLIST  +0  = @TABLE
+*                            +4  = @NUM_ENTRIES   (FULLWORD)
+*                            +8  = @KEY_LENGTH    (FULLWORD)
+*                            +12 = @ENTRY_LENGTH  (FULLWORD)
+*                            +16 = @SEARCH_KEY
+* SAIDA    : R1 -> ENTRY ENCONTRADA  ;  R15 = 0 (FOUND) / 4 (NF)
+*----------------------------------------------------------------*
+* TECNICA: IDENTICA A VERSAO BASE, MAS BASE VIA LARL E TODOS
+*          OS DESVIOS DE CONTROLE SAO RELATIVOS (J/JH/JE).
+*          BCTR E RR (NAO CONTA COMO BASE+DESLOCAMENTO).
 *================================================================*
 ASMBSR01 CSECT
+*---------------------------------------------------------------*
+* PROLOGO RELATIVO.                                             *
+*---------------------------------------------------------------*
          STM   R14,R12,12(R13)
-         LARL  R12,ASMBSR01         
+         LARL  R12,ASMBSR01         SET BASE (PC-RELATIVE)
          USING ASMBSR01,R12
          ST    R13,SAVE+4
          LA    R13,SAVE
-*
+*---------------------------------------------------------------*
+* LE OS 5 PARAMETROS DA PARMLIST.                               *
+*---------------------------------------------------------------*
          L     R2,0(R1)            TABLE START
          L     R3,4(R1)            NUM ENTRIES ADDR
          L     R3,0(R3)            NUM ENTRIES
@@ -3049,35 +3174,43 @@ ASMBSR01 CSECT
          L     R5,12(R1)           ENTRY LENGTH ADDR
          L     R5,0(R5)            ENTRY LENGTH
          L     R6,16(R1)           SEARCH KEY ADDR
-*
+*---------------------------------------------------------------*
+* INICIALIZA LIMITES LOW=0 E HIGH=N-1.                          *
+*---------------------------------------------------------------*
          SR    R7,R7               LOW = 0
          LR    R8,R3               HIGH = N
-         BCTR  R8,0                HIGH = N-1
-*
+         BCTR  R8,0                HIGH = N-1 (RR)
+*---------------------------------------------------------------*
+* LOOP DE BUSCA BINARIA COM DESVIOS RELATIVOS.                  *
+*---------------------------------------------------------------*
 BSLOOP   CR    R7,R8               LOW > HIGH?
-         JH    NOTFND               YES - NOT FOUND
+         JH    NOTFND               (RELATIVO)  YES - NOT FOUND
 *
          LR    R9,R7               MID = LOW
          AR    R9,R8               MID = LOW + HIGH
          SRL   R9,1                MID = (LOW+HIGH)/2
-*
+*---------------------------------------------------------------*
+* CALCULA ENDERECO DA ENTRADA MID.                              *
+*---------------------------------------------------------------*
          LR    R10,R9              COPY MID
          MR    R10,R5              MID * ENTRYLEN (USE R11)
          LA    R10,0(R11,R2)       ADDR OF MID ENTRY
-*
-         BCTR  R4,0                KEYLEN-1 FOR EX
+*---------------------------------------------------------------*
+* COMPARA CHAVES VIA CLC DINAMICO (EX).                         *
+*---------------------------------------------------------------*
+         BCTR  R4,0                KEYLEN-1 FOR EX (RR)
          EX    R4,EXCLC            COMPARE KEYS
-         JE    FOUND
-         JH    GOHIGH
+         JE    FOUND                (RELATIVO)
+         JH    GOHIGH               (RELATIVO)
 *
 * SEARCH KEY < MID KEY -> HIGH = MID - 1
          LR    R8,R9
          BCTR  R8,0
-         J     BSLOOP
+         J     BSLOOP               (RELATIVO)
 *
 GOHIGH   LR    R7,R9               LOW = MID + 1
          LA    R7,1(R7)
-         J     BSLOOP
+         J     BSLOOP               (RELATIVO)
 *
 EXCLC    CLC   0(0,R6),0(R10)      EXECUTED COMPARE
 *
