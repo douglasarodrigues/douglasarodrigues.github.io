@@ -4047,7 +4047,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLCOMP1 JOB (ACCT),'COMPILE LINK GO',
-//JCLCOMP1 JOB (ACCT),'COMPILE LINK GO',
 //             CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),
 //             NOTIFY=&SYSUID
 //*================================================================*
@@ -4102,7 +4101,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLCOPY1 JOB (ACCT),'DATASET COPY',
-//JCLCOPY1 JOB (ACCT),'DATASET COPY',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: COPIA DE DATASETS COM IEBGENER E IEBCOPY
@@ -4119,7 +4117,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
 //SYSPRINT DD  SYSOUT=*
 //*
 //*--- STEP 2: IEBCOPY - COPIA DE MEMBROS PDS ---
-//PDSCOPY  EXEC PGM=IEBCOPY,COND=(0,NE)
+//PDSCOPY  EXEC PGM=IEBCOPY,COND=(4,LT)
 //SYSUT3   DD  SPACE=(CYL,(1,1)),UNIT=SYSDA
 //SYSUT4   DD  SPACE=(CYL,(1,1)),UNIT=SYSDA
 //INPDS    DD  DSN=&SYSUID..SOURCE.PDS,DISP=SHR
@@ -4131,7 +4129,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
 /*
 //*
 //*--- STEP 3: IEBCOPY - COPIA PDS COMPLETO (COMPRESS) ---
-//FULLCOPY EXEC PGM=IEBCOPY,COND=(0,NE)
+//FULLCOPY EXEC PGM=IEBCOPY,COND=(4,LT)
 //SYSUT3   DD  SPACE=(CYL,(1,1)),UNIT=SYSDA
 //SYSUT4   DD  SPACE=(CYL,(1,1)),UNIT=SYSDA
 //SOURCE   DD  DSN=&SYSUID..COBOL.SOURCE,DISP=SHR
@@ -4152,7 +4150,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLVSAM1 JOB (ACCT),'DEFINE KSDS',
-//JCLVSAM1 JOB (ACCT),'DEFINE KSDS',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: DEFINE VSAM KSDS COM IDCAMS
@@ -4194,7 +4191,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
 /*
 //*
 //*--- STEP 3: INITIAL LOAD VIA REPRO ---
-//LOAD     EXEC PGM=IDCAMS,COND=(0,NE)
+//LOAD     EXEC PGM=IDCAMS,COND=(4,LT)
 //INFILE   DD  DSN=&SYSUID..DATA.CLIENTES.SEQ,DISP=SHR
 //SYSPRINT DD  SYSOUT=*
 //SYSIN    DD  *
@@ -4203,7 +4200,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
 /*
 //*
 //*--- STEP 4: VERIFY AND LISTCAT ---
-//VERIFY   EXEC PGM=IDCAMS,COND=(0,NE)
+//VERIFY   EXEC PGM=IDCAMS,COND=(4,LT)
 //SYSPRINT DD  SYSOUT=*
 //SYSIN    DD  *
   VERIFY DATASET(&SYSUID..VSAM.CLIENTES.KSDS)
@@ -4221,7 +4218,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLSORT1 JOB (ACCT),'DFSORT FORMAT',
-//JCLSORT1 JOB (ACCT),'DFSORT FORMAT',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: DFSORT COM OUTFIL FORMATADO
@@ -4268,7 +4264,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLICE01 JOB (ACCT),'ICETOOL STATS',
-//JCLICE01 JOB (ACCT),'ICETOOL STATS',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: ICETOOL - OPERACOES AVANCADAS
@@ -4320,7 +4315,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLBKP01 JOB (ACCT),'BACKUP RESTORE',
-//JCLBKP01 JOB (ACCT),'BACKUP RESTORE',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: BACKUP E RESTORE COM ADRDSSU
@@ -4346,7 +4340,7 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
 /*
 //*
 //*--- STEP 2: RESTORE (COM RENAME) ---
-//RESTORE  EXEC PGM=ADRDSSU,REGION=0M,COND=(0,NE)
+//RESTORE  EXEC PGM=ADRDSSU,REGION=0M,COND=(4,LT)
 //SYSPRINT DD  SYSOUT=*
 //TAPE2    DD  DSN=&SYSUID..BACKUP.DUMP01,DISP=SHR
 //SYSIN    DD  *
@@ -4373,7 +4367,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLGDG01 JOB (ACCT),'GDG MANAGEMENT',
-//JCLGDG01 JOB (ACCT),'GDG MANAGEMENT',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: GERENCIAMENTO DE GDG (GENERATION DATA GROUP)
@@ -4402,14 +4395,14 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
 //SYSPRINT DD  SYSOUT=*
 //*
 //*--- STEP 3: LIST ALL GENERATIONS ---
-//LISTGDG  EXEC PGM=IDCAMS,COND=(0,NE)
+//LISTGDG  EXEC PGM=IDCAMS,COND=(4,LT)
 //SYSPRINT DD  SYSOUT=*
 //SYSIN    DD  *
   LISTCAT ENT(&SYSUID..BACKUP.DIARIO) ALL GDG
 /*
 //*
 //*--- STEP 4: READ CURRENT (0) AND PREVIOUS (-1) ---
-//READGEN  EXEC PGM=MYPROG,COND=(0,NE)
+//READGEN  EXEC PGM=MYPROG,COND=(4,LT)
 //STEPLIB  DD  DSN=&SYSUID..LOAD,DISP=SHR
 //CURRENT  DD  DSN=&SYSUID..BACKUP.DIARIO(0),DISP=SHR
 //PREVIOUS DD  DSN=&SYSUID..BACKUP.DIARIO(-1),DISP=SHR
@@ -4426,7 +4419,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLSRT02 JOB (ACCT),'SORT MERGE OPT',
-//JCLSRT02 JOB (ACCT),'SORT MERGE OPT',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: SORT/MERGE COM OPCOES AVANCADAS
@@ -4480,7 +4472,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLJOIN1 JOB (ACCT),'DFSORT JOINS',
-//JCLJOIN1 JOB (ACCT),'DFSORT JOINS',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: JOINKEYS - JOIN DE DOIS ARQUIVOS
@@ -4532,7 +4523,6 @@ PARMDATA DC    CL20'DYNAMIC CALL DATA'
     tags: ["JCL"],
     source:
 `//JCLCOND1 JOB (ACCT),'CONDITIONAL EXEC',
-//JCLCOND1 JOB (ACCT),'CONDITIONAL EXEC',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: EXECUCAO CONDICIONAL COM IF/THEN/ELSE
@@ -4594,7 +4584,6 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["JCL"],
     source:
 `//JCLSRT03 JOB (ACCT),'SORT OUTFIL ADV',
-//JCLSRT03 JOB (ACCT),'SORT OUTFIL ADV',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: DFSORT - MULTIPLOS OUTFIL COM SUBTOTAIS
@@ -4656,7 +4645,6 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["JCL"],
     source:
 `//JCLPRC02 JOB (ACCT),'PROC OVERRIDES',
-//JCLPRC02 JOB (ACCT),'PROC OVERRIDES',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: PROCEDURE COM OVERRIDES
@@ -4714,7 +4702,6 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
     tags: ["JCL"],
     source:
 `//JCLIDCM2 JOB (ACCT),'IDCAMS MULTI-OPS',
-//JCLIDCM2 JOB (ACCT),'IDCAMS MULTI-OPS',
 //             CLASS=A,MSGCLASS=X,NOTIFY=&SYSUID
 //*================================================================*
 //* JCL: IDCAMS - OPERACOES MULTIPLAS EM UM STEP
@@ -5315,6 +5302,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
        1000-WRITE-ITEMS SECTION.
            PERFORM VARYING WS-I FROM 1 BY 1
                UNTIL WS-I > 5
+               MOVE WS-I TO WS-ITEM
                STRING 'ITEM-' WS-I '-DATA-CONTENT'
                    DELIMITED SIZE INTO WS-DATA
                EXEC CICS WRITEQ TS
@@ -6010,11 +5998,7 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
       * 0000-MAIN SECTION
       *==========================================================*
        0000-MAIN SECTION.
-           IF EIBCALEN > 0
-               PERFORM 2000-RETRIEVE-AND-PROCESS
-           ELSE
-               PERFORM 1000-START-ASYNC
-           END-IF
+           PERFORM 2000-RETRIEVE-AND-PROCESS
            EXEC CICS RETURN END-EXEC
            .
        0000-MAIN-EXIT.
@@ -6060,6 +6044,8 @@ VERIFIQUE O LOG DO STEP VALIDA PARA DETALHES.
                    WHEN 'P' PERFORM 2100-PROCESS-BATCH
                    WHEN 'R' PERFORM 2200-PROCESS-REPORT
                END-EVALUATE
+           ELSE
+               PERFORM 1000-START-ASYNC
            END-IF
            .
        2000-RETRIEVE-AND-PROCESS-EXIT.
@@ -9540,7 +9526,6 @@ WTOMSG   WTO   '                                              X
        2000-BUILD-BOOLEAN-SSA SECTION.
            INITIALIZE WS-SSA-BUFFER
            MOVE 0 TO WS-SSA-STACK-PTR
-           PERFORM 7000-PUSH-CONDITION
            MOVE 'ORDER   ' TO WS-SSA-SEG-NAME
            MOVE 'STATUS  ' TO WS-SSA-FIELD-NAME
            SET WS-OP-EQUAL TO TRUE
@@ -9628,11 +9613,24 @@ WTOMSG   WTO   '                                              X
            INITIALIZE WS-BUILT-SSA
            PERFORM VARYING WS-IDX FROM 1 BY 1
               UNTIL WS-IDX > WS-SSA-STACK-PTR
-              STRING WS-SSE-FIELD(WS-IDX) DELIMITED SIZE
-                     WS-SSE-OPER(WS-IDX)  DELIMITED SIZE
+              STRING WS-SSE-SEGMENT(WS-IDX) DELIMITED SIZE
+                     '(' DELIMITED SIZE
+                     WS-SSE-FIELD(WS-IDX) DELIMITED SIZE
+                     WS-SSE-OPER(WS-IDX) DELIMITED SIZE
                      WS-SSE-VALUE(WS-IDX) DELIMITED SPACES
-                     WS-SSE-BOOL(WS-IDX)  DELIMITED SPACES
-                     INTO WS-BUILT-SSA
+                     ')' DELIMITED SIZE
+                     INTO WS-SSA-BUFFER
+              END-STRING
+              IF WS-IDX = 1
+                 MOVE WS-SSA-BUFFER TO WS-BUILT-SSA
+              ELSE
+                 STRING WS-BUILT-SSA DELIMITED SIZE
+                        WS-SSE-BOOL(WS-IDX - 1) DELIMITED SIZE
+                        WS-SSA-BUFFER DELIMITED SIZE
+                        INTO WS-SSA-BUFFER
+                 END-STRING
+                 MOVE WS-SSA-BUFFER TO WS-BUILT-SSA
+              END-IF
            END-PERFORM
            .
        8100-ASSEMBLE-BOOLEAN-SSA-EXIT.
