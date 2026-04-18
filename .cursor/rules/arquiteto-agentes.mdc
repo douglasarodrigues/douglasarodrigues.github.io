@@ -63,3 +63,4 @@ Quando identificar que um agente esta falhando:
 | `expert-hlasm.mdc` | Assembly HLASM | `**/*.asm, **/*.hlasm` |
 | `expert-dados-mf.mdc` | DB2 SQL e VSAM | `**/*.sql, **/*.vsam` |
 | `expert-jcl.mdc` | Pipelines JCL | `**/*.jcl` |
+| `expert-educacao-tech.mdc` | Conteudo pedagogico e questoes de pratica (estudos / IA-900) | `estudos/**`, `js/ia900*.js` |

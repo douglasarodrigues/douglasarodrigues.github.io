@@ -4,6 +4,17 @@ Este documento e mantido pelo Agente Arquiteto de Agentes. Registra todas as dec
 
 ---
 
+## ADR-004: Area de Estudos IA-900 e Agente Educacao em Tecnologia
+
+**Data**: 2026-04-18
+**Status**: Aceita
+**Contexto**: Necessidade de uma secao discreta de estudo pessoal no portfolio, com hub de trilhas, primeira trilha Microsoft Azure AI Fundamentals (AI-900), simulado com banco de questoes de pratica, resultado com explicacoes e historico local.
+**Decisao**:
+- Paginas estaticas `estudos.html` (hub) e `estudos/ia-900.html` (trilha), com scripts `js/ia900-app.js` e banco `js/ia900-questions.js`.
+- Persistencia de tentativas via `localStorage` (prefixo `douglas-portfolio-`).
+- Novo agente Cursor `expert-educacao-tech.mdc` para governar redacao pedagogica e revisao de conteudo de estudo; conteudo de pratica e redacao original alinhada ao skills outline publico, sem copiar itens proprietarios de exames oficiais.
+**Consequencias**: Mapa de agentes atualizado; conteudo educacional evolui sob regra dedicada; disclaimer de nao afiliacao na trilha.
+
 ## ADR-001: Sistema de Agentes como Cursor Rules
 
 **Data**: 2026-04-15

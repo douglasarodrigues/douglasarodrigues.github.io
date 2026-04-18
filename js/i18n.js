@@ -51,6 +51,98 @@
     "visit.label": "Unique visits",
     "visit.views.label": "Page views",
 
+    // -- Study hub & IA-900 --
+    "study.footer.nav": "Study material",
+    "study.footer.portfolio": "Portfolio",
+    "study.footer.hub": "Study area",
+    "study.backHome": "Back to home",
+    "study.backHub": "Back to studies",
+    "study.hub.title": "Studies",
+    "study.hub.pageTitle": "Studies | Douglas Assumpção Rodrigues",
+    "study.hub.meta.desc":
+      "Personal study tracks — practice materials and mock exams in the browser.",
+    "study.hub.lead":
+      "Supporting material for personal study — off the main portfolio focus, but here if you are on the same path.",
+    "study.hub.footerNote": "Studies — personal use.",
+    "study.card.ia900.title": "Azure AI Fundamentals (AI-900)",
+    "study.card.ia900.desc":
+      "Domain summary, practice-question mock exam, and attempt history in your browser.",
+    "study.ia900.title": "Azure AI Fundamentals (AI-900)",
+    "study.ia900.pageTitle": "Azure AI Fundamentals (AI-900) | Studies",
+    "study.ia900.meta.desc":
+      "AI-900 study summary, randomized practice exam from a 250-item bank, and local attempt history — independent prep material.",
+    "study.ia900.lead":
+      "Summary aligned with exam domains, a mock exam drawn from a practice bank, and performance history stored in your browser.",
+    "study.ia900.toc": "On this page",
+    "study.ia900.anchor.summary": "Domain summary",
+    "study.ia900.anchor.quiz": "Practice exam",
+    "study.ia900.anchor.history": "Attempt history",
+    "study.ia900.summary.heading": "Domain summary",
+    "study.ia900.s1.h": "AI workloads and considerations",
+    "study.ia900.s1.b1":
+      "<strong>Inference types:</strong> classification, regression, clustering, anomaly detection, recommendation.",
+    "study.ia900.s1.b2":
+      "<strong>Responsible AI:</strong> fairness, reliability, privacy, inclusiveness, transparency, accountability.",
+    "study.ia900.s1.b3":
+      "<strong>No-code / low-code:</strong> automated ML and visual designers reduce code but not data validation and governance.",
+    "study.ia900.s2.h": "Core machine learning principles on Azure",
+    "study.ia900.s2.b1": "<strong>Supervised:</strong> known labels — classification and regression.",
+    "study.ia900.s2.b2": "<strong>Unsupervised:</strong> patterns without labels — clustering, association rules.",
+    "study.ia900.s2.b3": "<strong>Reinforcement:</strong> an agent learns via rewards/penalties.",
+    "study.ia900.s2.b4": "<strong>Deep learning:</strong> deep networks for vision, language, and other complex data.",
+    "study.ia900.s3.h": "Azure machine learning capabilities",
+    "study.ia900.s3.b1":
+      "<strong>Azure Machine Learning:</strong> workspace, experiments, pipelines, model registry, endpoints.",
+    "study.ia900.s3.b2":
+      "<strong>Automated ML:</strong> algorithm and hyperparameter search with a defined objective and metric.",
+    "study.ia900.s3.b3": "<strong>Designer:</strong> visual training and inference flows.",
+    "study.ia900.s4.h": "Computer vision",
+    "study.ia900.s4.b1":
+      "<strong>Azure AI Vision:</strong> image analysis, OCR, face detection (with strict usage policies).",
+    "study.ia900.s4.b2":
+      "<strong>Custom Vision:</strong> image classification and object detection with labeled training images.",
+    "study.ia900.s4.b3":
+      "<strong>Face API:</strong> scenarios with strict consent and privacy requirements.",
+    "study.ia900.s5.h": "Natural language processing",
+    "study.ia900.s5.b1":
+      "<strong>Azure AI Language:</strong> sentiment analysis, entity extraction, QnA over documents.",
+    "study.ia900.s5.b2": "<strong>Translation and understanding:</strong> multilingual scenarios and summarization.",
+    "study.ia900.s5.b3": "<strong>Speech:</strong> speech-to-text and text-to-speech for accessibility and bots.",
+    "study.ia900.s6.h": "Conversational AI",
+    "study.ia900.s6.b1":
+      "<strong>Bot Framework / Composer:</strong> dialog orchestration and channel integration.",
+    "study.ia900.s6.b2":
+      "<strong>Language Understanding (LUIS / CLU):</strong> intents and entities to interpret the user.",
+    "study.ia900.s6.b3": "<strong>QnA / knowledge bases:</strong> answers from FAQs and documents.",
+    "study.ia900.disclaimer":
+      "Independent study material. Not affiliated with Microsoft. Microsoft Azure and exam names are trademarks of their respective owners. Use official Microsoft Learn content as the primary reference.",
+    "study.ia900.quiz.heading": "Practice exam",
+    "study.ia900.quiz.intro":
+      "Each exam randomly draws 45 distinct questions from a bank of 250 practice items; order is randomized too. Attempts are stored only in this browser.",
+    "study.ia900.btn.start": "Start exam",
+    "study.ia900.btn.prev": "Previous",
+    "study.ia900.btn.next": "Next",
+    "study.ia900.btn.finish": "Finish and view results",
+    "study.ia900.btn.new": "New exam",
+    "study.ia900.result.title": "Results",
+    "study.ia900.result.wrong": "Incorrect questions and explanations",
+    "study.ia900.meta.progress": "Progress",
+    "study.ia900.result.scoreLabel": "Score",
+    "study.ia900.result.detail":
+      "Review incorrect items below. Explanations refer to the correct option.",
+    "study.ia900.result.allCorrect": "No mistakes — great review.",
+    "study.ia900.result.omitted": "blank",
+    "study.ia900.result.youMarked": "Your answer",
+    "study.ia900.result.correctIs": "Correct",
+    "study.ia900.history.heading": "Attempt history",
+    "study.ia900.history.intro": "Recent attempts on this device (up to 50 records).",
+    "study.ia900.history.col.date": "Date",
+    "study.ia900.history.col.score": "Score",
+    "study.ia900.history.col.correct": "Correct",
+    "study.ia900.history.clear": "Clear history",
+    "study.ia900.history.empty": "No attempts yet.",
+    "study.ia900.history.confirmClear": "Clear all attempt history in this browser?",
+
     // -- Lab page --
     "lab.title":
       "Mainframe Lab | Douglas Assumpção Rodrigues - COBOL, JCL, DB2, CICS Programs & Quick Reference",
@@ -575,6 +667,98 @@
     "idx.email.toast": "¡Email copiado! Espero su contacto.",
     "visit.label": "Acessos únicos",
     "visit.views.label": "Visualizaciones",
+
+    // -- Study hub & IA-900 --
+    "study.footer.nav": "Material de estudio",
+    "study.footer.portfolio": "Portafolio",
+    "study.footer.hub": "Área de estudios",
+    "study.backHome": "Volver al inicio",
+    "study.backHub": "Volver a estudios",
+    "study.hub.title": "Estudios",
+    "study.hub.pageTitle": "Estudios | Douglas Assumpção Rodrigues",
+    "study.hub.meta.desc":
+      "Rutas de estudio personal — materiales de práctica y simulacros en el navegador.",
+    "study.hub.lead":
+      "Material de apoyo para estudio personal — fuera del foco principal del portafolio, pero disponible si comparte el camino.",
+    "study.hub.footerNote": "Estudios — uso personal.",
+    "study.card.ia900.title": "Azure AI Fundamentals (AI-900)",
+    "study.card.ia900.desc":
+      "Resumen por dominio, simulacro con banco de práctica e historial de intentos en su navegador.",
+    "study.ia900.title": "Azure AI Fundamentals (AI-900)",
+    "study.ia900.pageTitle": "Azure AI Fundamentals (AI-900) | Estudios",
+    "study.ia900.meta.desc":
+      "Resumen AI-900, simulacro aleatorio desde un banco de 250 ítems e historial local — material de práctica independiente.",
+    "study.ia900.lead":
+      "Resumen alineado a los dominios del examen, simulacro desde un banco de práctica e historial guardado en su navegador.",
+    "study.ia900.toc": "En esta página",
+    "study.ia900.anchor.summary": "Resumen por dominio",
+    "study.ia900.anchor.quiz": "Simulacro",
+    "study.ia900.anchor.history": "Historial de intentos",
+    "study.ia900.summary.heading": "Resumen por dominio",
+    "study.ia900.s1.h": "Cargas de trabajo y consideraciones de IA",
+    "study.ia900.s1.b1":
+      "<strong>Tipos de inferencia:</strong> clasificación, regresión, clustering, detección de anomalías, recomendación.",
+    "study.ia900.s1.b2":
+      "<strong>IA responsable:</strong> equidad, fiabilidad, privacidad, inclusión, transparencia, responsabilidad.",
+    "study.ia900.s1.b3":
+      "<strong>No-code / low-code:</strong> ML automatizado y diseñadores visuales reducen código, no la validación ni la gobernanza.",
+    "study.ia900.s2.h": "Principios de machine learning en Azure",
+    "study.ia900.s2.b1": "<strong>Supervisado:</strong> etiquetas conocidas — clasificación y regresión.",
+    "study.ia900.s2.b2": "<strong>No supervisado:</strong> patrones sin etiqueta — clustering, reglas de asociación.",
+    "study.ia900.s2.b3": "<strong>Refuerzo:</strong> el agente aprende con recompensas y penalizaciones.",
+    "study.ia900.s2.b4": "<strong>Deep learning:</strong> redes profundas para visión, lenguaje y otros datos complejos.",
+    "study.ia900.s3.h": "Capacidades de machine learning en Azure",
+    "study.ia900.s3.b1":
+      "<strong>Azure Machine Learning:</strong> workspace, experimentos, pipelines, registro de modelos y endpoints.",
+    "study.ia900.s3.b2":
+      "<strong>Automated ML:</strong> búsqueda de algoritmos e hiperparámetros con objetivo y métrica definidos.",
+    "study.ia900.s3.b3": "<strong>Designer:</strong> flujos visuales de entrenamiento e inferencia.",
+    "study.ia900.s4.h": "Visión por computador",
+    "study.ia900.s4.b1":
+      "<strong>Azure AI Vision:</strong> análisis de imagen, OCR, detección facial (con políticas estrictas).",
+    "study.ia900.s4.b2":
+      "<strong>Custom Vision:</strong> clasificación y detección de objetos con imágenes etiquetadas.",
+    "study.ia900.s4.b3":
+      "<strong>Face API:</strong> escenarios con requisitos estrictos de consentimiento y privacidad.",
+    "study.ia900.s5.h": "Procesamiento de lenguaje natural",
+    "study.ia900.s5.b1":
+      "<strong>Azure AI Language:</strong> sentimiento, entidades, preguntas sobre documentos.",
+    "study.ia900.s5.b2": "<strong>Traducción y comprensión:</strong> escenarios multilingües y resumen.",
+    "study.ia900.s5.b3": "<strong>Voz:</strong> voz a texto y texto a voz para accesibilidad y bots.",
+    "study.ia900.s6.h": "IA conversacional",
+    "study.ia900.s6.b1":
+      "<strong>Bot Framework / Composer:</strong> orquestación de diálogos e integración con canales.",
+    "study.ia900.s6.b2":
+      "<strong>LUIS / CLU:</strong> intenciones y entidades para interpretar al usuario.",
+    "study.ia900.s6.b3": "<strong>QnA / bases de conocimiento:</strong> respuestas desde FAQ y documentos.",
+    "study.ia900.disclaimer":
+      "Material de estudio independiente. No está afiliado a Microsoft. Azure y los nombres de exámenes son marcas de sus titulares. Use Microsoft Learn como referencia principal.",
+    "study.ia900.quiz.heading": "Simulacro",
+    "study.ia900.quiz.intro":
+      "Cada simulacro sortea 45 preguntas distintas de un banco de 250 ítems de práctica; el orden también es aleatorio. Los intentos se guardan solo en este navegador.",
+    "study.ia900.btn.start": "Iniciar simulacro",
+    "study.ia900.btn.prev": "Anterior",
+    "study.ia900.btn.next": "Siguiente",
+    "study.ia900.btn.finish": "Finalizar y ver resultado",
+    "study.ia900.btn.new": "Nuevo simulacro",
+    "study.ia900.result.title": "Resultado",
+    "study.ia900.result.wrong": "Preguntas incorrectas y explicaciones",
+    "study.ia900.meta.progress": "Progreso",
+    "study.ia900.result.scoreLabel": "Nota",
+    "study.ia900.result.detail":
+      "Revise los ítems incorrectos abajo. Las explicaciones se refieren a la opción correcta.",
+    "study.ia900.result.allCorrect": "Sin errores — excelente repaso.",
+    "study.ia900.result.omitted": "en blanco",
+    "study.ia900.result.youMarked": "Su respuesta",
+    "study.ia900.result.correctIs": "Correcta",
+    "study.ia900.history.heading": "Historial de intentos",
+    "study.ia900.history.intro": "Últimos intentos en este dispositivo (máx. 50 registros).",
+    "study.ia900.history.col.date": "Fecha",
+    "study.ia900.history.col.score": "Nota",
+    "study.ia900.history.col.correct": "Aciertos",
+    "study.ia900.history.clear": "Borrar historial",
+    "study.ia900.history.empty": "Aún no hay intentos.",
+    "study.ia900.history.confirmClear": "¿Borrar todo el historial de intentos en este navegador?",
 
     // -- Lab page --
     "lab.title":
@@ -1126,6 +1310,8 @@
     const isLab = !!q(".lab-container");
     const isCert = !!q(".cert-container");
     const isCv = !!q(".cv-container");
+    const studyPage =
+      document.body && document.body.getAttribute("data-page");
 
     if (isLab && typeof window.refreshLabReferenceTables === "function") {
       window.refreshLabReferenceTables(lang);
@@ -1158,6 +1344,24 @@
 
       const metaDesc = q('meta[name="description"]');
       tAttr(metaDesc, "content", "cv.meta.desc", dict);
+    } else if (studyPage === "study-hub") {
+      if (!originals.has("study.hub.pageTitle"))
+        originals.set("study.hub.pageTitle", document.title);
+      if (dict && dict["study.hub.pageTitle"])
+        document.title = dict["study.hub.pageTitle"];
+      else if (originals.has("study.hub.pageTitle"))
+        document.title = originals.get("study.hub.pageTitle");
+      const metaDesc = q('meta[name="description"]');
+      tAttr(metaDesc, "content", "study.hub.meta.desc", dict);
+    } else if (studyPage === "study-ia900") {
+      if (!originals.has("study.ia900.pageTitle"))
+        originals.set("study.ia900.pageTitle", document.title);
+      if (dict && dict["study.ia900.pageTitle"])
+        document.title = dict["study.ia900.pageTitle"];
+      else if (originals.has("study.ia900.pageTitle"))
+        document.title = originals.get("study.ia900.pageTitle");
+      const metaDesc = q('meta[name="description"]');
+      tAttr(metaDesc, "content", "study.ia900.meta.desc", dict);
     } else {
       if (!originals.has("idx.title"))
         originals.set("idx.title", document.title);
@@ -1302,7 +1506,7 @@
       }
     }
 
-    // Generic data-i18n elements (cert.*, cv.*, idx.*, visit.*, lab.ref.*)
+    // Generic data-i18n elements (cert.*, cv.*, idx.*, visit.*, lab.ref.*, study.*)
     qa("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
       if (!key) return;
@@ -1311,7 +1515,8 @@
         key.startsWith("cv.") ||
         key.startsWith("idx.") ||
         key.startsWith("visit.") ||
-        key.startsWith("lab.ref.")
+        key.startsWith("lab.ref.") ||
+        key.startsWith("study.")
       ) {
         t(el, key, dict);
       }

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estudos | Douglas Assumpção Rodrigues</title>
+  <meta name="description" content="Trilhas de estudo pessoal — materiais de apoio e simulados de prática.">
+  <meta name="author" content="Douglas Assumpção Rodrigues">
+  <meta name="theme-color" content="#0F172A">
+  <link rel="icon" href="assets/profile.jpg" type="image/jpeg" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/estudos.css">
+</head>
+<body data-page="study-hub">
+  <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="cursor-pointer" aria-hidden="true">
+    <span class="cursor-pointer__dot"></span>
+  </div>
+  <div class="bg-hero-layer" aria-hidden="true"></div>
+
+  <main id="main-content" class="container study-page">
+    <a href="index.html" class="study-back focus-ring" data-i18n="study.backHome">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      Voltar ao início
+    </a>
+
+    <header class="study-hub-header">
+      <h1 class="study-hub-title" data-i18n="study.hub.title">Estudos</h1>
+      <p class="study-hub-lead" data-i18n="study.hub.lead">
+        Material de apoio para estudo pessoal — fora do foco principal do portfólio, mas à disposição para quem também estiver na jornada.
+      </p>
+    </header>
+
+    <div class="study-card-grid" role="list">
+      <a href="estudos/ia-900.html" class="study-card glass focus-ring hover-lift" role="listitem">
+        <span class="study-card-badge">Microsoft Azure</span>
+        <h2 class="study-card-title" data-i18n="study.card.ia900.title">Azure AI Fundamentals (AI-900)</h2>
+        <p class="study-card-desc" data-i18n="study.card.ia900.desc">
+          Resumo por domínio do exame, simulado com banco de questões de prática e histórico de tentativas no navegador.
+        </p>
+      </a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Douglas Assumpção Rodrigues &middot; <span data-i18n="study.hub.footerNote">Estudos — uso pessoal.</span></p>
+    <p class="site-footer-study-wrap">
+      <a href="index.html" class="site-footer-study-link" data-i18n="study.footer.portfolio">Portfólio</a>
+    </p>
+    <p
+      id="visit-counter"
+      class="site-footer-visits visit-counter"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <span class="visit-counter-label" data-i18n="visit.label">Acessos únicos</span>
+      <span class="visit-counter-sep" aria-hidden="true">·</span>
+      <span class="visit-counter-value" data-visit-unique>…</span>
+      <span class="visit-counter-sep" aria-hidden="true">·</span>
+      <span class="visit-counter-label" data-i18n="visit.views.label">Visualizações</span>
+      <span class="visit-counter-sep" aria-hidden="true">·</span>
+      <span class="visit-counter-value" data-visit-views>…</span>
+    </p>
+  </footer>
+
+  <script src="js/i18n.js" defer></script>
+  <script src="js/visit-counter.js" defer></script>
+  <script src="js/script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure AI Fundamentals (AI-900) | Estudos</title>
+  <meta name="description" content="Resumo para o exame AI-900, simulado de prática e histórico de tentativas — material independente de estudo.">
+  <meta name="author" content="Douglas Assumpção Rodrigues">
+  <meta name="theme-color" content="#0F172A">
+  <link rel="icon" href="../assets/profile.jpg" type="image/jpeg" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/estudos.css">
+</head>
+<body data-page="study-ia900">
+  <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="cursor-pointer" aria-hidden="true">
+    <span class="cursor-pointer__dot"></span>
+  </div>
+  <div class="bg-hero-layer" aria-hidden="true"></div>
+
+  <main id="main-content" class="container study-page">
+    <a href="../estudos.html" class="study-back focus-ring" data-i18n="study.backHub">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      Voltar aos estudos
+    </a>
+
+    <header class="study-hub-header study-ia900-header">
+      <h1 class="study-hub-title" data-i18n="study.ia900.title">Azure AI Fundamentals (AI-900)</h1>
+      <p class="study-hub-lead" data-i18n="study.ia900.lead">
+        Resumo alinhado aos domínios do exame, simulado com sorteio a partir de um banco de questões de prática e registro de desempenho no seu navegador.
+      </p>
+    </header>
+
+    <nav class="study-toc" aria-labelledby="study-toc-h">
+      <h2 id="study-toc-h" class="study-toc-title" data-i18n="study.ia900.toc">Nesta página</h2>
+      <ol class="study-toc-list">
+        <li><a href="#resumo" data-i18n="study.ia900.anchor.summary">Resumo por domínio</a></li>
+        <li><a href="#simulado" data-i18n="study.ia900.anchor.quiz">Simulado</a></li>
+        <li><a href="#historico" data-i18n="study.ia900.anchor.history">Histórico de tentativas</a></li>
+      </ol>
+    </nav>
+
+    <section id="resumo" class="study-section" aria-labelledby="resumo-h">
+      <h2 id="resumo-h" class="study-section-title" data-i18n="study.ia900.summary.heading">Resumo por domínio</h2>
+
+      <div class="study-summary-block" id="summary-workload">
+        <h3 class="study-section-title" style="font-size: var(--font-size-h3)" data-i18n="study.ia900.s1.h">Cargas de trabalho e considerações de IA</h3>
+        <ul>
+          <li data-i18n="study.ia900.s1.b1"><strong>Tipos de inferência:</strong> classificação, regressão, agrupamento (clustering), detecção de anomalias, recomendação.</li>
+          <li data-i18n="study.ia900.s1.b2"><strong>Transparência e responsabilidade:</strong> equidade, confiabilidade, privacidade, inclusão, transparência, responsabilidade — pilares de IA responsável.</li>
+          <li data-i18n="study.ia900.s1.b3"><strong>No-code / low-code:</strong> ML automatizado e designers visuais reduzem código, mas não eliminam validação de dados e governança.</li>
+        </ul>
+      </div>
+
+      <div class="study-summary-block" id="summary-fundamentals" style="margin-top: var(--space-4)">
+        <h3 class="study-section-title" style="font-size: var(--font-size-h3)" data-i18n="study.ia900.s2.h">Princípios fundamentais de machine learning no Azure</h3>
+        <ul>
+          <li data-i18n="study.ia900.s2.b1"><strong>Supervisionado:</strong> rótulos conhecidos — classificação e regressão.</li>
+          <li data-i18n="study.ia900.s2.b2"><strong>Não supervisionado:</strong> padrões sem rótulo — clustering, regras de associação.</li>
+          <li data-i18n="study.ia900.s2.b3"><strong>Reforço:</strong> agente aprende com recompensas/penalidades em ambiente.</li>
+          <li data-i18n="study.ia900.s2.b4"><strong>Deep learning:</strong> redes profundas para visão, linguagem e outros dados complexos.</li>
+        </ul>
+      </div>
+
+      <div class="study-summary-block" id="summary-azureml" style="margin-top: var(--space-4)">
+        <h3 class="study-section-title" style="font-size: var(--font-size-h3)" data-i18n="study.ia900.s3.h">Recursos de aprendizado de máquina no Azure</h3>
+        <ul>
+          <li data-i18n="study.ia900.s3.b1"><strong>Azure Machine Learning:</strong> workspace, experimentos, pipelines, registro de modelos e endpoints.</li>
+          <li data-i18n="study.ia900.s3.b2"><strong>Automated ML:</strong> seleção de algoritmos e hiperparâmetros com objetivo e métrica definidos.</li>
+          <li data-i18n="study.ia900.s3.b3"><strong>Designer:</strong> fluxo visual de treino e inferência.</li>
+        </ul>
+      </div>
+
+      <div class="study-summary-block" id="summary-vision" style="margin-top: var(--space-4)">
+        <h3 class="study-section-title" style="font-size: var(--font-size-h3)" data-i18n="study.ia900.s4.h">Visão computacional</h3>
+        <ul>
+          <li data-i18n="study.ia900.s4.b1"><strong>Azure AI Vision (ex. Vision):</strong> análise de imagem, OCR, detecção de rostos (com políticas de uso).</li>
+          <li data-i18n="study.ia900.s4.b2"><strong>Custom Vision:</strong> classificação e detecção de objetos com treino por imagens rotuladas.</li>
+          <li data-i18n="study.ia900.s4.b3"><strong>Face API:</strong> cenários com requisitos estritos de consentimento e privacidade.</li>
+        </ul>
+      </div>
+
+      <div class="study-summary-block" id="summary-nlp" style="margin-top: var(--space-4)">
+        <h3 class="study-section-title" style="font-size: var(--font-size-h3)" data-i18n="study.ia900.s5.h">Processamento de linguagem natural</h3>
+        <ul>
+          <li data-i18n="study.ia900.s5.b1"><strong>Azure AI Language:</strong> análise de sentimento, extração de entidades, resposta a perguntas sobre documento.</li>
+          <li data-i18n="study.ia900.s5.b2"><strong>Tradução e compreensão:</strong> cenários multilíngues e sumarização.</li>
+          <li data-i18n="study.ia900.s5.b3"><strong>Speech:</strong> conversão fala–texto e texto–fala para acessibilidade e bots.</li>
+        </ul>
+      </div>
+
+      <div class="study-summary-block" id="summary-bot" style="margin-top: var(--space-4)">
+        <h3 class="study-section-title" style="font-size: var(--font-size-h3)" data-i18n="study.ia900.s6.h">IA conversacional</h3>
+        <ul>
+          <li data-i18n="study.ia900.s6.b1"><strong>Bot Framework / Composer:</strong> orquestração de diálogos e integração com canais.</li>
+          <li data-i18n="study.ia900.s6.b2"><strong>Language Understanding (LUIS) / CLU:</strong> intenções e entidades para interpretar o usuário.</li>
+          <li data-i18n="study.ia900.s6.b3"><strong>QnA / bases de conhecimento:</strong> respostas a partir de FAQ e documentos.</li>
+        </ul>
+      </div>
+
+      <p class="study-disclaimer" data-i18n="study.ia900.disclaimer">
+        Material de estudo independente. Não é afiliado à Microsoft. Microsoft Azure e nomes de exames são marcas dos respectivos titulares. Use o conteúdo oficial (Microsoft Learn) como referência principal.
+      </p>
+    </section>
+
+    <section id="simulado" class="study-section" aria-labelledby="simulado-h">
+      <h2 id="simulado-h" class="study-section-title" data-i18n="study.ia900.quiz.heading">Simulado</h2>
+      <p class="study-hub-lead" style="margin-bottom: var(--space-4)" data-i18n="study.ia900.quiz.intro">
+        Cada simulado sorteia 45 questões distintas a partir de um banco de 250 itens de prática; a ordem também é aleatória. Suas tentativas ficam salvas apenas neste navegador.
+      </p>
+
+      <div class="study-quiz-panel" id="ia900-quiz-root">
+        <div class="study-quiz-meta" id="ia900-quiz-meta" hidden>
+          <span id="ia900-quiz-progress"></span>
+        </div>
+        <div id="ia900-quiz-start">
+          <button type="button" class="study-btn study-btn--primary" id="ia900-btn-start" data-i18n="study.ia900.btn.start">Iniciar simulado</button>
+        </div>
+        <div id="ia900-quiz-active" hidden>
+          <p class="study-quiz-question-title" id="ia900-question-stem"></p>
+          <div class="study-quiz-options" id="ia900-options" role="radiogroup" aria-labelledby="ia900-question-stem"></div>
+          <div class="study-quiz-nav">
+            <button type="button" class="study-btn" id="ia900-btn-prev" data-i18n="study.ia900.btn.prev">Anterior</button>
+            <button type="button" class="study-btn" id="ia900-btn-next" data-i18n="study.ia900.btn.next">Próxima</button>
+            <button type="button" class="study-btn study-btn--primary" id="ia900-btn-finish" hidden data-i18n="study.ia900.btn.finish">Finalizar e ver resultado</button>
+          </div>
+        </div>
+        <div id="ia900-quiz-results" class="study-quiz-results" hidden tabindex="-1">
+          <h3 class="study-section-title" style="font-size: var(--font-size-h3)" data-i18n="study.ia900.result.title">Resultado</h3>
+          <p class="study-quiz-results-score" id="ia900-result-score" aria-live="polite"></p>
+          <p class="study-hub-lead" id="ia900-result-detail" style="margin-bottom: var(--space-3)"></p>
+          <h4 class="study-toc-title" data-i18n="study.ia900.result.wrong">Questões incorretas e explicações</h4>
+          <div id="ia900-wrong-list"></div>
+          <div class="study-quiz-nav" style="margin-top: var(--space-4)">
+            <button type="button" class="study-btn study-btn--primary" id="ia900-btn-retry" data-i18n="study.ia900.btn.new">Novo simulado</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="historico" class="study-section" aria-labelledby="historico-h">
+      <h2 id="historico-h" class="study-section-title" data-i18n="study.ia900.history.heading">Histórico de tentativas</h2>
+      <p class="study-hub-lead" data-i18n="study.ia900.history.intro">Últimas tentativas neste dispositivo (máximo 50 registros).</p>
+      <div class="study-history-table-wrap">
+        <table class="study-history-table" id="ia900-history-table" aria-describedby="historico-h">
+          <thead>
+            <tr>
+              <th data-i18n="study.ia900.history.col.date">Data</th>
+              <th data-i18n="study.ia900.history.col.score">Nota</th>
+              <th data-i18n="study.ia900.history.col.correct">Acertos</th>
+            </tr>
+          </thead>
+          <tbody id="ia900-history-body"></tbody>
+        </table>
+      </div>
+      <div class="study-quiz-nav" style="margin-top: var(--space-3)">
+        <button type="button" class="study-btn" id="ia900-btn-clear-history" data-i18n="study.ia900.history.clear">Limpar histórico</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Douglas Assumpção Rodrigues &middot; <span data-i18n="study.hub.footerNote">Estudos — uso pessoal.</span></p>
+    <p class="site-footer-study-wrap">
+      <a href="../estudos.html" class="site-footer-study-link" data-i18n="study.footer.hub">Área de estudos</a>
+    </p>
+    <p
+      id="visit-counter"
+      class="site-footer-visits visit-counter"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <span class="visit-counter-label" data-i18n="visit.label">Acessos únicos</span>
+      <span class="visit-counter-sep" aria-hidden="true">·</span>
+      <span class="visit-counter-value" data-visit-unique>…</span>
+      <span class="visit-counter-sep" aria-hidden="true">·</span>
+      <span class="visit-counter-label" data-i18n="visit.views.label">Visualizações</span>
+      <span class="visit-counter-sep" aria-hidden="true">·</span>
+      <span class="visit-counter-value" data-visit-views>…</span>
+    </p>
+  </footer>
+
+  <script src="../js/i18n.js" defer></script>
+  <script src="../js/ia900-questions.js" defer></script>
+  <script src="../js/ia900-app.js" defer></script>
+  <script src="../js/visit-counter.js" defer></script>
+  <script src="../js/script.js" defer></script>
+</body>
+</html>
