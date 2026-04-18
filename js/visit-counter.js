@@ -1,7 +1,7 @@
 /* Contadores no rodapé via CountAPI (https://github.com/syntaxerror019/countapi)
  *
  * 1) Acessos únicos (KEY_UNIQUE): incrementa só na primeira visita deste navegador;
- *    depois só GET. Semeia em TARGET_START quando o contador está vazio.
+ *    depois só GET.
  * 2) Visualizações / navegação (KEY_VIEWS): hit a cada carregamento de página —
  *    acompanha cliques, rotas e atualizações.
  */
@@ -12,7 +12,6 @@
   var KEY_UNIQUE = "douglas-portfolio-brad-acessos-unicos-2026-04";
   var KEY_VIEWS = "douglas-portfolio-brad-site-visits";
   var STORAGE_KEY = "douglas-portfolio-unique-visit-" + KEY_UNIQUE;
-  var TARGET_START = 6;
 
   var fetchOpts = { method: "GET", cache: "no-store", credentials: "omit" };
 
@@ -68,33 +67,11 @@
     });
   }
 
-  function seedIfEmptyThenHit() {
-    return fetch(apiUrl("get", KEY_UNIQUE), fetchOpts)
-      .then(function (res) {
-        if (!res.ok) return { empty: true };
-        return res.json().then(function (data) {
-          var v = parseCount(data);
-          return { empty: v === null || v === 0 };
-        });
-      })
-      .catch(function () {
-        return { empty: true };
-      })
-      .then(function (st) {
-        if (!st.empty) {
-          return fetchJson(apiUrl("hit", KEY_UNIQUE));
-        }
-        return fetchJson(apiUrl("set", KEY_UNIQUE) + "?value=" + (TARGET_START - 1)).then(function () {
-          return fetchJson(apiUrl("hit", KEY_UNIQUE));
-        });
-      });
-  }
-
   function runUniqueCounter() {
     var alreadyCounted = hasCountedThisBrowser();
     var done = alreadyCounted
       ? fetchJson(apiUrl("get", KEY_UNIQUE))
-      : seedIfEmptyThenHit();
+      : fetchJson(apiUrl("hit", KEY_UNIQUE));
     return done.then(function (data) {
       var n = parseCount(data);
       if (n === null) throw new Error("invalid payload");
