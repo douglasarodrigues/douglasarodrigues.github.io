@@ -75,8 +75,12 @@
       "Summary aligned with exam domains, a mock exam drawn from a practice bank, and performance history stored in your browser.",
     "study.ia900.toc": "On this page",
     "study.ia900.anchor.summary": "Domain summary",
+    "study.ia900.anchor.guide": "Full guide with figures",
     "study.ia900.anchor.quiz": "Practice exam",
     "study.ia900.anchor.history": "Attempt history",
+    "study.ia900.guide.title": "Complete domain guide (AI-900)",
+    "study.ia900.guide.langnote":
+      "The detailed sections below are in Brazilian Portuguese. The bullet summaries at the top follow your selected site language.",
     "study.ia900.summary.heading": "Domain summary",
     "study.ia900.s1.h": "AI workloads and considerations",
     "study.ia900.s1.b1":
@@ -696,8 +700,12 @@
       "Resumen alineado a los dominios del examen, simulacro desde un banco de práctica e historial guardado en su navegador.",
     "study.ia900.toc": "En esta página",
     "study.ia900.anchor.summary": "Resumen por dominio",
+    "study.ia900.anchor.guide": "Guía completa con figuras",
     "study.ia900.anchor.quiz": "Simulacro",
     "study.ia900.anchor.history": "Historial de intentos",
+    "study.ia900.guide.title": "Guía completa por dominio (AI-900)",
+    "study.ia900.guide.langnote":
+      "Las secciones detalladas abajo están en portugués (Brasil). Los resúmenes con viñetas al inicio siguen el idioma seleccionado en el sitio.",
     "study.ia900.summary.heading": "Resumen por dominio",
     "study.ia900.s1.h": "Cargas de trabajo y consideraciones de IA",
     "study.ia900.s1.b1":

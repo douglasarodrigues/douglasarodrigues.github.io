@@ -41,6 +41,7 @@
       <h2 id="study-toc-h" class="study-toc-title" data-i18n="study.ia900.toc">Nesta página</h2>
       <ol class="study-toc-list">
         <li><a href="#resumo" data-i18n="study.ia900.anchor.summary">Resumo por domínio</a></li>
+        <li><a href="#guia-completo" data-i18n="study.ia900.anchor.guide">Guia completo com figuras</a></li>
         <li><a href="#simulado" data-i18n="study.ia900.anchor.quiz">Simulado</a></li>
         <li><a href="#historico" data-i18n="study.ia900.anchor.history">Histórico de tentativas</a></li>
       </ol>
@@ -102,6 +103,144 @@
           <li data-i18n="study.ia900.s6.b2"><strong>Language Understanding (LUIS) / CLU:</strong> intenções e entidades para interpretar o usuário.</li>
           <li data-i18n="study.ia900.s6.b3"><strong>QnA / bases de conhecimento:</strong> respostas a partir de FAQ e documentos.</li>
         </ul>
+      </div>
+
+      <div class="study-guide-complete" id="guia-completo" lang="pt-BR" aria-labelledby="guia-completo-h">
+        <h2 id="guia-completo-h" class="study-section-title" data-i18n="study.ia900.guide.title">Guia completo por domínio (AI-900)</h2>
+        <p class="study-guide-langnote study-hub-lead" data-i18n="study.ia900.guide.langnote">
+          As seções detalhadas abaixo estão em português. Os resumos em tópicos no início desta página acompanham o idioma selecionado no site.
+        </p>
+
+        <div class="study-summary-block study-guide-block">
+          <h3 class="study-guide-h3">Visão geral do exame</h3>
+          <p>O certificado <strong>Azure AI Fundamentals (AI-900)</strong> cobre conceitos de IA e dos serviços de IA na nuvem Microsoft em nível introdutório. O formato costuma ser de <strong>escolha múltipla</strong>, com foco em compreender cenários, serviços e boas práticas — não em memorizar números operacionais ou preços. Este material é <strong>complementar ao Microsoft Learn</strong>; use a documentação oficial como referência principal.</p>
+        </div>
+
+        <figure class="study-figure" role="group" aria-labelledby="fig-skillmap-title">
+          <figcaption id="fig-skillmap-title" class="study-figure-caption">Mapa dos cinco domínios de competência (skills outline público)</figcaption>
+          <svg class="study-figure-svg" viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(74,144,217,0.35)"/>
+                <stop offset="100%" style="stop-color:rgba(148,163,184,0.15)"/>
+              </linearGradient>
+            </defs>
+            <rect x="8" y="8" width="704" height="184" rx="12" fill="rgba(15,23,42,0.6)" stroke="rgba(148,163,184,0.25)"/>
+            <text x="360" y="36" text-anchor="middle" fill="#e2e8f0" font-size="14" font-family="system-ui,sans-serif">AI-900 — visão integrada dos domínios</text>
+            <rect x="24" y="56" width="128" height="120" rx="8" fill="url(#g1)" stroke="rgba(74,144,217,0.5)"/>
+            <text x="88" y="88" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="system-ui,sans-serif">1</text>
+            <text x="88" y="112" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="system-ui,sans-serif">Cargas e</text>
+            <text x="88" y="128" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="system-ui,sans-serif">considerações</text>
+            <text x="88" y="152" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="system-ui,sans-serif">IA responsável</text>
+            <rect x="160" y="56" width="128" height="120" rx="8" fill="url(#g1)" stroke="rgba(74,144,217,0.5)"/>
+            <text x="224" y="88" text-anchor="middle" fill="#94a3b8" font-size="11">2</text>
+            <text x="224" y="112" text-anchor="middle" fill="#e2e8f0" font-size="11">Machine</text>
+            <text x="224" y="128" text-anchor="middle" fill="#e2e8f0" font-size="11">learning</text>
+            <text x="224" y="152" text-anchor="middle" fill="#94a3b8" font-size="9">Azure ML</text>
+            <rect x="296" y="56" width="128" height="120" rx="8" fill="url(#g1)" stroke="rgba(74,144,217,0.5)"/>
+            <text x="360" y="88" text-anchor="middle" fill="#94a3b8" font-size="11">3</text>
+            <text x="360" y="112" text-anchor="middle" fill="#e2e8f0" font-size="11">Visão</text>
+            <text x="360" y="128" text-anchor="middle" fill="#e2e8f0" font-size="11">computacional</text>
+            <text x="360" y="152" text-anchor="middle" fill="#94a3b8" font-size="9">Imagem / OCR</text>
+            <rect x="432" y="56" width="128" height="120" rx="8" fill="url(#g1)" stroke="rgba(74,144,217,0.5)"/>
+            <text x="496" y="88" text-anchor="middle" fill="#94a3b8" font-size="11">4</text>
+            <text x="496" y="112" text-anchor="middle" fill="#e2e8f0" font-size="11">PLN / voz</text>
+            <text x="496" y="128" text-anchor="middle" fill="#e2e8f0" font-size="11">e linguagem</text>
+            <text x="496" y="152" text-anchor="middle" fill="#94a3b8" font-size="9">Language / Speech</text>
+            <rect x="568" y="56" width="128" height="120" rx="8" fill="url(#g1)" stroke="rgba(74,144,217,0.5)"/>
+            <text x="632" y="88" text-anchor="middle" fill="#94a3b8" font-size="11">5</text>
+            <text x="632" y="112" text-anchor="middle" fill="#e2e8f0" font-size="11">IA generativa</text>
+            <text x="632" y="128" text-anchor="middle" fill="#e2e8f0" font-size="11">e copilotos</text>
+            <text x="632" y="152" text-anchor="middle" fill="#94a3b8" font-size="9">LLM / RAG</text>
+          </svg>
+        </figure>
+
+        <div class="study-summary-block study-guide-block" id="guide-d1">
+          <h3 class="study-guide-h3">Domínio 1 — Cargas de trabalho de IA e considerações</h3>
+          <p><strong>O que cair na prova:</strong> reconhecer <em>tipos de problema</em> (classificar e-mail como spam, prever demanda, agrupar clientes sem rótulo prévio, destacar transações suspeitas, recomendar itens). Associe cada caso ao tipo de técnica: classificação, regressão, <em>clustering</em>, detecção de anomalias, recomendação.</p>
+          <div class="study-callout study-callout--info">
+            <strong>Exemplo.</strong> Prever o preço de um imóvel a partir de atributos históricos com valores conhecidos → <strong>regressão</strong> (supervisionada). Agrupar clientes só por comportamento de compra, sem coluna “segmento” → <strong>clustering</strong> (não supervisionado).
+          </div>
+          <p><strong>IA responsável:</strong> equidade (evitar viés injusto), confiabilidade e segurança, privacidade e segurança de dados, inclusão, transparência e responsabilidade. Em prova, identifique cenários que violem esses princípios — por exemplo, decisões sem supervisão humana quando o risco é alto, ou uso de dados sem consentimento claro.</p>
+          <p><strong>Automação determinística × IA:</strong> regras fixas (“se A então B”) não aprendem com dados; modelos de ML ajustam-se a partir de exemplos. <strong>IA generativa</strong> produz conteúdo novo (texto, imagem) e exige cuidado extra com veracidade e licença de uso.</p>
+        </div>
+
+        <div class="study-summary-block study-guide-block" id="guide-d2">
+          <h3 class="study-guide-h3">Domínio 2 — Fundamentos de machine learning no Azure</h3>
+          <table class="study-compare-table">
+            <thead>
+              <tr><th>Abordagem</th><th>Dados</th><th>Exemplos de tarefa</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Supervisionado</strong></td><td>Rótulos conhecidos</td><td>Classificação (categoria), regressão (número contínuo)</td></tr>
+              <tr><td><strong>Não supervisionado</strong></td><td>Sem rótulos</td><td>Clusters, regras de associação</td></tr>
+              <tr><td><strong>Reforço</strong></td><td>Feedback do ambiente</td><td>Agente que maximiza recompensa ao longo do tempo</td></tr>
+            </tbody>
+          </table>
+          <figure class="study-figure study-figure--inline" role="group" aria-labelledby="fig-traininf-title">
+            <figcaption id="fig-traininf-title" class="study-figure-caption">Treino (aprendizado) versus inferência (previsão em produção)</figcaption>
+            <svg class="study-figure-svg" viewBox="0 0 560 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="10" y="20" width="200" height="56" rx="8" fill="rgba(74,144,217,0.2)" stroke="rgba(74,144,217,0.45)"/>
+              <text x="110" y="48" text-anchor="middle" fill="#e2e8f0" font-size="12" font-family="system-ui,sans-serif">Dados de treino + rótulos</text>
+              <text x="110" y="68" text-anchor="middle" fill="#94a3b8" font-size="10">→ ajuste do modelo</text>
+              <text x="280" y="55" text-anchor="middle" fill="#64748b" font-size="20">→</text>
+              <rect x="350" y="20" width="200" height="56" rx="8" fill="rgba(148,163,184,0.12)" stroke="rgba(148,163,184,0.35)"/>
+              <text x="450" y="48" text-anchor="middle" fill="#e2e8f0" font-size="12" font-family="system-ui,sans-serif">Modelo implantado</text>
+              <text x="450" y="68" text-anchor="middle" fill="#94a3b8" font-size="10">inferência sobre dados novos</text>
+            </svg>
+          </figure>
+          <p><strong>Azure Machine Learning</strong> (conceito de exame): workspace para organizar experimentos, dados, treinamento, registro de modelos e publicação em endpoint. <strong>Automated ML</strong> explora algoritmos e hiperparâmetros com base numa métrica escolhida. O <strong>Designer</strong> permite montar fluxos visuais de treino e inferência — útil para cenários low-code, mas não dispensa qualidade e governança dos dados.</p>
+          <p><strong>Deep learning:</strong> redes neurais com muitas camadas, fortes em imagem, texto e sinais complexos; exigem mais dados e computação que modelos lineares tradicionais.</p>
+        </div>
+
+        <div class="study-summary-block study-guide-block" id="guide-d3">
+          <h3 class="study-guide-h3">Domínio 3 — Visão computacional no Azure</h3>
+          <p>Serviços típicos cobrados em nível fundamentos: <strong>análise de imagem</strong> (tags, objetos, descrição), <strong>OCR</strong> (texto impresso ou manuscrito em imagens), <strong>detecção de rostos</strong> ou análise facial com forte ênfase em <em>privacidade, consentimento e políticas de uso</em> — não memorize detalhes técnicos proprietários; entenda os requisitos de responsabilidade.</p>
+          <p><strong>Custom Vision</strong> permite treinar classificadores ou detectores de objetos com imagens rotuladas pelo próprio projeto — adequado quando o modelo genérico não basta. <strong>Forma de pensar na prova:</strong> “preciso ler texto de um scan” → OCR; “preciso saber se há cachorro na foto” → classificação ou detecção; “preciso contar peças defeituosas na linha” → customização com imagens da fábrica.</p>
+        </div>
+
+        <div class="study-summary-block study-guide-block" id="guide-d4">
+          <h3 class="study-guide-h3">Domínio 4 — PLN e recursos de linguagem</h3>
+          <p><strong>Análise de texto:</strong> sentimento, extração de frases-chave, entidades (pessoas, locais, datas). <strong>Tradução automática</strong> para cenários multilíngues. <strong>Perguntas e respostas</strong> sobre documentos: o modelo localiza trechos relevantes para responder com base no conteúdo fornecido — diferente de inventar fatos externos.</p>
+          <p><strong>Speech:</strong> conversão de fala em texto (ditado, legendas, bots por voz) e texto em fala (acessibilidade, respostas faladas). <strong>IA conversacional:</strong> intenções e entidades (o que o usuário quer e quais parâmetros importam), orquestração de diálogo e integração com bases de conhecimento ou FAQs.</p>
+          <div class="study-callout">
+            <strong>Contraste para memorizar.</strong> <em>Tradução</em> troca de idioma; <em>análise de sentimento</em> estima polaridade/opinião; <em>NER</em> (reconhecimento de entidades) identifica itens estruturados no texto.
+          </div>
+        </div>
+
+        <div class="study-summary-block study-guide-block" id="guide-d5">
+          <h3 class="study-guide-h3">Domínio 5 — IA generativa</h3>
+          <p>Modelos de linguagem grande (<strong>LLM</strong>) geram texto (e outros modos em evolução) com base em padrões aprendidos. Na prova, espere conceitos como <strong>prompt</strong> (instrução ao modelo), <strong>complemento de texto</strong>, ajuste de tom ou formato, e limitações: <strong>alucinações</strong> (respostas plausíveis porém incorretas), dependência do contexto fornecido, necessidade de validação humana em cenários críticos.</p>
+          <p><strong>RAG (Retrieval-Augmented Generation):</strong> combinar busca em documentos ou base vetorial com o modelo gerador, para ancorar respostas em material próprio da empresa — reduz invenção, mas não elimina a revisão.</p>
+          <figure class="study-figure study-figure--inline" role="group" aria-labelledby="fig-rag-title">
+            <figcaption id="fig-rag-title" class="study-figure-caption">Esquema simplificado de RAG: consulta → trechos relevantes → modelo gera resposta fundamentada</figcaption>
+            <svg class="study-figure-svg" viewBox="0 0 520 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="8" y="24" width="100" height="40" rx="6" fill="rgba(74,144,217,0.2)" stroke="rgba(74,144,217,0.45)"/>
+              <text x="58" y="50" text-anchor="middle" fill="#e2e8f0" font-size="11" font-family="system-ui,sans-serif">Pergunta</text>
+              <text x="130" y="52" fill="#64748b" font-size="16">→</text>
+              <rect x="150" y="24" width="110" height="40" rx="6" fill="rgba(148,163,184,0.15)" stroke="rgba(148,163,184,0.4)"/>
+              <text x="205" y="50" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="system-ui,sans-serif">Busca em</text>
+              <text x="205" y="62" text-anchor="middle" fill="#94a3b8" font-size="9">documentos</text>
+              <text x="278" y="52" fill="#64748b" font-size="16">+</text>
+              <rect x="300" y="24" width="100" height="40" rx="6" fill="rgba(74,144,217,0.15)" stroke="rgba(74,144,217,0.35)"/>
+              <text x="350" y="50" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="system-ui,sans-serif">LLM</text>
+              <text x="418" y="52" fill="#64748b" font-size="16">→</text>
+              <rect x="438" y="24" width="74" height="40" rx="6" fill="rgba(34,197,94,0.12)" stroke="rgba(74,222,128,0.35)"/>
+              <text x="475" y="50" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="system-ui,sans-serif">Resposta</text>
+            </svg>
+          </figure>
+          <p><strong>Uso responsável:</strong> transparência sobre origem do conteúdo, respeito a direitos autorais, conteúdo seguro e inclusivo. Copilotos e assistentes devem ser vistos como apoio à decisão humana, não como substituto automático em risco alto sem validação.</p>
+        </div>
+
+        <div class="study-summary-block study-guide-block">
+          <h3 class="study-guide-h3">Como estudar com este material</h3>
+          <ol class="study-guide-ol">
+            <li>Leia os <strong>tópicos rápidos</strong> no topo e compare com este guia.</li>
+            <li>Faça o <strong>simulado</strong> na mesma página e revise as explicações das questões erradas.</li>
+            <li>No <strong>Microsoft Learn</strong>, siga o learning path oficial do AI-900 para aprofundar.</li>
+          </ol>
+          <p class="study-guide-footnote">Nenhum material de terceiros substitui o conteúdo oficial nem garante resultado em prova — trate este guia como apoio pedagógico à sua preparação.</p>
+        </div>
       </div>
 
       <p class="study-disclaimer" data-i18n="study.ia900.disclaimer">
