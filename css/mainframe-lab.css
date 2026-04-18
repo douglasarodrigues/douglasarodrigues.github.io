@@ -1048,6 +1048,13 @@
   height: 20px;
 }
 
+@media (max-width: 639px) {
+  .lab-scroll-top {
+    bottom: var(--space-4);
+    right: var(--space-4);
+  }
+}
+
 /* ------------------------------------------------------------------------- */
 /* 19. FILTER ANIMATION (show/hide de cards)                                */
 /* ------------------------------------------------------------------------- */
@@ -1649,13 +1656,4 @@ tr.lab-search-highlight > td {
   .lab-search-highlight {
     animation: none;
   }
-}
-
-/* Contador de visitas: acima do botão “voltar ao topo” (mesmo canto) */
-.visit-counter {
-  bottom: calc(
-    var(--space-6) + var(--lab-scroll-top-size) + var(--space-2)
-  );
-  right: var(--space-6);
-  z-index: calc(var(--lab-scroll-top-z) - 1);
 }

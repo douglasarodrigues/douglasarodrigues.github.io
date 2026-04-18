@@ -1,11 +1,14 @@
-/* Contador de visitas (agregado via CountAPI — namespace único no serviço).
-   Troque NAMESPACE/KEY se quiser separar ambientes ou projetos. */
+/* Contador de visitas agregado via CountAPI (spin-off comunitário).
+ * O serviço original api.countapi.xyz deixou de responder (DNS/503).
+ * Documentação: https://github.com/syntaxerror019/countapi
+ */
 (function () {
   "use strict";
 
-  var NAMESPACE = "douglas-portfolio-brad";
-  var KEY = "site-visits";
-  var URL = "https://api.countapi.xyz/hit/" + encodeURIComponent(NAMESPACE) + "/" + encodeURIComponent(KEY);
+  var BASE = "https://countapi.mileshilliard.com/api/v1";
+  /* Chave única pública; troque se quiser outro contador (contagem recomeça). */
+  var KEY = "douglas-portfolio-brad-site-visits";
+  var URL = BASE + "/hit/" + encodeURIComponent(KEY);
 
   function setValue(el, text) {
     if (!el) return;

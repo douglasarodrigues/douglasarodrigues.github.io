@@ -140,23 +140,22 @@
 
   <footer class="site-footer">
     <p>&copy; 2026 Douglas Assumpção Rodrigues &middot; Mainframe Lab &mdash; Código, referência e precisão.</p>
+    <p
+      id="visit-counter"
+      class="site-footer-visits visit-counter"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <span class="visit-counter-label" data-i18n="visit.label">Visitas</span>
+      <span class="visit-counter-sep" aria-hidden="true">·</span>
+      <span class="visit-counter-value" data-visit-count>…</span>
+    </p>
   </footer>
 
   <button type="button" class="lab-scroll-top" aria-label="Voltar ao topo" hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
-
-  <div
-    id="visit-counter"
-    class="visit-counter glass"
-    role="status"
-    aria-live="polite"
-    aria-atomic="true"
-  >
-    <span class="visit-counter-label" data-i18n="visit.label">Visitas</span>
-    <span class="visit-counter-sep" aria-hidden="true">·</span>
-    <span class="visit-counter-value" data-visit-count>…</span>
-  </div>
 
   <script src="js/lab-programs.js" defer></script>
   <script src="js/lab-reference.js" defer></script>
