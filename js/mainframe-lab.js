@@ -266,6 +266,11 @@
 
     // Reference panel
     renderReferencePanel(container);
+
+    /* Aba inicial: Referência Rápida (quando o painel existir) */
+    if (typeof LAB_REFERENCE !== "undefined" && qs("#panel-ref") && qs("#tab-ref")) {
+      activateTab(qs("#tab-ref"));
+    }
   }
 
   // ── Render Reference ────────────────────────────────────────────────────

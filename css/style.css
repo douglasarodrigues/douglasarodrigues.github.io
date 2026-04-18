@@ -752,6 +752,63 @@ body {
   }
 }
 
+/* -- CONTADOR DE VISITAS (fixo, discreto) ---------------------------------- */
+
+.visit-counter {
+  position: fixed;
+  z-index: calc(var(--z-overlay, 1000) - 1);
+  bottom: max(var(--space-4), env(safe-area-inset-bottom, 0px));
+  right: max(var(--space-4), env(safe-area-inset-right, 0px));
+  left: auto;
+
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.35em;
+  max-width: min(92vw, 14rem);
+
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+
+  font-size: var(--font-size-small);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-small);
+  color: var(--color-text-secondary);
+  opacity: 0.78;
+
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+  user-select: none;
+}
+
+.visit-counter:hover,
+.visit-counter:focus-within {
+  opacity: 0.95;
+}
+
+.visit-counter-label {
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-badge);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+.visit-counter-sep {
+  opacity: 0.55;
+}
+
+.visit-counter-value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+@media print {
+  .visit-counter {
+    display: none;
+  }
+}
+
 /* -- PRINT (global) ------------------------------------------------ */
 
 @media print {

@@ -48,6 +48,7 @@
     "idx.skills.title": "Technical Expertise",
     "idx.footer": "Built with the same precision as a mission-critical system.",
     "idx.email.toast": "Email copied! I look forward to hearing from you.",
+    "visit.label": "Visits",
 
     // -- Lab page --
     "lab.title":
@@ -565,6 +566,7 @@
     "idx.footer":
       "Hecho con la misma precisión de un sistema de misión crítica.",
     "idx.email.toast": "¡Email copiado! Espero su contacto.",
+    "visit.label": "Visitas",
 
     // -- Lab page --
     "lab.title":
@@ -1282,14 +1284,15 @@
       }
     }
 
-    // Generic data-i18n elements (cert.*, cv.*, idx.*)
+    // Generic data-i18n elements (cert.*, cv.*, idx.*, visit.*)
     qa("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
       if (!key) return;
       if (
         key.startsWith("cert.") ||
         key.startsWith("cv.") ||
-        key.startsWith("idx.")
+        key.startsWith("idx.") ||
+        key.startsWith("visit.")
       ) {
         t(el, key, dict);
       }
