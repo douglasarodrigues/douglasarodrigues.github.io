@@ -19,9 +19,9 @@
     skip: "Skip to main content",
 
     // -- Index page --
-    "idx.title": "Douglas Assunção Rodrigues | Mainframe Developer",
+    "idx.title": "Douglas Assumpção Rodrigues | Mainframe Developer",
     "idx.meta.desc":
-      "Specialist in COBOL, DB2, CICS, and JCL for mission-critical banking systems. Explore my career, certifications, and get in touch.",
+      "18+ years in mission-critical financial systems. Specialist in COBOL, DB2, CICS, and JCL. Career, certifications, and contact.",
     "idx.headline":
       'Mainframe <span class="text-accent">Developer</span> | Banking systems that can\'t stop',
     "idx.status": "Open to Opportunities",
@@ -52,9 +52,9 @@
 
     // -- Lab page --
     "lab.title":
-      "Mainframe Lab | Douglas Assunção Rodrigues - COBOL, JCL, DB2, CICS Programs & Quick Reference",
+      "Mainframe Lab | Douglas Assumpção Rodrigues - COBOL, JCL, DB2, CICS Programs & Quick Reference",
     "lab.meta.desc":
-      "Douglas Assunção Rodrigues's technical portfolio: 97 reusable mainframe modules in COBOL, HLASM, JCL, CICS, DB2, IMS, and VSAM - utility tools for the mainframe developer.",
+      "Douglas Assumpção Rodrigues's technical portfolio: 97 reusable mainframe modules in COBOL, HLASM, JCL, CICS, DB2, IMS, and VSAM - utility tools for the mainframe developer.",
     "lab.back": "Back to Home",
     "lab.breadcrumb.current": "Mainframe Lab",
     "lab.header.desc":
@@ -128,9 +128,9 @@
 
     // Certifications page --
     "cert.title":
-      "Certifications | Douglas Assunção Rodrigues - Validated Credentials",
+      "Certifications | Douglas Assumpção Rodrigues - Validated Credentials",
     "cert.meta.desc":
-      "Professional certifications from Douglas Assunção Rodrigues: Azure AZ-900 and validated credentials proving technical expertise in mission-critical technologies.",
+      "Professional certifications from Douglas Assumpção Rodrigues: Azure AZ-900 and validated credentials proving technical expertise in mission-critical technologies.",
     "cert.back": "Back to Home",
     "cert.breadcrumb.current": "Certifications",
     "cert.header.desc":
@@ -149,9 +149,9 @@
 
     // Curriculum page
     "cv.title":
-      "Résumé | Douglas Assunção Rodrigues - Software Engineer III Mainframe",
+      "Résumé | Douglas Assumpção Rodrigues - Software Engineer III Mainframe",
     "cv.meta.desc":
-      "Résumé of Douglas Assunção Rodrigues: 18+ years in Mainframe software engineering for mission-critical financial systems. Assembler z/OS, COBOL, DB2, CICS specialist.",
+      "Résumé of Douglas Assumpção Rodrigues: 18+ years in Mainframe software engineering for mission-critical financial systems. Assembler z/OS, COBOL, DB2, CICS specialist.",
     "cv.back": "Back to Home",
     "cv.breadcrumb.current": "Résumé",
     "cv.subtitle": "Software Engineer III - Mainframe",
@@ -532,9 +532,9 @@
     skip: "Saltar al contenido principal",
 
     // -- Index page --
-    "idx.title": "Douglas Assunção Rodrigues | Desarrollador Mainframe",
+    "idx.title": "Douglas Assumpção Rodrigues | Desarrollador Mainframe",
     "idx.meta.desc":
-      "Especialista en COBOL, DB2, CICS y JCL para sistemas bancarios de misión crítica. Conozca mi trayectoria, certificaciones y contacto.",
+      "Más de 18 años en sistemas financieros de misión crítica. Especialista en COBOL, DB2, CICS y JCL. Trayectoria, certificaciones y contacto.",
     "idx.headline":
       'Desarrollador <span class="text-accent">Mainframe</span> | Sistemas bancarios que no pueden parar',
     "idx.status": "Abierto a Propuestas",
@@ -570,9 +570,9 @@
 
     // -- Lab page --
     "lab.title":
-      "Mainframe Lab | Douglas Assunção Rodrigues - Programas COBOL, JCL, DB2, CICS y Referencia Rápida",
+      "Mainframe Lab | Douglas Assumpção Rodrigues - Programas COBOL, JCL, DB2, CICS y Referencia Rápida",
     "lab.meta.desc":
-      "Portafolio técnico de Douglas Assunção Rodrigues: 97 módulos mainframe reutilizables en COBOL, HLASM, JCL, CICS, DB2, IMS y VSAM - herramientas utilitarias para el desarrollador mainframe.",
+      "Portafolio técnico de Douglas Assumpção Rodrigues: 97 módulos mainframe reutilizables en COBOL, HLASM, JCL, CICS, DB2, IMS y VSAM - herramientas utilitarias para el desarrollador mainframe.",
     "lab.back": "Volver al Inicio",
     "lab.breadcrumb.current": "Mainframe Lab",
     "lab.header.desc":
@@ -649,9 +649,9 @@
 
     // Certifications page --
     "cert.title":
-      "Certificaciones | Douglas Assunção Rodrigues - Credenciales Validadas",
+      "Certificaciones | Douglas Assumpção Rodrigues - Credenciales Validadas",
     "cert.meta.desc":
-      "Certificaciones profesionales de Douglas Assunção Rodrigues: Azure AZ-900 y credenciales validadas que comprueban dominio técnico en tecnologías de misión crítica.",
+      "Certificaciones profesionales de Douglas Assumpção Rodrigues: Azure AZ-900 y credenciales validadas que comprueban dominio técnico en tecnologías de misión crítica.",
     "cert.back": "Volver al Inicio",
     "cert.breadcrumb.current": "Certificaciones",
     "cert.header.desc":
@@ -670,9 +670,9 @@
 
     // -- Curriculum page --
     "cv.title":
-      "Currículum | Douglas Assunção Rodrigues - Software Engineer III Mainframe",
+      "Currículum | Douglas Assumpção Rodrigues - Software Engineer III Mainframe",
     "cv.meta.desc":
-      "Currículum de Douglas Assunção Rodrigues: +10 años en ingeniería de software Mainframe para sistemas financieros de misión crítica. Especialista en Assembler z/OS, COBOL, DB2, CICS.",
+      "Currículum de Douglas Assumpção Rodrigues: más de 18 años en ingeniería de software Mainframe para sistemas financieros de misión crítica. Especialista en Assembler z/OS, COBOL, DB2, CICS.",
     "cv.back": "Volver al Inicio",
     "cv.breadcrumb.current": "Currículum",
     "cv.subtitle": "Software Engineer III - Mainframe",
@@ -1202,7 +1202,7 @@
       if (dict && dict["idx.footer"]) {
         storeAndReplace(
           idxFooter,
-          `&copy; 2026 Douglas Assunção Rodrigues &middot; ` +
+          `&copy; 2026 Douglas Assumpção Rodrigues &middot; ` +
             dict["idx.footer"],
         );
       } else {
@@ -1258,7 +1258,7 @@
       if (dict && dict["lab.footer"]) {
         storeAndReplace(
           labFooter,
-          `&copy; 2026 Douglas Assunção Rodrigues &middot; ` +
+          `&copy; 2026 Douglas Assumpção Rodrigues &middot; ` +
             dict["lab.footer"],
         );
       } else {
@@ -1304,7 +1304,7 @@
       if (dict && dict["cert.footer"]) {
         storeAndReplace(
           certFooter,
-          `&copy; 2026 Douglas Assunção Rodrigues &middot; ` +
+          `&copy; 2026 Douglas Assumpção Rodrigues &middot; ` +
             dict["cert.footer"],
         );
       } else {
@@ -1338,7 +1338,7 @@
       if (dict && dict["cv.footer"]) {
         storeAndReplace(
           cvFooter,
-          `&copy; 2026 Douglas Assunção Rodrigues &middot; ` +
+          `&copy; 2026 Douglas Assumpção Rodrigues &middot; ` +
             dict["cv.footer"],
         );
       } else {
