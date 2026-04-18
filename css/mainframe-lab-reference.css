@@ -60,6 +60,15 @@
     vertical-align: top;
 }
 
+/* Coluna "Código": espaço para valor + nome (ex.: EIBRESP) na mesma linha */
+.lab-table th:first-child,
+.lab-table td:first-child {
+    min-width: 7rem;
+    width: 20%;
+    white-space: nowrap;
+    vertical-align: left;
+}
+
 /* Zebra striping */
 .lab-table tbody tr:nth-child(even) {
     background: var(--lab-table-row-even);
