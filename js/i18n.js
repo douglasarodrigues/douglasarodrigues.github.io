@@ -156,7 +156,11 @@
     "lab.stat.techs": "Technologies",
     "lab.stat.years": "Years of experience",
     "lab.stat.incidents": "Incidents resolved",
-    "lab.search.placeholder": "Search by name, technology, or description...",
+    "lab.search.label": "Search the Lab",
+    "lab.search.placeholder":
+      "Programs, source code, SQLCODE, EIBRESP, quick reference...",
+    "lab.search.aria": "Search Mainframe Lab: programs and quick reference",
+    "lab.search.noResults": "No matches in programs or quick reference.",
     "lab.tab.ref": "Quick Reference",
     "lab.footer": "Mainframe Lab - Code, reference, and precision.",
     "lab.scrolltop": "Back to top",
@@ -773,7 +777,11 @@
     "lab.stat.techs": "Tecnologías",
     "lab.stat.years": "Años de experiencia",
     "lab.stat.incidents": "Incidentes resueltos",
-    "lab.search.placeholder": "Buscar por nombre, tecnología o descripción...",
+    "lab.search.label": "Buscar en el Lab",
+    "lab.search.placeholder":
+      "Programas, código fuente, SQLCODE, EIBRESP, referencia rápida...",
+    "lab.search.aria": "Buscar en Mainframe Lab: programas y referencia rápida",
+    "lab.search.noResults": "Sin resultados en programas o en la referencia rápida.",
     "lab.tab.ref": "Referencia Rápida",
     "lab.footer": "Mainframe Lab - Código, referencia y precisión.",
     "lab.scrolltop": "Volver arriba",
@@ -1455,9 +1463,12 @@
       if (statKeys[i]) t(el, statKeys[i], dict);
     });
 
-    // Search placeholder
+    // Search (programs + source + quick reference)
     const searchInput = q("#lab-search-input");
+    t(q("#lab-search-title"), "lab.search.label", dict);
     tAttr(searchInput, "placeholder", "lab.search.placeholder", dict);
+    tAttr(searchInput, "aria-label", "lab.search.aria", dict);
+    t(q("#lab-no-results"), "lab.search.noResults", dict);
 
     // Tab: Referência Rápida
     const refTab = q("#tab-ref");

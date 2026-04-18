@@ -67,6 +67,53 @@
 
   function escapeHtml(t) { const d = document.createElement("div"); d.textContent = t; return d.innerHTML; }
 
+  function escapeAttr(t) {
+    return String(t).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  }
+
+  function htmlToPlain(html) {
+    const d = document.createElement("div");
+    d.innerHTML = html || "";
+    return (d.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  function buildProgramSourceSearchBlob(prog) {
+    const chunks = [prog.source, prog.sourceBase, prog.sourceRelative, prog.filename].filter(Boolean);
+    return chunks.join("\n").replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
+  /** Busca insensível a maiúsculas e a acentos (pt/en/es). */
+  function foldAccent(s) {
+    try {
+      return String(s)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    } catch (e) {
+      return String(s).toLowerCase();
+    }
+  }
+
+  function buildRefEntrySearchBlob(entry) {
+    const parts = [];
+    if (entry.code != null) parts.push(String(entry.code));
+    if (entry.numericCode != null) parts.push(String(entry.numericCode));
+    if (entry.meaning) parts.push(entry.meaning);
+    if (entry.action) parts.push(entry.action);
+    if (entry.diagnostic) {
+      const d = entry.diagnostic;
+      (d.causes || []).forEach((c) => {
+        if (c.title) parts.push(c.title);
+        if (c.desc) parts.push(c.desc);
+      });
+      (d.resolution || []).forEach((s) => {
+        if (s) parts.push(s);
+      });
+      if (d.tip) parts.push(d.tip);
+    }
+    return parts.join(" ").replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
   function svgIcon(name) {
     const icons = {
       "file-code": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
@@ -179,6 +226,7 @@
     const hasDual = !!(prog.sourceBase && prog.sourceRelative);
     const article = el("article", "lab-card lab-card-reveal");
     article.dataset.search = `${prog.id} ${prog.name} ${prog.desc} ${prog.tech} ${(prog.tags || []).join(" ")}`.toLowerCase();
+    article.dataset.searchSource = buildProgramSourceSearchBlob(prog);
     article.dataset.tech = prog.tech;
     article.dataset.programId = prog.id;
     article.style.setProperty("--lab-card-index", index);
@@ -321,10 +369,21 @@
       accordion.appendChild(renderRefGroup("abendCodes", labRef.abendCodes, hdr));
     }
     if (labRef.sqlcodes) {
-      accordion.appendChild(renderRefGroup("sqlcodes", labRef.sqlcodes, hdr));
+      const sqlSorted = [...labRef.sqlcodes].sort(
+        (a, b) => parseSqlCodeSortKey(b.code) - parseSqlCodeSortKey(a.code)
+      );
+      accordion.appendChild(renderRefGroup("sqlcodes", sqlSorted, hdr));
     }
     if (labRef.eibresp) {
-      accordion.appendChild(renderRefGroup("eibresp", labRef.eibresp, hdr));
+      const eibSorted = [...labRef.eibresp].sort((a, b) => {
+        const na = a.numericCode;
+        const nb = b.numericCode;
+        if (na == null && nb == null) return 0;
+        if (na == null) return 1;
+        if (nb == null) return -1;
+        return na - nb;
+      });
+      accordion.appendChild(renderRefGroup("eibresp", eibSorted, hdr));
     }
     if (labRef.jclTips) {
       accordion.appendChild(renderJclTipsGroup(labRef.jclTips));
@@ -369,6 +428,7 @@
     if (oldNav) oldNav.remove();
     if (oldAcc) oldAcc.remove();
     injectReferenceNavAndAccordion(section, labRef);
+    if (typeof window.__labReapplySearch === "function") window.__labReapplySearch();
   };
 
   function renderRefGroup(key, entries, headers) {
@@ -402,15 +462,33 @@
         </div>
       </div>`;
 
+    group.dataset.refTotal = String(entries.length);
     return group;
+  }
+
+  function parseSqlCodeSortKey(codeStr) {
+    if (codeStr == null || codeStr === "") return NaN;
+    const n = Number(String(codeStr).trim().replace(/^\+/, ""));
+    return Number.isFinite(n) ? n : NaN;
+  }
+
+  function formatRefCodeCell(entry) {
+    if (entry.numericCode !== undefined && entry.numericCode !== null) {
+      return (
+        `<code class="lab-code">${escapeHtml(String(entry.numericCode))}</code>` +
+        ` <code class="lab-code lab-code--eibsym">${escapeHtml(entry.code)}</code>`
+      );
+    }
+    return `<code class="lab-code">${escapeHtml(entry.code)}</code>`;
   }
 
   function renderRefRow(entry) {
     const sev = entry.severity || "info";
     const hasDetail = entry.diagnostic && (entry.diagnostic.causes || entry.diagnostic.resolution);
+    const refSearchBlob = escapeAttr(buildRefEntrySearchBlob(entry));
 
-    let row = `<tr class="lab-table-severity--${sev}"${hasDetail ? ' aria-expanded="false" tabindex="0"' : ""}>
-      <td><code class="lab-code">${escapeHtml(entry.code)}</code></td>
+    let row = `<tr class="lab-table-severity--${sev}" data-ref-search="${refSearchBlob}"${hasDetail ? ' aria-expanded="false" tabindex="0"' : ""}>
+      <td>${formatRefCodeCell(entry)}</td>
       <td>${escapeHtml(entry.meaning)}</td>
       <td>${escapeHtml(entry.action)}${hasDetail ? ` <span class="lab-diag-toggle">${svgIcon("chevron-down")}</span>` : ""}</td>
     </tr>`;
@@ -454,12 +532,13 @@
     const group = el("div", "lab-ref-group");
     group.id = "ref-group-jclTips";
 
-    let tipsHtml = tips.map(t =>
-      `<div class="lab-tip-card">
+    let tipsHtml = tips.map((t) => {
+      const tipBlob = escapeAttr(`${t.title} ${htmlToPlain(t.content)}`.toLowerCase().replace(/\s+/g, " "));
+      return `<div class="lab-tip-card" data-ref-search="${tipBlob}">
         <h4 class="lab-tip-title">${escapeHtml(t.title)}</h4>
         <div class="lab-tip-content">${t.content}</div>
-      </div>`
-    ).join("");
+      </div>`;
+    }).join("");
 
     group.innerHTML =
       `<h3>
@@ -478,6 +557,7 @@
         </div>
       </div>`;
 
+    group.dataset.refTotal = String(tips.length);
     return group;
   }
 
@@ -664,7 +744,7 @@
     });
   }
 
-  /** Search text from live DOM so i18n updates to names/descriptions stay searchable. */
+  /** Metadados do card via DOM (i18n) + código-fonte em data-search-source + viewer aberto. */
   function getCardSearchText(card) {
     const id = (qs(".lab-card-program-id", card)?.textContent || "").trim();
     const name = (qs(".lab-card-name", card)?.textContent || "").trim();
@@ -673,7 +753,64 @@
     const tags = qsa(".lab-tech-badge", card)
       .map((t) => t.textContent.trim())
       .join(" ");
-    return `${id} ${name} ${desc} ${tech} ${tags}`.replace(/\s+/g, " ").trim().toLowerCase();
+    const domPart = `${id} ${name} ${desc} ${tech} ${tags}`.replace(/\s+/g, " ").trim().toLowerCase();
+    const preSrc = (card.dataset.searchSource || "").trim();
+    const openSrc = (qs(".lab-card-source", card)?.textContent || "").replace(/\s+/g, " ").trim().toLowerCase();
+    return `${domPart} ${preSrc} ${openSrc}`.replace(/\s+/g, " ").trim();
+  }
+
+  function panelHasVisibleSearchHits(panel) {
+    if (!panel) return false;
+    if (panel.id === "panel-ref") {
+      return qsa(".lab-ref-group", panel).some((g) => !g.hidden);
+    }
+    return qsa(".lab-card", panel).some((c) => !c.hidden);
+  }
+
+  function applyReferenceSearch(query) {
+    const refPanel = qs("#panel-ref");
+    if (!refPanel) return 0;
+    let matchCount = 0;
+
+    qsa(".lab-ref-group", refPanel).forEach((group) => {
+      let groupHits = 0;
+      const badge = qs(".lab-ref-trigger-badge", group);
+      const total = Number(group.dataset.refTotal) || 0;
+
+      qsa(".lab-table tbody tr[data-ref-search]", group).forEach((mainTr) => {
+        const blob = foldAccent(mainTr.dataset.refSearch || "");
+        const match = !query || blob.includes(query);
+        mainTr.hidden = !match;
+        const diagTr = mainTr.nextElementSibling;
+        if (diagTr && diagTr.classList.contains("lab-diag-row")) {
+          diagTr.hidden = !match;
+        }
+        if (match) {
+          groupHits++;
+          matchCount++;
+        }
+      });
+
+      qsa(".lab-tip-card", group).forEach((card) => {
+        const blob = foldAccent(card.dataset.refSearch || "");
+        const match = !query || blob.includes(query);
+        card.hidden = !match;
+        if (match) {
+          groupHits++;
+          matchCount++;
+        }
+      });
+
+      if (query) {
+        group.hidden = groupHits === 0;
+        if (badge) badge.textContent = String(groupHits);
+      } else {
+        group.hidden = false;
+        if (badge) badge.textContent = String(total);
+      }
+    });
+
+    return matchCount;
   }
 
   function initSearch() {
@@ -683,38 +820,50 @@
     if (!input) return;
 
     const doSearch = () => {
-      const query = input.value.trim().toLowerCase();
+      const query = foldAccent(input.value.trim());
       const allCards = qsa(".lab-card");
       let visible = 0;
 
       allCards.forEach((card) => {
-        const text = getCardSearchText(card);
+        const text = foldAccent(getCardSearchText(card));
         const match = !query || text.includes(query);
-        card.hidden = !match;
+        if (!match) {
+          card.setAttribute("hidden", "");
+          card.classList.add("lab-card--search-hide");
+        } else {
+          card.removeAttribute("hidden");
+          card.classList.remove("lab-card--search-hide");
+        }
         if (match) visible++;
       });
 
-      if (noResults) noResults.hidden = visible > 0 || !query;
+      const refMatches = applyReferenceSearch(query);
+
+      if (noResults) noResults.hidden = visible > 0 || refMatches > 0 || !query;
       if (clearBtn) clearBtn.hidden = !query;
 
-      /* Matches may live only in another tech tab — switch so results are visible */
-      if (query.length > 0 && visible > 0) {
-        const activePanel = qs(".lab-tabpanel:not([hidden])");
-        if (activePanel) {
-          const inActive = qsa(".lab-card", activePanel);
-          const activeShowsMatch = inActive.some((c) => !c.hidden);
-          if (activeShowsMatch) return;
-        }
-        for (const tech of TECH_ORDER) {
-          const panel = qs("#panel-" + tech);
-          if (!panel) continue;
-          const cardsIn = qsa(".lab-card", panel);
-          if (!cardsIn.some((c) => !c.hidden)) continue;
+      if (!query) return;
+
+      const anyHit = visible > 0 || refMatches > 0;
+      if (!anyHit) return;
+
+      const activePanel = qs(".lab-tabpanel:not([hidden])");
+      if (activePanel && panelHasVisibleSearchHits(activePanel)) return;
+
+      for (const tech of TECH_ORDER) {
+        const panel = qs("#panel-" + tech);
+        if (!panel) continue;
+        if (qsa(".lab-card", panel).some((c) => !c.hidden)) {
           const tabId = panel.getAttribute("aria-labelledby");
           const tabBtn = tabId ? qs("#" + tabId) : null;
           if (tabBtn) activateTab(tabBtn);
-          break;
+          return;
         }
+      }
+
+      if (refMatches > 0) {
+        const refBtn = qs("#tab-ref");
+        if (refBtn) activateTab(refBtn);
       }
     };
 
@@ -728,6 +877,8 @@
         doSearch();
       });
     }
+
+    window.__labReapplySearch = doSearch;
   }
 
   function initScrollTop() {
@@ -783,8 +934,7 @@
       { text: `${ts}  JOB08421  +REFLOAD: EIBRESP(34)     JCL-TIPS(4)`, cls: "process", delay: 100 },
       { text: `${ts}  JOB08421  +REFLOAD: 112 ENTRIES LOADED RC=0000`, cls: "ok", delay: 80 },
       { text: `${ts}  JOB08421  IEF142I LABINIT STEP02 - STEP WAS EXECUTED - COND CODE 0000`, cls: "ok", delay: 70 },
-      { text: " ", cls: "empty", delay: 30 },
-      { text: "────────────────────────────────────────────────────────────────", cls: "separator", delay: 20 },
+      { text:   "────────────────────────────────────────────────────────────────",    cls: "separator", delay: 20 },
       { text: " STEP03   EXEC PGM=UIRENDER,PARM='NAVIGATION,SEARCH,VIEWER'", cls: "jcl", delay: 90 },
       { text: "────────────────────────────────────────────────────────────────", cls: "separator", delay: 20 },
       { text: `${ts}  JOB08421  IEF236I ALLOC. FOR LABINIT STEP03`, cls: "info", delay: 70 },

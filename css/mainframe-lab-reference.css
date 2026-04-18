@@ -117,6 +117,13 @@
     white-space: nowrap;
 }
 
+/* EIBRESP: número (EIBRESP) + nome simbólico COBOL ao lado */
+.lab-code.lab-code--eibsym {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
 /* Description column - secondary text */
 .lab-table .lab-table-desc {
     color: var(--color-text-secondary);

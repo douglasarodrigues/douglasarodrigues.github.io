@@ -1,8 +1,9 @@
 /* ==========================================================================
    LAB-REFERENCE.JS - Dados de Referência Rápida do Mainframe Lab
    File-Status COBOL, Abend Codes z/OS, SQLCODE DB2, EIBRESP CICS, JCL Tips
-   Categorias numéricas: ordenação — File-Status e Abend alfabética por código;
-   SQLCODE por valor numérico assinado; EIBRESP alfabética por nome.
+   Ordenação na UI (mainframe-lab.js): SQLCODE por valor numérico assinado
+   (maior → menor). EIBRESP por valor numérico EIBRESP (menor → maior).
+   Coluna Código: número + nome simbólico.
    ========================================================================== */
 
 // eslint-disable-next-line no-unused-vars

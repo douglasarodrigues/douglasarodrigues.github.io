@@ -484,9 +484,8 @@
   display: none;
 }
 
-/* Referência Rápida: painel está abaixo de stats + busca; esconde blocos para as tabelas ficarem visíveis */
-.lab-container[data-lab-active-tab="ref"] .lab-stats,
-.lab-container[data-lab-active-tab="ref"] .lab-search {
+/* Referência Rápida: compacta só as estatísticas; a busca permanece para filtrar programas + referência */
+.lab-container[data-lab-active-tab="ref"] .lab-stats {
   display: none;
 }
 
@@ -571,6 +570,12 @@
     border-color var(--transition-hover),
     box-shadow var(--transition-glow),
     transform var(--transition-scale);
+}
+
+/* Busca dinâmica: garante que cards filtrados saiam do layout (reforço ao atributo hidden) */
+.lab-card.lab-card--search-hide,
+.lab-cards-grid > .lab-card[hidden] {
+  display: none !important;
 }
 
 @supports not (
@@ -1366,6 +1371,19 @@ button.lab-tech-badge:hover {
     border-color var(--transition-focus),
     box-shadow var(--transition-focus),
     background var(--transition-focus);
+}
+
+/* Um único limpar: esconde o X nativo de input[type=search] (fica o .lab-search-clear) */
+.lab-search-input::-webkit-search-cancel-button,
+.lab-search-input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+.lab-search-input::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .lab-search-input::placeholder {
