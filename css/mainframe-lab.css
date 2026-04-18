@@ -484,6 +484,16 @@
   display: none;
 }
 
+/* Referência Rápida: painel está abaixo de stats + busca; esconde blocos para as tabelas ficarem visíveis */
+.lab-container[data-lab-active-tab="ref"] .lab-stats,
+.lab-container[data-lab-active-tab="ref"] .lab-search {
+  display: none;
+}
+
+#panel-ref.lab-tabpanel {
+  scroll-margin-top: calc(var(--lab-nav-height) + 1rem);
+}
+
 /* Fade-in for panel content */
 .lab-tabpanel-enter {
   animation: lab-content-fade-in var(--lab-transition-filter-enter) both;
@@ -1524,6 +1534,7 @@ tr.lab-search-highlight > td {
   .lab-stats,
   .lab-hero-layer,
   .cursor-glow,
+  .cursor-pointer,
   #particles-canvas,
   .skip-link,
   .i18n-switcher,

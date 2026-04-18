@@ -62,6 +62,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Ponteiro custom (desktop): refinado, alinhado à marca — ver design/ux-guidelines.md */
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  body.has-custom-cursor,
+  body.has-custom-cursor * {
+    cursor: none !important;
+  }
+}
+
 /* -- CANVAS PARTÍCULAS ----------------------------------------- */
 
 #particles-canvas {
@@ -91,6 +99,46 @@ body {
   filter: blur(40px);
   transition: opacity var(--transition-glow);
   opacity: 0;
+}
+
+/* Ponteiro custom: azul primário; sobre elementos interativos — amarelo ouro (accent) */
+.cursor-pointer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: calc(var(--z-overlay) + 1);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity var(--transition-glow);
+}
+
+.cursor-pointer__dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-primary) 78%, #ffffff);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-primary) 48%, #ffffff),
+    0 0 14px color-mix(in srgb, var(--color-primary) 42%, #ffffff);
+  transition:
+    transform 0.18s cubic-bezier(0.25, 0.8, 0.25, 1),
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.cursor-pointer--hover .cursor-pointer__dot {
+  transform: scale(1.25);
+  background: color-mix(in srgb, var(--color-accent) 88%, #ffffff);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 55%, #fff8e7),
+    0 0 16px color-mix(in srgb, var(--color-accent) 48%, #fff8e7);
 }
 
 /* -- BG GRAD LAYER --------------------------------------------- */
@@ -487,10 +535,20 @@ body {
   padding-inline: var(--btn-padding-inline);
   color: var(--color-text-primary);
   transition:
-    transform var(--transition-scale),
-    box-shadow var(--transition-glow),
+    transform var(--transition-link-transform),
+    box-shadow var(--transition-link-shadow),
     border-color var(--transition-hover),
-    background var(--transition-hover);
+    background var(--transition-hover),
+    filter var(--transition-link-shadow);
+}
+
+/* Lift mais suave que .hover-lift genérico (escala menor + mesma curva do transition acima) */
+.link-card.hover-lift:hover {
+  transform: scale(var(--hover-scale-link-card));
+}
+
+.link-card.hover-lift:active {
+  transform: scale(var(--active-scale));
 }
 
 .link-card:hover {
@@ -569,6 +627,9 @@ body {
   background: var(--color-accent);
   border-color: transparent;
   color: var(--color-bg-primary);
+  /* Repouso já com profundidade — a saída do hover continua perceptível (UX: CTA = convite claro) */
+  box-shadow: var(--shadow-glow-accent-base);
+  filter: brightness(1);
 }
 
 .link-cta .link-icon {
@@ -590,15 +651,19 @@ body {
   transform: translateX(0);
 }
 
-.link-cta:hover {
-  background: var(--gradient-cta-hover);
+.link-cta:hover,
+.link-cta:focus-visible {
+  /* Mesmo tipo de fundo que o estado normal — evita flash ao sair do hover */
+  background: var(--color-accent);
   border-color: transparent;
-  box-shadow: var(--shadow-glow-accent);
+  box-shadow: var(--shadow-glow-accent-hover);
+  filter: brightness(1.08) saturate(1.04);
 }
 
 /* Override glass para o CTA não ficar transparente */
 .link-cta,
-.link-cta:hover {
+.link-cta:hover,
+.link-cta:focus-visible {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
@@ -665,12 +730,13 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.35em;
+  gap: 0.3em;
   max-width: 100%;
 
-  font-size: var(--font-size-small);
+  /* Menor que .site-footer p (font-size-small), para não competir com copyright */
+  font-size: calc(var(--font-size-small) * 0.74);
   font-variant-numeric: tabular-nums;
-  line-height: var(--line-height-small);
+  line-height: 1.35;
   color: var(--color-text-secondary);
   pointer-events: auto;
   user-select: text;
@@ -678,9 +744,9 @@ body {
 
 .site-footer-visits .visit-counter-label {
   font-weight: var(--font-weight-medium);
-  letter-spacing: var(--letter-spacing-badge);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  font-size: 0.65rem;
+  font-size: calc(var(--font-size-small) * 0.58);
   opacity: 0.85;
 }
 
@@ -700,7 +766,8 @@ body {
     animation: none;
   }
 
-  .cursor-glow {
+  .cursor-glow,
+  .cursor-pointer {
     display: none;
   }
 
@@ -712,6 +779,11 @@ body {
 
   .link-card {
     transition: none;
+  }
+
+  .link-card.hover-lift:hover,
+  .link-card.hover-lift:active {
+    transform: none;
   }
 }
 
@@ -800,6 +872,7 @@ body {
   .skip-link,
   .i18n-switcher,
   .cursor-glow,
+  .cursor-pointer,
   .bg-hero-layer,
   #particles-canvas {
     display: none !important;

@@ -2133,3 +2133,9 @@ const LAB_REFERENCE = {
   ]
 
 };
+
+/* Expõe no window: getLocalizedLabReference (merge) usa global.LAB_REFERENCE; const
+   no topo não cria window.LAB_REFERENCE em browsers, e o painel #panel-ref deixava de ser criado. */
+if (typeof window !== "undefined") {
+  window.LAB_REFERENCE = LAB_REFERENCE;
+}

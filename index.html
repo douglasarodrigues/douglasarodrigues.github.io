@@ -69,8 +69,10 @@
 
   
   <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="cursor-pointer" aria-hidden="true">
+    <span class="cursor-pointer__dot"></span>
+  </div>
 
-  
   <div class="bg-hero-layer" aria-hidden="true"></div>
 
   <main id="main-content" class="container">
@@ -295,9 +297,13 @@
        aria-live="polite"
        aria-atomic="true"
      >
-       <span class="visit-counter-label" data-i18n="visit.label">Visitas</span>
+       <span class="visit-counter-label" data-i18n="visit.label">Acessos únicos</span>
        <span class="visit-counter-sep" aria-hidden="true">·</span>
-       <span class="visit-counter-value" data-visit-count>…</span>
+       <span class="visit-counter-value" data-visit-unique>…</span>
+       <span class="visit-counter-sep" aria-hidden="true">·</span>
+       <span class="visit-counter-label" data-i18n="visit.views.label">Visualizações</span>
+       <span class="visit-counter-sep" aria-hidden="true">·</span>
+       <span class="visit-counter-value" data-visit-views>…</span>
      </p>
    </footer>
 

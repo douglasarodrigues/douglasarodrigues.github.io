@@ -29,6 +29,28 @@
     jclTips:    { label: "Dicas Rápidas de JCL", icon: "terminal" },
   };
 
+  const PORTFOLIO_LANG_KEY = "portfolio-lang";
+  const SUPPORTED_LANGS = ["pt-BR", "en", "es"];
+
+  function getPortfolioLang() {
+    try {
+      const saved = localStorage.getItem(PORTFOLIO_LANG_KEY);
+      if (saved && SUPPORTED_LANGS.indexOf(saved) >= 0) return saved;
+    } catch (e) { /* ignore */ }
+    const nav = (navigator.language || navigator.userLanguage || "").toLowerCase();
+    if (nav.startsWith("en")) return "en";
+    if (nav.startsWith("es")) return "es";
+    if (nav.startsWith("pt")) return "pt-BR";
+    return "en";
+  }
+
+  function getLabReferenceForLang(lang) {
+    if (typeof getLocalizedLabReference === "function") {
+      return getLocalizedLabReference(lang);
+    }
+    return typeof LAB_REFERENCE !== "undefined" ? LAB_REFERENCE : null;
+  }
+
   const BADGE_MAP = {
     basic: { label: "Básico", cls: "lab-badge-basic" },
     intermediate: { label: "Intermediário", cls: "lab-badge-intermediate" },
@@ -275,8 +297,48 @@
 
   // ── Render Reference ────────────────────────────────────────────────────
 
+  function injectReferenceNavAndAccordion(section, labRef) {
+    const nav = el("nav", "lab-ref-nav");
+    nav.setAttribute("aria-label", "Categorias de referência");
+    Object.keys(REF_META).forEach((key) => {
+      const btn = el("button", "lab-ref-nav-btn");
+      btn.textContent = REF_META[key].label;
+      btn.addEventListener("click", () => {
+        const target = qs("#ref-group-" + key);
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      nav.appendChild(btn);
+    });
+    section.appendChild(nav);
+
+    const accordion = el("div", "lab-ref-accordion");
+    const hdr = ["Código", "Significado", "Ação Sugerida"];
+
+    if (labRef.fileStatus) {
+      accordion.appendChild(renderRefGroup("fileStatus", labRef.fileStatus, hdr));
+    }
+    if (labRef.abendCodes) {
+      accordion.appendChild(renderRefGroup("abendCodes", labRef.abendCodes, hdr));
+    }
+    if (labRef.sqlcodes) {
+      accordion.appendChild(renderRefGroup("sqlcodes", labRef.sqlcodes, hdr));
+    }
+    if (labRef.eibresp) {
+      accordion.appendChild(renderRefGroup("eibresp", labRef.eibresp, hdr));
+    }
+    if (labRef.jclTips) {
+      accordion.appendChild(renderJclTipsGroup(labRef.jclTips));
+    }
+
+    section.appendChild(accordion);
+  }
+
   function renderReferencePanel(container) {
     if (typeof LAB_REFERENCE === "undefined") return;
+
+    const lang = getPortfolioLang();
+    const labRef = getLabReferenceForLang(lang);
+    if (!labRef) return;
 
     const panel = el("section", "lab-tabpanel");
     panel.id = "panel-ref";
@@ -289,48 +351,25 @@
       `<h2 class="lab-section-title">Referência <span class="text-accent">Rápida</span></h2>
        <p class="lab-section-desc">File-Status, SQLCODE, Abend Codes, EIBRESP e dicas de JCL — a referência que compilei para resolver problemas sem perder tempo.</p>`;
 
-    // Mini-nav
-    const nav = el("nav", "lab-ref-nav");
-    nav.setAttribute("aria-label", "Categorias de referência");
-    Object.keys(REF_META).forEach(key => {
-      const btn = el("button", "lab-ref-nav-btn");
-      btn.textContent = REF_META[key].label;
-      btn.addEventListener("click", () => {
-        const target = qs("#ref-group-" + key);
-        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-      nav.appendChild(btn);
-    });
-    section.appendChild(nav);
-
-    // Accordion groups
-    const accordion = el("div", "lab-ref-accordion");
-
-    // File-Status
-    if (LAB_REFERENCE.fileStatus) {
-      accordion.appendChild(renderRefGroup("fileStatus", LAB_REFERENCE.fileStatus, ["Código", "Significado", "Ação Sugerida"]));
-    }
-    // Abend Codes
-    if (LAB_REFERENCE.abendCodes) {
-      accordion.appendChild(renderRefGroup("abendCodes", LAB_REFERENCE.abendCodes, ["Código", "Significado", "Ação Sugerida"]));
-    }
-    // SQLCODEs
-    if (LAB_REFERENCE.sqlcodes) {
-      accordion.appendChild(renderRefGroup("sqlcodes", LAB_REFERENCE.sqlcodes, ["Código", "Significado", "Ação Sugerida"]));
-    }
-    // EIBRESP
-    if (LAB_REFERENCE.eibresp) {
-      accordion.appendChild(renderRefGroup("eibresp", LAB_REFERENCE.eibresp, ["Código", "Significado", "Ação Sugerida"]));
-    }
-    // JCL Tips
-    if (LAB_REFERENCE.jclTips) {
-      accordion.appendChild(renderJclTipsGroup(LAB_REFERENCE.jclTips));
-    }
-
-    section.appendChild(accordion);
+    injectReferenceNavAndAccordion(section, labRef);
     panel.appendChild(section);
     container.appendChild(panel);
   }
+
+  window.refreshLabReferenceTables = function (lang) {
+    const panel = document.getElementById("panel-ref");
+    if (!panel || typeof LAB_REFERENCE === "undefined") return;
+    const section = panel.querySelector(".lab-section");
+    if (!section) return;
+    const l = lang || getPortfolioLang();
+    const labRef = getLabReferenceForLang(l);
+    if (!labRef) return;
+    const oldNav = section.querySelector(".lab-ref-nav");
+    const oldAcc = section.querySelector(".lab-ref-accordion");
+    if (oldNav) oldNav.remove();
+    if (oldAcc) oldAcc.remove();
+    injectReferenceNavAndAccordion(section, labRef);
+  };
 
   function renderRefGroup(key, entries, headers) {
     const meta = REF_META[key];
@@ -381,7 +420,7 @@
       let panelHtml = '<div class="lab-diag-panel">';
 
       if (d.causes && d.causes.length) {
-        panelHtml += '<div class="lab-diag-label">Causas Raiz</div><div class="lab-diag-causes">';
+        panelHtml += '<div class="lab-diag-label" data-i18n="lab.ref.diag.causes">Causas Raiz</div><div class="lab-diag-causes">';
         d.causes.forEach(c => {
           panelHtml += `<div class="lab-diag-cause"><div class="lab-diag-cause-title">${escapeHtml(c.title)}</div><div class="lab-diag-cause-desc">${escapeHtml(c.desc)}</div></div>`;
         });
@@ -389,13 +428,13 @@
       }
 
       if (d.resolution && d.resolution.length) {
-        panelHtml += '<div class="lab-diag-resolve-label">Resolução</div><ol class="lab-diag-steps">';
+        panelHtml += '<div class="lab-diag-resolve-label" data-i18n="lab.ref.diag.resolution">Resolução</div><ol class="lab-diag-steps">';
         d.resolution.forEach(s => { panelHtml += `<li>${escapeHtml(s)}</li>`; });
         panelHtml += "</ol>";
       }
 
       if (d.tip) {
-        panelHtml += `<div class="lab-diag-tip"><strong>Dica:</strong> ${escapeHtml(d.tip)}</div>`;
+        panelHtml += `<div class="lab-diag-tip"><strong data-i18n="lab.ref.diag.tipLabel">Dica:</strong> ${escapeHtml(d.tip)}</div>`;
       }
 
       panelHtml += "</div>";
@@ -475,6 +514,7 @@
   }
 
   function activateTab(button) {
+    if (!button) return;
     const tabs = qsa(".lab-tab");
     const panels = qsa(".lab-tabpanel");
 
@@ -493,8 +533,27 @@
       }
     });
 
+    const labContainer = qs(".lab-container");
+    if (labContainer && targetId) {
+      const short =
+        targetId === "panel-ref"
+          ? "ref"
+          : targetId.replace(/^panel-/, "");
+      labContainer.setAttribute("data-lab-active-tab", short);
+    }
+
     // Scroll nav tab into view if needed
     button.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+
+    /* Referência fica abaixo de stats/busca no HTML; sem scroll o utilizador não vê as tabelas */
+    if (targetId === "panel-ref") {
+      const refPanel = qs("#panel-ref");
+      if (refPanel) {
+        requestAnimationFrame(() => {
+          refPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+    }
   }
 
   function revealCards(panel) {
@@ -800,6 +859,28 @@
     // Reveal first panel's cards
     const firstPanel = qs(".lab-tabpanel:not([hidden])");
     if (firstPanel) revealCards(firstPanel);
+
+    /* Aba inicial = Referência Rápida: o handler do i18n.js corre a seguir no mesmo
+       DOMContentLoaded e chama refreshLabReferenceTables; em alguns browsers o foco
+       ou o estado visual podem ficar na primeira aba técnica. Reaplica a aba Ref
+       depois de toda a pilha síncrona (incl. applyLang). */
+    setTimeout(() => {
+      const refBtn = qs("#tab-ref");
+      if (
+        typeof LAB_REFERENCE !== "undefined" &&
+        refBtn &&
+        qs("#panel-ref")
+      ) {
+        activateTab(refBtn);
+        if (typeof refBtn.focus === "function") {
+          try {
+            refBtn.focus({ preventScroll: true });
+          } catch (e) {
+            refBtn.focus();
+          }
+        }
+      }
+    }, 0);
   });
 
 })();

@@ -1,7 +1,7 @@
 /*
  * SCRIPT.JS - Interatividade da LinkTree Profissional
  * Vanilla JS (ES2020+) - Sem dependências externas
- * Estrutura: CONFIG > Utilidades > Partículas > Cursor Glow
+ * Estrutura: CONFIG > Utilidades > Partículas > Cursor (glow + ponteiro)
  * > Clipboard > Init (DOMContentLoaded)
  * ------------------------------------------------------------- */
 
@@ -159,24 +159,40 @@
 
   /* --- CURSOR GLOW -------------------------------------------- */
 
+  /** Glow + ponteiro custom (UX: microinteração sutil; hover destaca alvos clicáveis). */
+  const INTERACTIVE_CURSOR =
+    'a[href], button, [role="button"], [role="link"], [role="tab"], input:not([type="hidden"]), textarea, select, label, summary, .link-card, .skill-badge, .i18n-option, [data-action], .lab-card, .lab-tab, .lab-copy-btn, .lab-search-input, .cert-card';
+
   const initCursorGlow = () => {
     const glow = document.querySelector(".cursor-glow");
-    if (!glow) return null;
+    const pointer = document.querySelector(".cursor-pointer");
+    if (!glow && !pointer) return null;
 
     let rafPending = false;
     let mouseX = 0;
     let mouseY = 0;
 
     const updatePosition = () => {
-      glow.style.left = mouseX + "px";
-      glow.style.top = mouseY + "px";
+      if (glow) {
+        glow.style.left = mouseX + "px";
+        glow.style.top = mouseY + "px";
+      }
+      if (pointer) {
+        pointer.style.left = mouseX + "px";
+        pointer.style.top = mouseY + "px";
+      }
       rafPending = false;
     };
 
     const onMouseMove = (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      glow.style.opacity = "1";
+      if (glow) glow.style.opacity = "1";
+      if (pointer) {
+        pointer.style.opacity = "1";
+        const hit = e.target.closest(INTERACTIVE_CURSOR);
+        pointer.classList.toggle("cursor-pointer--hover", Boolean(hit));
+      }
 
       if (!rafPending) {
         rafPending = true;
@@ -185,13 +201,17 @@
     };
 
     const onMouseLeave = () => {
-      glow.style.opacity = "0";
+      if (glow) glow.style.opacity = "0";
+      if (pointer) pointer.style.opacity = "0";
     };
+
+    document.body.classList.add("has-custom-cursor");
 
     document.addEventListener("mousemove", onMouseMove);
     document.documentElement.addEventListener("mouseleave", onMouseLeave);
 
     return () => {
+      document.body.classList.remove("has-custom-cursor");
       document.removeEventListener("mousemove", onMouseMove);
       document.documentElement.removeEventListener("mouseleave", onMouseLeave);
     };
@@ -311,7 +331,7 @@
 
     startAnimations();
 
-    // Cursor glow - iniciado no primeiro mousemove (evita falso positivo em touch laptops)
+    // Cursor (glow + ponteiro) — primeiro mousemove; touch remove e restaura cursor nativo
     const initGlowOnFirstMove = () => {
       if (!prefersReducedMotion()) {
         cleanupGlow = initCursorGlow();

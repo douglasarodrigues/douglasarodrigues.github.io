@@ -47,6 +47,9 @@
   <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
   <canvas id="particles-canvas" aria-hidden="true"></canvas>
   <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="cursor-pointer" aria-hidden="true">
+    <span class="cursor-pointer__dot"></span>
+  </div>
   <div class="bg-hero-layer" aria-hidden="true"></div>
 
   <!-- Boot Screen - JOB Execution Simulation -->
@@ -147,9 +150,13 @@
       aria-live="polite"
       aria-atomic="true"
     >
-      <span class="visit-counter-label" data-i18n="visit.label">Visitas</span>
+      <span class="visit-counter-label" data-i18n="visit.label">Acessos únicos</span>
       <span class="visit-counter-sep" aria-hidden="true">·</span>
-      <span class="visit-counter-value" data-visit-count>…</span>
+      <span class="visit-counter-value" data-visit-unique>…</span>
+      <span class="visit-counter-sep" aria-hidden="true">·</span>
+      <span class="visit-counter-label" data-i18n="visit.views.label">Visualizações</span>
+      <span class="visit-counter-sep" aria-hidden="true">·</span>
+      <span class="visit-counter-value" data-visit-views>…</span>
     </p>
   </footer>
 
@@ -159,9 +166,11 @@
 
   <script src="js/lab-programs.js" defer></script>
   <script src="js/lab-reference.js" defer></script>
+  <script src="js/lab-reference-i18n.js" defer></script>
+  <script src="js/lab-reference-merge.js" defer></script>
+  <script src="js/mainframe-lab.js" defer></script>
   <script src="js/i18n.js" defer></script>
   <script src="js/visit-counter.js" defer></script>
-  <script src="js/mainframe-lab.js" defer></script>
   <script src="js/script.js" defer></script>
 </body>
 </html>

@@ -149,6 +149,14 @@
 
   --shadow-glow-primary: 0 0 20px rgba(74, 144, 217, 0.3);
   --shadow-glow-accent: 0 0 20px rgba(240, 165, 0, 0.2);
+  /* CTA Mainframe Lab: repouso com “peso” visível; hover mais forte — delta claro sem flash */
+  --shadow-glow-accent-base:
+    0 0 18px rgba(240, 165, 0, 0.28),
+    0 3px 10px rgba(0, 0, 0, 0.18);
+  --shadow-glow-accent-hover:
+    0 0 34px rgba(240, 165, 0, 0.55),
+    0 6px 20px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 
   /* --- GLASMORPHISM -------------------------------------- */
 
@@ -167,6 +175,9 @@
   --transition-focus: 150ms var(--ease-out-expo);
   --transition-glow: 300ms ease-in-out;
   --transition-scale: 250ms var(--ease-spring);
+  /* Link cards: sem overshoot — evita “snap” agressivo ao sair do hover (ease-spring) */
+  --transition-link-transform: 380ms var(--ease-default);
+  --transition-link-shadow: 450ms ease-out;
   --transition-enter: 600ms var(--ease-out-expo);
   --transition-tooltip-in: 200ms var(--ease-default);
   --transition-tooltip-out: 150ms var(--ease-default);
@@ -176,6 +187,7 @@
   /* --- INTERACTIONS ------------------------------------- */
 
   --hover-scale: 1.05;
+  --hover-scale-link-card: 1.03;
   --hover-brightness: 1.1;
   --active-scale: 0.98;
   --focus-ring-width: 2px;

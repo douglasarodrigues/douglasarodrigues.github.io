@@ -48,7 +48,8 @@
     "idx.skills.title": "Technical Expertise",
     "idx.footer": "Built with the same precision as a mission-critical system.",
     "idx.email.toast": "Email copied! I look forward to hearing from you.",
-    "visit.label": "Visits",
+    "visit.label": "Unique visits",
+    "visit.views.label": "Page views",
 
     // -- Lab page --
     "lab.title":
@@ -96,9 +97,11 @@
     "lab.vsam.title": "VSAM Programs",
     "lab.vsam.desc":
       "COBOL programs for VSAM - KSDS, RRDS, alternate index, browse, batch update, and backup/restore.",
-    "lab.ref.title": "Quick Reference",
+    "lab.ref.title":
+      "Quick <span class=\"text-accent\">Reference</span>",
     "lab.ref.desc":
       "File-Status, SQLCODEs, Abend Codes, EIBRESP, and JCL tips - the reference I compiled to solve problems without wasting time.",
+    "lab.ref.nav.aria": "Reference categories",
 
     // Reference sub-sections
     "lab.ref.fs.title": "COBOL File-Status",
@@ -113,6 +116,10 @@
     "lab.ref.tips.title": "Quick JCL Tips",
     "lab.ref.tips.desc":
       "Practical reference for the day-to-day mainframe developer.",
+
+    "lab.ref.diag.causes": "Root Causes",
+    "lab.ref.diag.resolution": "Resolution",
+    "lab.ref.diag.tipLabel": "Tip:",
 
     // Table headers
     "th.code": "Code",
@@ -566,7 +573,8 @@
     "idx.footer":
       "Hecho con la misma precisión de un sistema de misión crítica.",
     "idx.email.toast": "¡Email copiado! Espero su contacto.",
-    "visit.label": "Visitas",
+    "visit.label": "Acessos únicos",
+    "visit.views.label": "Visualizaciones",
 
     // -- Lab page --
     "lab.title":
@@ -614,9 +622,11 @@
     "lab.vsam.title": "Programas VSAM",
     "lab.vsam.desc":
       "Programas COBOL para VSAM - KSDS, RRDS, índice alternativo, browse, actualización en lote y backup/restore.",
-    "lab.ref.title": "Referencia Rápida",
+    "lab.ref.title":
+      "Referencia <span class=\"text-accent\">Rápida</span>",
     "lab.ref.desc":
       "File-Status, SQLCODEs, Abend Codes, EIBRESP y tips de JCL - la referencia que compilé para resolver problemas sin perder tiempo.",
+    "lab.ref.nav.aria": "Categorías de referencia",
 
     // Reference sub-sections
     "lab.ref.fs.title": "File-Status COBOL",
@@ -634,6 +644,10 @@
     "lab.ref.tips.title": "Tips Rápidos de JCL",
     "lab.ref.tips.desc":
       "Referencia práctica para el día a día del desarrollador mainframe.",
+
+    "lab.ref.diag.causes": "Causas raíz",
+    "lab.ref.diag.resolution": "Resolución",
+    "lab.ref.diag.tipLabel": "Consejo:",
 
     // Table headers
     "th.code": "Código",
@@ -1113,6 +1127,10 @@
     const isCert = !!q(".cert-container");
     const isCv = !!q(".cv-container");
 
+    if (isLab && typeof window.refreshLabReferenceTables === "function") {
+      window.refreshLabReferenceTables(lang);
+    }
+
     if (isLab) {
       tAttr(document.documentElement, "data-page-title", "lab.title", dict);
       if (dict && dict["lab.title"]) document.title = dict["lab.title"];
@@ -1284,7 +1302,7 @@
       }
     }
 
-    // Generic data-i18n elements (cert.*, cv.*, idx.*, visit.*)
+    // Generic data-i18n elements (cert.*, cv.*, idx.*, visit.*, lab.ref.*)
     qa("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
       if (!key) return;
@@ -1292,7 +1310,8 @@
         key.startsWith("cert.") ||
         key.startsWith("cv.") ||
         key.startsWith("idx.") ||
-        key.startsWith("visit.")
+        key.startsWith("visit.") ||
+        key.startsWith("lab.ref.")
       ) {
         t(el, key, dict);
       }
@@ -1379,40 +1398,48 @@
       t(refDesc, "lab.ref.desc", dict);
     }
 
-    // Sub-section titles & descs (ordered)
+    // Reference: mini-nav, accordion triggers, tabelas e dicas (ordem = render em mainframe-lab.js)
     if (refPanel) {
-      const subSections = refPanel.querySelectorAll(".lab-table-section");
-      const subKeys = [
+      const refNavKeys = [
         "lab.ref.fs",
         "lab.ref.abend",
         "lab.ref.sql",
         "lab.ref.eib",
         "lab.ref.tips",
       ];
-      subSections.forEach((section, i) => {
-        if (!subKeys[i]) return;
-        t(
-          section.querySelector(".lab-section-title"),
-          subKeys[i] + ".title",
-          dict,
-        );
-        t(section.querySelector(".lab-section-desc"), subKeys[i] + ".desc", dict);
+
+      const refNav = refPanel.querySelector(".lab-ref-nav");
+      if (refNav) {
+        tAttr(refNav, "aria-label", "lab.ref.nav.aria", dict);
+      }
+
+      refPanel.querySelectorAll(".lab-ref-trigger-label").forEach((el, i) => {
+        if (refNavKeys[i]) t(el, refNavKeys[i] + ".title", dict);
+      });
+      refPanel.querySelectorAll(".lab-ref-nav-btn").forEach((el, i) => {
+        if (refNavKeys[i]) t(el, refNavKeys[i] + ".title", dict);
       });
 
-      // Table headers
+      // Table headers (PT / EN / ES)
       refPanel.querySelectorAll(".lab-table thead th").forEach((th) => {
         const text = (
           originals.has(th) ? originals.get(th) : th.textContent
         ).trim();
-        if (text === "Código" || text === "Code") t(th, "th.code", dict);
-        else if (text === "Significado" || text === "Meaning")
+        if (text === "Código" || text === "Code") {
+          t(th, "th.code", dict);
+        } else if (text === "Significado" || text === "Meaning") {
           t(th, "th.meaning", dict);
-        else if (text === "Ação Sugerida" || text === "Suggested Action")
+        } else if (
+          text === "Ação Sugerida" ||
+          text === "Suggested Action" ||
+          text === "Acción Sugerida"
+        ) {
           t(th, "th.action", dict);
-        else if (text === "Nome" || text === "Name") t(th, "th.name", dict);
+        } else if (text === "Nome" || text === "Name") {
+          t(th, "th.name", dict);
+        }
       });
 
-      // JCL tip card titles
       const tipCards = refPanel.querySelectorAll(".lab-tip-card");
       const tipKeys = ["tip.dd", "tip.rc", "tip.util", "tip.cond"];
       tipCards.forEach((card, i) => {
