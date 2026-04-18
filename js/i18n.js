@@ -675,7 +675,7 @@
     "cv.breadcrumb.current": "Currículum",
     "cv.subtitle": "Software Engineer III - Mainframe",
     "cv.summary":
-      "Ingeniero de Software Mainframe con más de 10 años de experiencia en sistemas financieros de misión crítica. Especialista en Assembler z/OS, COBOL, DB2 y CICS, con historial comprobado de reducción de tiempo de resolución de incidentes y crecimiento de ingresos. Profundo dominio de sistemas de tarjetas VISA y Elo basados en ISO 8583, operando en entornos de alta disponibilidad y volumen.",
+      "Ingeniero de Software Mainframe con más de 18 años de experiencia en sistemas financieros de misión crítica. Especialista en Assembler z/OS, COBOL, DB2 y CICS, con historial comprobado de reducción de tiempo de resolución de incidentes y crecimiento de ingresos. Profundo dominio de sistemas de tarjetas VISA y Elo basados en ISO 8583, operando en entornos de alta disponibilidad y volumen.",
     "cv.section.exp": "Experiencia Profesional",
     "cv.current": "Actual",
 
