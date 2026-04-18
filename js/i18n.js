@@ -1311,7 +1311,9 @@
 
     // -- CURRICULUM PAGE ELEMENTS --
     t(q(".cv-breadcrumb-current"), "cv.breadcrumb.current", dict);
-    t(q(".cv-header-desc"), "cv.header.desc", dict);
+    // .cv-header-desc: traduzido só via data-i18n="cv.summary" no loop acima.
+    // Não chamar t() com outra chave aqui — "cv.header.desc" não existe no dict e
+    // fazia restore() apagar o texto já aplicado por cv.summary.
 
     // CV back link
     const cvBackLink = q(".cv-back-link");
