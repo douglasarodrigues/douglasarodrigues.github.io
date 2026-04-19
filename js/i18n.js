@@ -67,6 +67,10 @@
     "study.card.ia900.title": "Azure AI Fundamentals (AI-900)",
     "study.card.ia900.desc":
       "Domain summary, practice-question mock exam, and attempt history in your browser.",
+    "study.card.webdev.title": "Web stack: your portfolio code walkthrough",
+    "study.card.webdev.desc":
+      "Learn HTML, CSS, and JavaScript from this repo—chapters, diagrams, and interactive check-ins.",
+
     "study.ia900.title": "Azure AI Fundamentals (AI-900)",
     "study.ia900.pageTitle": "Azure AI Fundamentals (AI-900) | Studies",
     "study.ia900.meta.desc":
@@ -166,6 +170,8 @@
     "lab.search.aria": "Search Mainframe Lab: programs and quick reference",
     "lab.search.noResults": "No matches in programs or quick reference.",
     "lab.tab.ref": "Quick Reference",
+    "lab.tabs.scrollPrev": "Scroll tabs left (e.g. COBOL, HLASM)",
+    "lab.tabs.scrollNext": "Scroll tabs right",
     "lab.footer": "Mainframe Lab - Code, reference, and precision.",
     "lab.scrolltop": "Back to top",
 
@@ -696,6 +702,9 @@
     "study.card.ia900.title": "Azure AI Fundamentals (AI-900)",
     "study.card.ia900.desc":
       "Resumen por dominio, simulacro con banco de práctica e historial de intentos en su navegador.",
+    "study.card.webdev.title": "Pila Web: recorrer al codigo del portafolio",
+    "study.card.webdev.desc":
+      "HTML, CSS y JavaScript explicados con este repositorio: capitulos, diagramas y check-in interactivo.",
     "study.ia900.title": "Azure AI Fundamentals (AI-900)",
     "study.ia900.pageTitle": "Azure AI Fundamentals (AI-900) | Estudios",
     "study.ia900.meta.desc":
@@ -795,6 +804,8 @@
     "lab.search.aria": "Buscar en Mainframe Lab: programas y referencia rápida",
     "lab.search.noResults": "Sin resultados en programas o en la referencia rápida.",
     "lab.tab.ref": "Referencia Rápida",
+    "lab.tabs.scrollPrev": "Desplazar pestañas a la izquierda (p. ej. COBOL, HLASM)",
+    "lab.tabs.scrollNext": "Desplazar pestañas a la derecha",
     "lab.footer": "Mainframe Lab - Código, referencia y precisión.",
     "lab.scrolltop": "Volver arriba",
 
@@ -1467,6 +1478,8 @@
     t(q(".lab-header-desc"), "lab.header.desc", dict);
     t(q(".lab-ref-lede__title"), "lab.ref.lede.title", dict);
     t(q(".lab-ref-lede__text"), "lab.ref.lede.text", dict);
+    tAttr(q(".lab-tabs-scroll--prev"), "aria-label", "lab.tabs.scrollPrev", dict);
+    tAttr(q(".lab-tabs-scroll--next"), "aria-label", "lab.tabs.scrollNext", dict);
 
     // Stats labels (ordered to match the four cards in mainframe-lab.html:
     // 1) Programas  2) Tecnologias  3) Anos de experiencia  4) Incidentes 100+)

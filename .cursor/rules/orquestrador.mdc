@@ -53,6 +53,18 @@ Ordem pode variar conforme o cenario, mas o Orquestrador MF SEMPRE planeja prime
 4. Expert CSS estiliza a apresentacao do codigo
 ```
 
+## FLUXO TRILHA WEB (aprendizagem no proprio portfolio)
+
+Para tarefas em `estudos/web/`, questoes em `js/web-trilha-questions.js` ou tutoragem do codigo front-end como material de estudo:
+
+```
+1. Psicologo UX + expert-educacao-tech  → ritmo, formato do check-in, retencao (ver design/web-trilha-learning-ux.md)
+2. expert-portfolio-web-tutorial        → alinhamento texto/codigo do repo
+3. Expert HTML / Expert CSS / Expert JS → implementacao nas paginas e scripts
+```
+
+Nao delegue decisoes pedagogicas da trilha a um unico agente: **UX e educacao** decidem juntos primeiro.
+
 ## FORMATO DE PLANO DE EXECUCAO
 
 Ao receber uma demanda, responda com este formato:

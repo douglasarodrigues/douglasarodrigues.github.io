@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5 — i18n.js | Estudos</title>
+  <meta name="description" content="Dicionários, data-i18n e idioma do documento.">
+  <meta name="author" content="Douglas Assumpção Rodrigues">
+  <meta property="og:title" content="5 — i18n.js | Estudos">
+  <meta property="og:description" content="Dicionários, data-i18n e idioma do documento.">
+  <meta property="og:url" content="https://douglasassumpcao.github.io/portfolio/estudos/web/cap-05-i18n.html">
+  <meta name="theme-color" content="#0F172A">
+  <link rel="canonical" href="https://douglasassumpcao.github.io/portfolio/estudos/web/cap-05-i18n.html">
+  <link rel="icon" href="../../assets/profile.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap">
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/estudos.css">
+</head>
+<body data-page="study-web">
+  <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="cursor-pointer" aria-hidden="true"><span class="cursor-pointer__dot"></span></div>
+  <div class="bg-hero-layer" aria-hidden="true"></div>
+  <main id="main-content" class="container study-page">
+    <a href="index.html" class="study-back focus-ring"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Índice da trilha</a>
+    <header class="study-hub-header"><h1 class="study-hub-title">5 — <code>js/i18n.js</code></h1>
+   <p class="study-hub-lead">Traduções ficam em objetos (<code>en</code>, <code>es</code>); elementos com <code>data-i18n</code> recebem o texto da chave. O idioma pode ser salvo em <code>localStorage</code>.</p></header>
+   <section class="study-section"><h2 class="study-section-title">lang</h2><p class="study-hub-lead"><code>document.documentElement.lang</code> acompanha o idioma ativo — importante para leitores de tela e SEO.</p></section>
+   <section id="check-in" class="study-section"><h2 class="study-section-title">Check-in</h2><div class="web-trilha-quiz-root" data-chapter="cap-05"></div></section>
+    <nav class="web-trilha-chapter-nav" aria-label="Navegação entre capítulos">
+      <a href="cap-04-script-js.html" class="study-btn">Anterior</a>
+      <a href="index.html" class="study-btn study-btn--primary">Voltar ao índice</a>
+    </nav>
+  </main>
+  <footer class="site-footer">
+    <p>&copy; 2026 Douglas Assumpção Rodrigues</p>
+    <p class="site-footer-study-wrap"><a href="../../estudos.html" class="site-footer-study-link">Área de estudos</a></p>
+    <p id="visit-counter" class="site-footer-visits visit-counter" role="status"><span class="visit-counter-label" data-i18n="visit.label">Acessos únicos</span><span class="visit-counter-sep">·</span><span class="visit-counter-value" data-visit-unique>…</span><span class="visit-counter-sep">·</span><span data-i18n="visit.views.label">Visualizações</span><span class="visit-counter-sep">·</span><span data-visit-views>…</span></p>
+  </footer>
+  <script src="../../js/i18n.js" defer></script>
+  <script src="../../js/web-trilha-questions.js" defer></script>
+  <script src="../../js/web-trilha-quiz.js" defer></script>
+  <script src="../../js/visit-counter.js" defer></script>
+  <script src="../../js/script.js" defer></script>
+</body>
+</html>

@@ -38,4 +38,48 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://douglasassumpcao.github.io/portfolio/certificacoes.html?lang=es" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://douglasassumpcao.github.io/portfolio/certificacoes.html" />
   </url>
+
+  <url>
+    <loc>https://douglasassumpcao.github.io/portfolio/estudos.html</loc>
+    <lastmod>2026-04-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://douglasassumpcao.github.io/portfolio/estudos/web/index.html</loc>
+    <lastmod>2026-04-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://douglasassumpcao.github.io/portfolio/estudos/web/cap-01-documento-html.html</loc>
+    <lastmod>2026-04-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://douglasassumpcao.github.io/portfolio/estudos/web/cap-02-tokens-css.html</loc>
+    <lastmod>2026-04-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://douglasassumpcao.github.io/portfolio/estudos/web/cap-03-style-css.html</loc>
+    <lastmod>2026-04-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://douglasassumpcao.github.io/portfolio/estudos/web/cap-04-script-js.html</loc>
+    <lastmod>2026-04-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://douglasassumpcao.github.io/portfolio/estudos/web/cap-05-i18n.html</loc>
+    <lastmod>2026-04-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
 </urlset>

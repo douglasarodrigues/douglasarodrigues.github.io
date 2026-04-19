@@ -475,3 +475,81 @@ a.study-card:focus-visible {
   margin-block-start: var(--space-3);
   line-height: 1.5;
 }
+
+/* --- Trilha Web (estudos/web): navegação entre capítulos e check-in --- */
+.web-trilha-chapter-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-start: var(--space-8);
+  padding-block-start: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.web-trilha-quiz-root {
+  margin-block-start: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.web-trilha-quiz-meta {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-2);
+}
+
+.web-trilha-quiz-stem {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-3);
+  line-height: 1.5;
+}
+
+.web-trilha-quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+button.web-trilha-opt {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: rgba(30, 41, 59, 0.4);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+button.web-trilha-opt:hover:not(:disabled) {
+  border-color: var(--color-border-hover);
+  background: rgba(74, 144, 217, 0.1);
+}
+
+button.web-trilha-opt:disabled {
+  opacity: 0.85;
+  cursor: default;
+}
+
+.web-trilha-quiz-feedback {
+  margin-block-start: var(--space-3);
+  font-size: var(--font-size-small);
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.web-trilha-quiz-feedback strong {
+  color: var(--color-text-primary);
+}
+
+.web-trilha-quiz-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-start: var(--space-3);
+}
