@@ -3,27 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mainframe Lab | Douglas Assumpção Rodrigues</title>
-  <meta name="description" content="Mainframe Lab - 97 módulos reutilizáveis em COBOL, HLASM, JCL, CICS, DB2, IMS e VSAM. Referência rápida para o desenvolvedor mainframe.">
+  <title>Referência rápida mainframe: SQLCODE DB2, EIBRESP CICS, FILE STATUS VSAM | Mainframe Lab</title>
+  <meta name="description" content="SQLCODE DB2, códigos EIBRESP CICS, FILE STATUS COBOL/VSAM, abends z/OS e dicas JCL — tabelas com significado, ação sugerida e diagnóstico. 97 módulos COBOL, HLASM, JCL, CICS, DB2, IMS e VSAM. Douglas Assumpção Rodrigues.">
+  <meta name="keywords" content="SQLCODE, DB2, EIBRESP, CICS, FILE STATUS, VSAM, COBOL, abend codes, códigos abend, JCL, z/OS, mainframe, referência rápida">
   <meta name="author" content="Douglas Assumpção Rodrigues">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Mainframe Lab | Douglas Assumpção Rodrigues">
-  <meta property="og:description" content="97 módulos autorais e referência rápida para Mainframe. Veja boas práticas e ferramentas de missão crítica.">
+  <meta property="og:title" content="Mainframe Lab — SQLCODE DB2, EIBRESP CICS, FILE STATUS VSAM e referência rápida">
+  <meta property="og:description" content="Consulte SQLCODE (DB2), EIBRESP (CICS), FILE STATUS (VSAM/COBOL), abends z/OS e dicas de JCL — com ações sugeridas e diagnóstico. 97 módulos autorais para desenvolvedor mainframe.">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:locale:alternate" content="en_US">
   <meta property="og:locale:alternate" content="es_ES">
   <meta property="og:url" content="https://douglasassumpcao.github.io/portfolio/mainframe-lab.html">
-  <meta property="og:image" content="assets/mainframe-lab-og.png">
+  <meta property="og:image" content="https://douglasassumpcao.github.io/portfolio/assets/mainframe-lab-og.png">
   <meta property="og:image:alt" content="Mainframe Lab — arte com título e stack COBOL, HLASM, JCL, CICS, DB2, IMS e VSAM">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1376">
   <meta property="og:image:height" content="768">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Mainframe Lab | Douglas Assumpção Rodrigues">
-  <meta name="twitter:description" content="97 módulos autorais e referência rápida para Mainframe.">
-  <meta name="twitter:image" content="assets/mainframe-lab-og.png">
+  <meta name="twitter:title" content="Mainframe Lab — SQLCODE DB2, EIBRESP CICS, FILE STATUS VSAM">
+  <meta name="twitter:description" content="SQLCODE, EIBRESP, FILE STATUS, abends z/OS e JCL — referência rápida com diagnóstico. 97 módulos mainframe.">
+  <meta name="twitter:image" content="https://douglasassumpcao.github.io/portfolio/assets/mainframe-lab-og.png">
 
   <meta name="theme-color" content="#0F172A">
   <link rel="canonical" href="https://douglasassumpcao.github.io/portfolio/mainframe-lab.html">
@@ -44,6 +45,52 @@
   <link rel="stylesheet" href="css/mainframe-lab-boot.css">
   <link rel="stylesheet" href="css/mainframe-lab-reference.css">
   <link rel="stylesheet" href="css/estudos.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://douglasassumpcao.github.io/portfolio/mainframe-lab.html#webpage",
+        "url": "https://douglasassumpcao.github.io/portfolio/mainframe-lab.html",
+        "name": "Mainframe Lab — Referência rápida: SQLCODE DB2, EIBRESP CICS, FILE STATUS VSAM, abends z/OS",
+        "description": "Página com referência rápida para desenvolvedor mainframe: códigos SQLCODE (DB2), EIBRESP (CICS), FILE STATUS (COBOL/VSAM), abends z/OS e dicas de JCL; inclui 97 módulos reutilizáveis em COBOL, HLASM e JCL.",
+        "inLanguage": "pt-BR",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Portfólio Douglas Assumpção Rodrigues",
+          "url": "https://douglasassumpcao.github.io/portfolio/"
+        },
+        "about": [
+          { "@type": "Thing", "name": "DB2 SQLCODE", "alternateName": "SQLCODE DB2" },
+          { "@type": "Thing", "name": "CICS EIBRESP", "alternateName": "EIBRESP" },
+          { "@type": "Thing", "name": "COBOL FILE STATUS", "alternateName": "FILE STATUS VSAM" },
+          { "@type": "Thing", "name": "z/OS abend codes" },
+          { "@type": "Thing", "name": "JCL", "alternateName": "Job Control Language" }
+        ],
+        "keywords": "SQLCODE DB2, EIBRESP CICS, FILE STATUS VSAM, abend z/OS, JCL, COBOL, mainframe, referência rápida"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Início",
+            "item": "https://douglasassumpcao.github.io/portfolio/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Mainframe Lab",
+            "item": "https://douglasassumpcao.github.io/portfolio/mainframe-lab.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
@@ -133,6 +180,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
+    </section>
+
+    <section class="lab-ref-lede" id="referencia-rapida-mainframe" aria-labelledby="lab-ref-lede-heading">
+      <h2 id="lab-ref-lede-heading" class="lab-section-title lab-ref-lede__title">Referência rápida: SQLCODE DB2, códigos CICS (EIBRESP), FILE STATUS VSAM e abends z/OS</h2>
+      <p class="lab-section-desc lab-ref-lede__text">Esta página reúne <strong>SQLCODE</strong> (DB2 for z/OS), respostas <strong>EIBRESP</strong> (CICS), <strong>FILE STATUS</strong> de I/O COBOL (incluindo VSAM), <strong>códigos de abend</strong> em z/OS e <strong>dicas de JCL</strong> — com significado, ação sugerida e diagnóstico detalhado. Use a busca acima ou a aba <em>Referência Rápida</em> para consultar as tabelas.</p>
     </section>
 
     <!-- Technology Panels (rendered by JS) -->

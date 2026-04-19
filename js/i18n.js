@@ -149,9 +149,9 @@
 
     // -- Lab page --
     "lab.title":
-      "Mainframe Lab | Douglas Assumpção Rodrigues - COBOL, JCL, DB2, CICS Programs & Quick Reference",
+      "Quick reference: DB2 SQLCODE, CICS EIBRESP, VSAM FILE STATUS | Mainframe Lab",
     "lab.meta.desc":
-      "Douglas Assumpção Rodrigues's technical portfolio: 97 reusable mainframe modules in COBOL, HLASM, JCL, CICS, DB2, IMS, and VSAM - utility tools for the mainframe developer.",
+      "DB2 SQLCODE, CICS EIBRESP, COBOL FILE STATUS (VSAM), z/OS abend codes, and JCL tips — tables with meaning, suggested action, and diagnostics. 97 reusable COBOL, HLASM, JCL, CICS, DB2, IMS & VSAM modules. Douglas Assumpção Rodrigues.",
     "lab.back": "Back to Home",
     "lab.breadcrumb.current": "Mainframe Lab",
     "lab.header.desc":
@@ -201,6 +201,10 @@
       "Quick <span class=\"text-accent\">Reference</span>",
     "lab.ref.desc":
       "File-Status, SQLCODEs, Abend Codes, EIBRESP, and JCL tips - the reference I compiled to solve problems without wasting time.",
+    "lab.ref.lede.title":
+      "Quick reference: DB2 SQLCODE, CICS EIBRESP, COBOL/VSAM FILE STATUS and z/OS abends",
+    "lab.ref.lede.text":
+      "This page brings together <strong>SQLCODE</strong> (DB2 for z/OS), <strong>EIBRESP</strong> (CICS), COBOL <strong>FILE STATUS</strong> (including VSAM), z/OS <strong>abend codes</strong>, and <strong>JCL tips</strong>—with meaning, suggested action, and detailed diagnostics. Use the search above or the <em>Quick Reference</em> tab to browse the tables.",
     "lab.ref.nav.aria": "Reference categories",
 
     // Reference sub-sections
@@ -774,9 +778,9 @@
 
     // -- Lab page --
     "lab.title":
-      "Mainframe Lab | Douglas Assumpção Rodrigues - Programas COBOL, JCL, DB2, CICS y Referencia Rápida",
+      "Referencia rápida: SQLCODE DB2, EIBRESP CICS, FILE STATUS VSAM | Mainframe Lab",
     "lab.meta.desc":
-      "Portafolio técnico de Douglas Assumpção Rodrigues: 97 módulos mainframe reutilizables en COBOL, HLASM, JCL, CICS, DB2, IMS y VSAM - herramientas utilitarias para el desarrollador mainframe.",
+      "SQLCODE DB2, EIBRESP CICS, FILE STATUS COBOL/VSAM, códigos abend z/OS y tips JCL — tablas con significado, acción sugerida y diagnóstico. 97 módulos reutilizables COBOL, HLASM, JCL, CICS, DB2, IMS y VSAM. Douglas Assumpção Rodrigues.",
     "lab.back": "Volver al Inicio",
     "lab.breadcrumb.current": "Mainframe Lab",
     "lab.header.desc":
@@ -826,6 +830,10 @@
       "Referencia <span class=\"text-accent\">Rápida</span>",
     "lab.ref.desc":
       "File-Status, SQLCODEs, Abend Codes, EIBRESP y tips de JCL - la referencia que compilé para resolver problemas sin perder tiempo.",
+    "lab.ref.lede.title":
+      "Referencia rápida: SQLCODE DB2, EIBRESP CICS, FILE STATUS COBOL/VSAM y abends z/OS",
+    "lab.ref.lede.text":
+      "Esta página reúne <strong>SQLCODE</strong> (DB2 for z/OS), <strong>EIBRESP</strong> (CICS), <strong>FILE STATUS</strong> de I/O COBOL (incluido VSAM), <strong>códigos abend</strong> en z/OS y <strong>tips de JCL</strong> — con significado, acción sugerida y diagnóstico detallado. Use la búsqueda arriba o la pestaña <em>Referencia Rápida</em> para consultar las tablas.",
     "lab.ref.nav.aria": "Categorías de referencia",
 
     // Reference sub-sections
@@ -1457,6 +1465,8 @@
 
     t(q(".lab-breadcrumb-current"), "lab.breadcrumb.current", dict);
     t(q(".lab-header-desc"), "lab.header.desc", dict);
+    t(q(".lab-ref-lede__title"), "lab.ref.lede.title", dict);
+    t(q(".lab-ref-lede__text"), "lab.ref.lede.text", dict);
 
     // Stats labels (ordered to match the four cards in mainframe-lab.html:
     // 1) Programas  2) Tecnologias  3) Anos de experiencia  4) Incidentes 100+)
