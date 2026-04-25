@@ -64,6 +64,9 @@
     "study.hub.lead":
       "Supporting material for personal study — off the main portfolio focus, but here if you are on the same path.",
     "study.hub.footerNote": "Studies — personal use.",
+    "study.card.ai103.title": "Azure AI Engineer Associate (AI-103)",
+    "study.card.ai103.desc":
+      "Complete 5-8 week track for total beginners with roadmap, essential labs, mock exam, and spaced review.",
     "study.card.ia900.title": "Azure AI Fundamentals (AI-900)",
     "study.card.ia900.desc":
       "Domain summary, practice-question mock exam, and attempt history in your browser.",
@@ -699,6 +702,9 @@
     "study.hub.lead":
       "Material de apoyo para estudio personal — fuera del foco principal del portafolio, pero disponible si comparte el camino.",
     "study.hub.footerNote": "Estudios — uso personal.",
+    "study.card.ai103.title": "Azure AI Engineer Associate (AI-103)",
+    "study.card.ai103.desc":
+      "Ruta completa de 5-8 semanas para principiantes con roadmap, laboratorios esenciales, simulacro y revisión espaciada.",
     "study.card.ia900.title": "Azure AI Fundamentals (AI-900)",
     "study.card.ia900.desc":
       "Resumen por dominio, simulacro con banco de práctica e historial de intentos en su navegador.",
@@ -1397,6 +1403,14 @@
         document.title = originals.get("study.ia900.pageTitle");
       const metaDesc = q('meta[name="description"]');
       tAttr(metaDesc, "content", "study.ia900.meta.desc", dict);
+    } else if (studyPage === "study-ai103") {
+      // Esta pagina ainda nao possui chaves completas; preserva titulo e meta originais.
+      if (!originals.has("study.ai103.pageTitle"))
+        originals.set("study.ai103.pageTitle", document.title);
+      if (originals.has("study.ai103.pageTitle"))
+        document.title = originals.get("study.ai103.pageTitle");
+      const metaDesc = q('meta[name="description"]');
+      tAttr(metaDesc, "content", "study.ai103.meta.desc", null);
     } else {
       if (!originals.has("idx.title"))
         originals.set("idx.title", document.title);

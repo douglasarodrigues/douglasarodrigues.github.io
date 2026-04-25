@@ -553,3 +553,93 @@ button.web-trilha-opt:disabled {
   gap: var(--space-2);
   margin-block-start: var(--space-3);
 }
+
+/* --- Trilha AI-103 --- */
+.study-ai103-header .study-hub-title {
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
+}
+
+.ai103-week-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-3);
+}
+
+.ai103-week-card,
+.ai103-lab-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: rgba(15, 23, 42, 0.35);
+  padding: var(--space-3);
+}
+
+.ai103-week-card h3,
+.ai103-lab-card h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-body);
+  color: var(--color-text-primary);
+}
+
+.ai103-week-card p,
+.ai103-lab-card p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-small);
+  line-height: 1.55;
+}
+
+.ai103-lab-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.ai103-dashboard-grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .ai103-dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.ai103-readiness-list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ai103-readiness-item {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.ai103-readiness-label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+}
+
+.ai103-readiness-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.22);
+  overflow: hidden;
+}
+
+.ai103-readiness-bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.85), rgba(74, 144, 217, 0.95));
+}
+
+.ai103-review-list {
+  margin: 0;
+  padding-left: 1rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-small);
+  line-height: 1.65;
+}
