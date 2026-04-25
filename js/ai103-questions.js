@@ -324,6 +324,166 @@
       options: ["Extrair CNPJ, data e valor de mensagens", "Descrever objetos em imagem", "Converter texto em voz", "Determinar bitrate de audio"],
       correctIndex: 0,
       explanation: "Entidades estruturadas em texto sao caso classico de NER."
+    },
+    {
+      id: "AI103-041",
+      domain: "Planejamento",
+      stem: "Qual estrategia ajuda a evitar indisponibilidade por erro de configuracao em producao?",
+      options: ["Separar ambientes e validar em homologacao", "Editar direto em producao", "Compartilhar credencial root", "Remover alertas"],
+      correctIndex: 0,
+      explanation: "Separacao de ambientes reduz risco e melhora controle de mudanca."
+    },
+    {
+      id: "AI103-042",
+      domain: "Vision",
+      stem: "Para detectar objetos em imagens de estoque, qual abordagem e mais adequada?",
+      options: ["Deteccao de objetos (object detection)", "Sentiment analysis", "Speech synthesis", "Question Answering"],
+      correctIndex: 0,
+      explanation: "Object detection identifica e localiza objetos em imagem."
+    },
+    {
+      id: "AI103-043",
+      domain: "Language",
+      stem: "Qual diferenca principal entre CLU e Question Answering?",
+      options: ["CLU classifica intencao; QA responde com base em conhecimento", "CLU gera audio; QA gera imagem", "CLU e para OCR; QA para speech", "Nao ha diferenca"],
+      correctIndex: 0,
+      explanation: "CLU interpreta intencao do usuario; QA busca resposta em base documental."
+    },
+    {
+      id: "AI103-044",
+      domain: "Speech",
+      stem: "Se o reconhecimento de fala erra termos tecnicos, qual melhoria costuma ajudar?",
+      options: ["Ajustar modelo/phrase hints ao dominio", "Remover idioma do fluxo", "Aumentar temperatura", "Trocar OCR"],
+      correctIndex: 0,
+      explanation: "Personalizacao de vocabulário melhora acuracia para termos de negocio."
+    },
+    {
+      id: "AI103-045",
+      domain: "OpenAI",
+      stem: "Qual formato de prompt tende a produzir resposta mais controlada?",
+      options: ["Contexto + tarefa + formato de saida + restricoes", "Pergunta vaga sem contexto", "Uma palavra apenas", "Prompt sem objetivo"],
+      correctIndex: 0,
+      explanation: "Prompt estruturado reduz ambiguidade e melhora consistencia."
+    },
+    {
+      id: "AI103-046",
+      domain: "KnowledgeMining",
+      stem: "Sem metadados no indice, qual impacto comum ocorre na busca?",
+      options: ["Menor capacidade de filtro e contexto", "Maior seguranca por padrao", "Melhor latencia automaticamente", "Elimina necessidade de embeddings"],
+      correctIndex: 0,
+      explanation: "Metadados sustentam filtros e recuperacao contextual."
+    },
+    {
+      id: "AI103-047",
+      domain: "Planejamento",
+      stem: "Qual e a melhor pratica para acompanhar degradacao de desempenho de um endpoint AI?",
+      options: ["Monitorar tendencia de latencia e taxa de erro", "Medir apenas tamanho do payload", "Desligar telemetria em pico", "Ignorar logs de warning"],
+      correctIndex: 0,
+      explanation: "Tendencia temporal mostra degradacao antes de falha critica."
+    },
+    {
+      id: "AI103-048",
+      domain: "Vision",
+      stem: "Em extração de documentos, o que deve ser validado antes de usar resultado em processo critico?",
+      options: ["Confianca da extração e regras de validacao", "Apenas nome do arquivo", "Somente tamanho da imagem", "Nada, usar direto"],
+      correctIndex: 0,
+      explanation: "Processo critico exige validacao de qualidade e consistencia."
+    },
+    {
+      id: "AI103-049",
+      domain: "Language",
+      stem: "Para classificar tickets em categorias conhecidas, qual abordagem e recomendada?",
+      options: ["Classificacao supervisionada", "Clustering sem rótulos como unico metodo", "OCR de anexos", "Speech diarization"],
+      correctIndex: 0,
+      explanation: "Categorias conhecidas sao caso de classificacao supervisionada."
+    },
+    {
+      id: "AI103-050",
+      domain: "Speech",
+      stem: "Qual cenario e tipico de text-to-speech?",
+      options: ["Leitura de notificacoes para acessibilidade", "Extrair tabela de PDF", "Classificar intencao de chat", "Detectar face"],
+      correctIndex: 0,
+      explanation: "TTS transforma texto em fala para consumo auditivo."
+    },
+    {
+      id: "AI103-051",
+      domain: "OpenAI",
+      stem: "Em aplicacao corporativa, o que significa 'grounded answer'?",
+      options: ["Resposta ancorada em fontes recuperadas", "Resposta criativa sem contexto", "Resposta sem verificacao", "Resposta sempre curta"],
+      correctIndex: 0,
+      explanation: "Grounding vincula a resposta a evidencias externas confiaveis."
+    },
+    {
+      id: "AI103-052",
+      domain: "KnowledgeMining",
+      stem: "Qual pratica melhora atualizacao continua de indice documental?",
+      options: ["Pipeline incremental com reindexacao parcial", "Apagar e recriar indice sempre", "Manter indice estatico para sempre", "Excluir metadados antigos"],
+      correctIndex: 0,
+      explanation: "Incremental minimiza custo e mantem indice atualizado."
+    },
+    {
+      id: "AI103-053",
+      domain: "Planejamento",
+      stem: "Para auditoria e compliance, qual dado e mais importante registrar?",
+      options: ["Quem fez a chamada, quando e com qual resultado", "Cor do navegador", "Nome do computador pessoal", "Velocidade de digitacao"],
+      correctIndex: 0,
+      explanation: "Rastreabilidade operacional e base de auditoria."
+    },
+    {
+      id: "AI103-054",
+      domain: "Vision",
+      stem: "Se um modelo visual falha em classes raras, qual acao ajuda primeiro?",
+      options: ["Aumentar exemplos rotulados dessas classes", "Remover essas classes do problema", "Trocar para Speech", "Ignorar erro"],
+      correctIndex: 0,
+      explanation: "Balanceamento de dados melhora desempenho em classes sub-representadas."
+    },
+    {
+      id: "AI103-055",
+      domain: "Language",
+      stem: "Qual capacidade extrai expressões-chave de um texto?",
+      options: ["Key phrase extraction", "Object tracking", "Speaker recognition", "Face landmark"],
+      correctIndex: 0,
+      explanation: "Key phrase extraction resume os principais termos do texto."
+    },
+    {
+      id: "AI103-056",
+      domain: "Speech",
+      stem: "Qual fator ajuda em transcrição de reuniões com multiplos participantes?",
+      options: ["Diarizacao de falantes", "OCR com layout", "Prompt engineering", "Indexacao vetorial"],
+      correctIndex: 0,
+      explanation: "Diarizacao separa segmentos de fala por locutor."
+    },
+    {
+      id: "AI103-057",
+      domain: "OpenAI",
+      stem: "Qual abordagem melhora segurança em aplicações GenAI externas?",
+      options: ["Filtro de entrada/saida + politicas de conteúdo", "Aceitar qualquer resposta automaticamente", "Desativar logs", "Remover autenticação"],
+      correctIndex: 0,
+      explanation: "Guardrails e politicas reduzem risco operacional e reputacional."
+    },
+    {
+      id: "AI103-058",
+      domain: "KnowledgeMining",
+      stem: "Qual resultado esperado de um bom chunking em RAG?",
+      options: ["Trechos recuperados mais relevantes e contextuais", "Aumento de custo sem ganho", "Perda total de contexto", "Nao altera nada"],
+      correctIndex: 0,
+      explanation: "Segmentacao adequada melhora recall e precision da recuperacao."
+    },
+    {
+      id: "AI103-059",
+      domain: "Planejamento",
+      stem: "Quando um dominio fica abaixo de 70% por duas semanas, qual acao correta?",
+      options: ["Entrar em trilha de reforco direcionada", "Ignorar e seguir", "Fazer apenas prova completa", "Reduzir revisao"],
+      correctIndex: 0,
+      explanation: "Reforco direcionado corrige gap antes da fase final."
+    },
+    {
+      id: "AI103-060",
+      domain: "OpenAI",
+      stem: "Qual criterio indica prontidao real para agendar exame?",
+      options: ["Tres simulados completos consecutivos >= 80%", "Uma unica prova acima de 60%", "Apenas leitura do guia", "Terminar laboratorio isolado"],
+      correctIndex: 0,
+      explanation: "Consistencia em simulado completo e melhor proxy de prontidao."
     }
   ];
 })();

@@ -1,15 +1,23 @@
 /**
- * Simulado AI-103 + prontidao por dominio + revisao espaçada.
+ * AI-103 Study Engine
+ * - Modo prova completa (mixed)
+ * - Modo treino por dominio
+ * - Revisao espacada D+1/D+3/D+7
+ * - Prontidao objetiva para agendamento
  */
 (function () {
   "use strict";
 
-  var QUESTIONS_PER_EXAM = 30;
+  var FULL_EXAM_SIZE = 35;
+  var DOMAIN_EXAM_SIZE = 20;
   var HISTORY_KEY = "douglas-portfolio-ai103-history";
   var REVIEW_KEY = "douglas-portfolio-ai103-review";
   var HISTORY_MAX = 50;
   var SESSION_KEY = "douglas-portfolio-ai103-session";
   var REVIEW_STEPS_DAYS = [1, 3, 7];
+  var READY_GLOBAL = 80;
+  var READY_DOMAIN = 70;
+  var READY_STREAK = 3;
 
   function getBank() {
     var b = typeof window !== "undefined" && window.AI103_QUESTION_BANK ? window.AI103_QUESTION_BANK : [];
@@ -148,6 +156,19 @@
     }).join("");
   }
 
+  function getDomains(bank) {
+    var seen = {};
+    var list = [];
+    bank.forEach(function (q) {
+      if (!seen[q.domain]) {
+        seen[q.domain] = true;
+        list.push(q.domain);
+      }
+    });
+    list.sort();
+    return list;
+  }
+
   function init() {
     var bank = getBank();
     var root = document.getElementById("ai103-quiz-root");
@@ -163,6 +184,8 @@
     var btnFinish = document.getElementById("ai103-btn-finish");
     var btnRetry = document.getElementById("ai103-btn-retry");
     var btnClear = document.getElementById("ai103-btn-clear-history");
+    var modeSelect = document.getElementById("ai103-mode-select");
+    var domainSelect = document.getElementById("ai103-domain-select");
     var stemEl = document.getElementById("ai103-question-stem");
     var optsEl = document.getElementById("ai103-options");
     var progEl = document.getElementById("ai103-quiz-progress");
@@ -172,8 +195,17 @@
     var historyBody = document.getElementById("ai103-history-body");
     var readinessEl = document.getElementById("ai103-readiness-list");
     var reviewEl = document.getElementById("ai103-review-list");
+    var readyBadge = document.getElementById("ai103-ready-badge");
 
-    var state = { order: [], answers: {}, index: 0, startedAt: null };
+    var state = { order: [], answers: {}, index: 0, startedAt: null, mode: "full", domain: "all" };
+
+    var domains = getDomains(bank);
+    domains.forEach(function (d) {
+      var opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = d;
+      domainSelect.appendChild(opt);
+    });
 
     function currentQ() {
       return state.order[state.index];
@@ -184,7 +216,9 @@
         order: state.order.map(function (x) { return x.id; }),
         answers: state.answers,
         index: state.index,
-        startedAt: state.startedAt
+        startedAt: state.startedAt,
+        mode: state.mode,
+        domain: state.domain
       });
     }
 
@@ -206,11 +240,41 @@
       });
     }
 
+    function computeReadinessSummary(history) {
+      var lastThreeFull = history.filter(function (h) {
+        return h.mode === "full";
+      }).slice(0, READY_STREAK);
+      var streakOk = lastThreeFull.length === READY_STREAK && lastThreeFull.every(function (x) {
+        return x.scorePercent >= READY_GLOBAL;
+      });
+      return { streakOk: streakOk, count: lastThreeFull.length };
+    }
+
     function renderDashboards() {
       var history = loadHistory();
       var review = loadReview();
       renderReadiness(bank, history, readinessEl);
       renderReviewList(bank, review, reviewEl);
+
+      var summary = computeReadinessSummary(history);
+      var domainsData = {};
+      history.slice(0, 5).forEach(function (attempt) {
+        (attempt.byQuestion || []).forEach(function (row) {
+          if (!domainsData[row.domain]) domainsData[row.domain] = { total: 0, correct: 0 };
+          domainsData[row.domain].total++;
+          if (row.correct) domainsData[row.domain].correct++;
+        });
+      });
+      var allDomainsOk = Object.keys(domainsData).every(function (d) {
+        var info = domainsData[d];
+        return info.total && (info.correct / info.total) * 100 >= READY_DOMAIN;
+      });
+      if (!readyBadge) return;
+      if (summary.streakOk && allDomainsOk) {
+        readyBadge.textContent = "Status: PRONTO PARA PROVA (3 simulados full >= 80% e dominios >= 70%).";
+      } else {
+        readyBadge.textContent = "Status: Em preparação. Meta: 3 simulados full >= 80% e todos os domínios >= 70%.";
+      }
     }
 
     function renderQuestion() {
@@ -298,7 +362,7 @@
       if (elMeta) elMeta.hidden = true;
 
       scoreEl.textContent = "Nota: " + pct + "% (" + correct + "/" + state.order.length + ")";
-      detailEl.textContent = pct >= 80
+      detailEl.textContent = pct >= READY_GLOBAL
         ? "Excelente. Continue com revisão espaçada dos erros antigos."
         : "Revise os erros abaixo e repita o simulado em 24h.";
 
@@ -328,7 +392,9 @@
         scorePercent: pct,
         correct: correct,
         total: state.order.length,
-        byQuestion: byQuestion
+        byQuestion: byQuestion,
+        mode: state.mode,
+        domain: state.domain
       });
       if (hist.length > HISTORY_MAX) hist = hist.slice(0, HISTORY_MAX);
       saveHistory(hist);
@@ -339,7 +405,15 @@
     }
 
     function beginExam() {
-      state.order = pickQuestions(bank, QUESTIONS_PER_EXAM, Math.random);
+      state.mode = modeSelect && modeSelect.value ? modeSelect.value : "full";
+      state.domain = domainSelect && domainSelect.value ? domainSelect.value : "all";
+      var selectedBank = bank;
+      var qSize = FULL_EXAM_SIZE;
+      if (state.mode === "domain" && state.domain !== "all") {
+        selectedBank = bank.filter(function (q) { return q.domain === state.domain; });
+        qSize = DOMAIN_EXAM_SIZE;
+      }
+      state.order = pickQuestions(selectedBank, qSize, Math.random);
       state.answers = {};
       state.index = 0;
       state.startedAt = Date.now();
@@ -360,11 +434,21 @@
       state.answers = sess.answers || {};
       state.index = typeof sess.index === "number" ? sess.index : 0;
       state.startedAt = sess.startedAt || Date.now();
+      state.mode = sess.mode || "full";
+      state.domain = sess.domain || "all";
+      if (modeSelect) modeSelect.value = state.mode;
+      if (domainSelect && state.domain) domainSelect.value = state.domain;
       showActive();
       return true;
     }
 
     btnStart.addEventListener("click", beginExam);
+    if (modeSelect && domainSelect) {
+      modeSelect.addEventListener("change", function () {
+        domainSelect.disabled = modeSelect.value !== "domain";
+      });
+      domainSelect.disabled = modeSelect.value !== "domain";
+    }
     btnPrev.addEventListener("click", function () {
       if (state.index > 0) {
         state.index--;

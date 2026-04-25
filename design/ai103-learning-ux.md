@@ -1,71 +1,62 @@
-# AI-103 Learning UX (5-8 semanas)
+# AI-103 Learning UX (Aprovacao orientada por desempenho)
 
-## Objetivo
-Transformar um iniciante total em candidato pronto para a prova AI-103 com foco em:
-- entendimento conceitual;
-- aplicação pratica no Azure;
-- retencao de longo prazo.
+## Objetivo pedagógico
+Levar um iniciante total a performance de aprovação em 5-8 semanas, com foco em:
+- memoria de longo prazo;
+- transferencia para cenario de prova;
+- capacidade de justificar escolhas tecnicas (nao apenas decorar nomes).
 
-## Perfil de entrada
+## Perfil de entrada e restricoes
 - Iniciante total em Azure AI.
-- Janela de preparacao: 5 a 8 semanas.
-- Estudo recomendado: 60 a 90 minutos por dia, 5 dias por semana.
+- Carga diaria: 60-90 min.
+- Dias de estudo: 5 por semana.
+- Idioma de estudo: portugues com termos tecnicos em ingles.
 
-## Arquitetura pedagogica
-1. **Progressao em camadas**
-   - Camada 1: conceitos e vocabulario.
-   - Camada 2: mapeamento servico -> problema de negocio.
-   - Camada 3: implementacao pratica guiada.
-   - Camada 4: simulacao de prova e ajuste de gaps.
+## Estrutura de sessao diaria (60-90 min)
+1. **Warm-up (10 min)**  
+   Recuperacao ativa sem consulta (5-8 perguntas de memoria).
+2. **Bloco foco (25-35 min)**  
+   Aula guiada de um topico do dia com mapa "quando usar / quando evitar".
+3. **Pratica deliberada (20-30 min)**  
+   Questoes de dominio + 1 mini cenario de decisao de servico.
+4. **Fechamento (10-15 min)**  
+   Registro de erros e agendamento automatico de revisao D+1/D+3/D+7.
 
-2. **Recuperacao ativa (active recall)**
-   - Todo bloco termina com perguntas sem consulta.
-   - O aluno sempre responde antes de ver explicacao.
+## Estrategia cognitiva
+- **Recuperacao ativa:** resposta primeiro, explicacao depois.
+- **Repeticao espacada:** erros retornam automaticamente (D+1/D+3/D+7).
+- **Interleaving:** a partir da semana 3, misturar dominios na mesma sessao.
+- **Elaboracao:** explicar em voz alta "por que nao escolher as alternativas erradas".
+- **Dual coding leve:** tabelas comparativas + checklist textual.
 
-3. **Repeticao espacada**
-   - Revisoes D+1, D+3 e D+7.
-   - Erros em simulado voltam automaticamente para fila de revisao.
+## Modo de progressao (gates)
+- **Gate 1 (fim semana 2):** >= 60% em Planejamento + Vision.
+- **Gate 2 (fim semana 4):** >= 70% em Language + Speech + Knowledge Mining.
+- **Gate 3 (fim semana 6):** >= 75% em simulados mistos.
+- **Ready-for-exam:** 3 simulados completos consecutivos >= 80% e nenhum dominio < 70%.
 
-4. **Interleaving (mistura de temas)**
-   - A partir da semana 3, os blocos passam a misturar Vision, Language, Speech e OpenAI.
-   - Isso reduz memorizacao de contexto e melhora transferencia.
+## Rotina semanal recomendada
+- **Segunda:** teoria guiada + treino de dominio.
+- **Terca:** laboratorio guiado + revisao D+1.
+- **Quarta:** teoria + questoes mistas.
+- **Quinta:** laboratorio + revisao D+3.
+- **Sexta:** mini/prova completa + retro semanal.
+- **Sabado/Domingo (opcional):** flashcards de erros reincidentes (15-20 min).
 
-5. **Feedback imediato**
-   - Cada questao mostra explicacao da alternativa correta e erro comum esperado.
-   - O feedback deve apontar "por que esta certa" e "por que as outras confundem".
+## Sinais de risco de reprovação
+- Queda constante em domínios de base (Planejamento/Seguranca).
+- Erro repetido em comparativos de servicos (ex.: CLU vs Question Answering).
+- Boa nota em treino isolado e baixa em modo prova completa.
 
-## Ritmo semanal recomendado
-- **Dia 1:** teoria guiada + 10 questoes.
-- **Dia 2:** laboratorio curto + revisao D+1.
-- **Dia 3:** teoria + 15 questoes mistas.
-- **Dia 4:** laboratorio + revisao D+3.
-- **Dia 5:** mini simulado (20-30 questoes) + retro.
-- **Dia 6/7:** descanso ativo (flashcards 15-20 min).
+## Intervencoes corretivas
+- Reduzir escopo por sessao para 1 topico de alto impacto.
+- Forcar 2 ciclos extras de revisao para erros reincidentes.
+- Alternar "treino por dominio" e "prova completa" no mesmo bloco semanal.
 
-## Checkpoints e criterios de progressao
-- **Checkpoint semana 2:** acerto >= 60% em fundamentos + provisionamento.
-- **Checkpoint semana 4:** acerto >= 70% em servicos (Vision/Language/Speech).
-- **Checkpoint semana 6:** acerto >= 75% em simulados mistos.
-- **Pronto para prova:** 3 simulados seguidos >= 80% + dominio fraco sem alerta.
-
-## Matriz de retencao por nivel
-- **Nivel 1 (novo):** revisar em 1 dia.
-- **Nivel 2 (instavel):** revisar em 3 dias.
-- **Nivel 3 (estavel):** revisar em 7 dias.
-- **Nivel 4 (consolidado):** revisar apenas em revisao semanal.
-
-## Sinais de risco cognitivo
-- Queda de desempenho em sessoes longas (> 50 min sem pausa).
-- Confusao recorrente entre servicos similares (ex.: CLU x Question Answering).
-- Memorizar nome de servico sem reconhecer cenario de uso.
-
-## Intervencoes recomendadas
-- Pausa de 5 min a cada 25 min (pomodoro simples).
-- Tabela "quando usar / quando nao usar" por servico.
-- Microexplicacoes em voz alta (efeito de elaboracao).
-
-## Entregaveis UX no produto
-- Roadmap semanal visivel.
-- Simulado com historico.
-- Painel de prontidao por dominio.
-- Lista "o que revisar hoje" baseada em erros e tempo desde ultima revisao.
+## Critério de experiencia do produto
+O produto deve oferecer:
+- plano diario acionavel;
+- modulo de aula por dominio;
+- pratica por dominio e prova completa;
+- painel objetivo de prontidao por dominio e global;
+- lista automatica de revisao diaria.

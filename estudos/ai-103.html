@@ -39,14 +39,39 @@
     <nav class="study-toc" aria-labelledby="study-toc-h">
       <h2 id="study-toc-h" class="study-toc-title">Nesta página</h2>
       <ol class="study-toc-list">
+        <li><a href="#plano-diario">Plano diário (60-90 min)</a></li>
         <li><a href="#resumo">Resumo por domínio</a></li>
+        <li><a href="#aulas">Aulas guiadas (PT + EN)</a></li>
         <li><a href="#roadmap">Roadmap de 5-8 semanas</a></li>
         <li><a href="#labs">Labs essenciais</a></li>
         <li><a href="#simulado">Simulado</a></li>
         <li><a href="#prontidao">Prontidão e revisão</a></li>
+        <li><a href="#checklist-final">Checklist pré-prova</a></li>
         <li><a href="#historico">Histórico</a></li>
       </ol>
     </nav>
+
+    <section id="plano-diario" class="study-section" aria-labelledby="plano-h">
+      <h2 id="plano-h" class="study-section-title">Plano diário de aprovação (60-90 min)</h2>
+      <div class="ai103-week-grid">
+        <article class="ai103-week-card">
+          <h3>Bloco 1 (10 min)</h3>
+          <p>Recuperação ativa: revise erros de ontem sem consultar material.</p>
+        </article>
+        <article class="ai103-week-card">
+          <h3>Bloco 2 (30 min)</h3>
+          <p>Aula guiada do domínio do dia com foco em decisão de serviço.</p>
+        </article>
+        <article class="ai103-week-card">
+          <h3>Bloco 3 (20-30 min)</h3>
+          <p>Treino por domínio no modo prática (com explicação detalhada).</p>
+        </article>
+        <article class="ai103-week-card">
+          <h3>Bloco 4 (10-15 min)</h3>
+          <p>Revisão D+1/D+3/D+7 e registro de gaps recorrentes.</p>
+        </article>
+      </div>
+    </section>
 
     <section id="resumo" class="study-section" aria-labelledby="resumo-h">
       <h2 id="resumo-h" class="study-section-title">Resumo por domínio</h2>
@@ -59,6 +84,36 @@
           <li><strong>Knowledge Mining:</strong> ingestão, enriquecimento e busca em conteúdo empresarial.</li>
           <li><strong>Azure OpenAI:</strong> prompt, grounding, RAG, segurança e uso responsável.</li>
         </ul>
+      </div>
+    </section>
+
+    <section id="aulas" class="study-section" aria-labelledby="aulas-h">
+      <h2 id="aulas-h" class="study-section-title">Aulas guiadas por domínio (PT + EN técnico)</h2>
+      <div class="ai103-lab-list">
+        <article class="ai103-lab-card">
+          <h3>Planejamento e operação <span class="ai103-term">(Planning and Operations)</span></h3>
+          <p><strong>Quando usar:</strong> sempre no início da solução. <strong>Evitar:</strong> hardcode de segredo.</p>
+        </article>
+        <article class="ai103-lab-card">
+          <h3>Vision e documentos <span class="ai103-term">(Vision and Document Intelligence)</span></h3>
+          <p><strong>Quando usar:</strong> OCR, extração de campos e tabelas. <strong>Evitar:</strong> usar Speech para problema de imagem.</p>
+        </article>
+        <article class="ai103-lab-card">
+          <h3>Linguagem <span class="ai103-term">(Language, CLU, Question Answering)</span></h3>
+          <p><strong>Quando usar:</strong> texto, intenções, entidades e FAQ inteligente. <strong>Evitar:</strong> confundir CLU com QA.</p>
+        </article>
+        <article class="ai103-lab-card">
+          <h3>Voz <span class="ai103-term">(Speech-to-Text / Text-to-Speech)</span></h3>
+          <p><strong>Quando usar:</strong> experiência por voz. <strong>Evitar:</strong> ignorar idioma/região e qualidade de áudio.</p>
+        </article>
+        <article class="ai103-lab-card">
+          <h3>Busca inteligente <span class="ai103-term">(Knowledge Mining / Search)</span></h3>
+          <p><strong>Quando usar:</strong> bases documentais grandes. <strong>Evitar:</strong> consultar sem indexação estruturada.</p>
+        </article>
+        <article class="ai103-lab-card">
+          <h3>GenAI <span class="ai103-term">(Azure OpenAI, Grounding, RAG)</span></h3>
+          <p><strong>Quando usar:</strong> geração assistida por contexto confiável. <strong>Evitar:</strong> resposta sem fonte em alto risco.</p>
+        </article>
       </div>
     </section>
 
@@ -121,8 +176,25 @@
     <section id="simulado" class="study-section" aria-labelledby="simulado-h">
       <h2 id="simulado-h" class="study-section-title">Simulado AI-103</h2>
       <p class="study-hub-lead" style="margin-bottom: var(--space-4);">
-        Simulado com questões sorteadas e feedback explicativo. O sistema também identifica domínios fracos para revisão dirigida.
+        Escolha entre treino por domínio ou prova completa. O sistema gera revisão automática e indicador objetivo de prontidão para prova.
       </p>
+      <div class="study-quiz-panel" style="margin-bottom: var(--space-3)">
+        <div class="ai103-controls-grid">
+          <label class="ai103-field">
+            <span>Modo de estudo</span>
+            <select id="ai103-mode-select">
+              <option value="full">Prova completa (misto)</option>
+              <option value="domain">Treino por domínio</option>
+            </select>
+          </label>
+          <label class="ai103-field">
+            <span>Domínio (quando treino)</span>
+            <select id="ai103-domain-select">
+              <option value="all">Todos</option>
+            </select>
+          </label>
+        </div>
+      </div>
 
       <div class="study-quiz-panel" id="ai103-quiz-root">
         <div class="study-quiz-meta" id="ai103-quiz-meta" hidden>
@@ -159,11 +231,25 @@
         <article class="study-quiz-panel">
           <h3 class="study-toc-title">Prontidão por domínio</h3>
           <div id="ai103-readiness-list" class="ai103-readiness-list"></div>
+          <p id="ai103-ready-badge" class="ai103-ready-badge"></p>
         </article>
         <article class="study-quiz-panel">
           <h3 class="study-toc-title">O que revisar hoje</h3>
           <ul id="ai103-review-list" class="ai103-review-list"></ul>
         </article>
+      </div>
+    </section>
+
+    <section id="checklist-final" class="study-section" aria-labelledby="checklist-final-h">
+      <h2 id="checklist-final-h" class="study-section-title">Checklist final de prontidão</h2>
+      <div class="study-summary-block">
+        <ul class="ai103-checklist">
+          <li>Consigo escolher o serviço certo sem consultar cola (when to use / when not to use).</li>
+          <li>Minha média global está em 80% ou mais.</li>
+          <li>Nenhum domínio está abaixo de 70%.</li>
+          <li>Consegui 3 simulados completos consecutivos com estabilidade.</li>
+          <li>Tenho plano claro para revisar meus erros recorrentes.</li>
+        </ul>
       </div>
     </section>
 

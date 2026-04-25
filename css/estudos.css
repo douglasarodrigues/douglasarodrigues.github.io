@@ -643,3 +643,46 @@ button.web-trilha-opt:disabled {
   font-size: var(--font-size-small);
   line-height: 1.65;
 }
+
+.ai103-controls-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 700px) {
+  .ai103-controls-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.ai103-field {
+  display: grid;
+  gap: 0.4rem;
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+}
+
+.ai103-field select {
+  font: inherit;
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: rgba(30, 41, 59, 0.7);
+  padding: 0.5rem 0.65rem;
+}
+
+.ai103-term {
+  font-size: 0.85em;
+  color: var(--color-text-secondary);
+}
+
+.ai103-ready-badge {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
+}
+
+.ai103-checklist li {
+  margin-block-end: var(--space-1);
+}
