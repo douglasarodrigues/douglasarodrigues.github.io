@@ -358,6 +358,73 @@
   min-height: var(--lab-nav-height);
 }
 
+/* Faixa de abas: setas + área com scroll horizontal */
+.lab-tabs-strip {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.lab-tabs-scroller {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lab-tabs-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.lab-tabs-scroll {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  align-self: stretch;
+  min-height: var(--lab-nav-height);
+  padding: 0;
+  border: 1px solid var(--lab-tab-border);
+  border-radius: var(--radius-md);
+  background: var(--lab-tab-bg);
+  color: var(--lab-tab-text);
+  cursor: pointer;
+  transition:
+    background var(--lab-transition-tab),
+    color var(--lab-transition-tab),
+    border-color var(--lab-transition-tab),
+    opacity 0.15s ease;
+}
+
+.lab-tabs-scroll:hover:not(:disabled) {
+  background: var(--lab-tab-hover-bg);
+  color: var(--lab-tab-hover-text);
+  border-color: var(--lab-tab-border);
+}
+
+.lab-tabs-scroll:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.lab-tabs-scroll:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.lab-tabs-scroll[hidden] {
+  display: none;
+}
+
+.lab-tabs-scroll svg {
+  display: block;
+}
+
 /* -------------------------------------------------------------------------- */
 
 .lab-tabs {
@@ -365,15 +432,8 @@
   display: flex;
   align-items: stretch;
   gap: var(--space-1);
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  flex: 1;
-}
-
-.lab-tabs::-webkit-scrollbar {
-  display: none;
+  width: max-content;
+  min-height: 100%;
 }
 
 .lab-tab {

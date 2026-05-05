@@ -278,9 +278,9 @@
     "cv.summary":
       "Mainframe Software Engineer with 18+ years of experience in mission-critical financial systems. Specialist in Assembler z/OS, COBOL, DB2, and CICS, with a proven track record of reducing incident resolution time and driving revenue growth. Deep expertise in VISA and Elo card systems based on ISO 8583, operating in high-availability, high-volume environments.",
     "cv.section.exp": "Professional Experience",
-    "cv.current": "Present",
 
     // Job 0 - Banco Bradesco (Apr 2024 - Present)
+    "cv.job0.period": "Apr 2024 - Present",
     "cv.job0.role": "Software Engineer III",
     "cv.job0.company":
       "One of the largest private banks in Latin America, with over 70 million customers and mission-critical Mainframe infrastructure.",
@@ -294,6 +294,7 @@
       "Created automation macros for repetitive team tasks, significantly reducing time spent on recurring operational activities.",
     "cv.job0.h5":
       "Developed an AI multi-agent system to optimize development and analysis workflow, reducing delivery time by up to 40%.",
+    "cv.job1.period": "Nov 2023 - Apr 2024",
 
     // Job 1 - Capgemini (Nov 2023 - Apr 2024)
     "cv.job1.role": "Solutions Consultant IV",
@@ -305,6 +306,7 @@
       "Recognized as the Assembler z/OS reference in the team, performing deep dump and trace analysis for hard-to-diagnose issues.",
     "cv.job1.h3":
       "Productivity index 22% above team average: 19.52h per incident (avg: 25h), focused on root cause analysis and recurrence prevention.",
+    "cv.job2.period": "Oct 2010 - Nov 2023",
 
     // Job 2 - Prover Solucoes (Oct 2010 - Nov 2023)
     "cv.job2.role":
@@ -317,6 +319,7 @@
       "Led the adoption of Agile methodologies (Scrum) in the Mainframe team, optimizing deliveries and saving around R$20,000 per year in rework hours.",
     "cv.job2.h3":
       "Hands-on involvement in the full development lifecycle: requirements gathering, analysis, coding, testing, and production deployment.",
+    "cv.job3.period": "Jul 2007 - Oct 2010",
 
     // Job 3 - INFOserver (Jul 2007 - Oct 2010)
     "cv.job3.role": "Systems Analyst and Developer",
@@ -328,6 +331,7 @@
       "Implemented financial reconciliation routines and payment network interfaces based on ISO 8583.",
 
     "cv.section.skills": "Technical Skills",
+    "cv.skill.aiMulti": "AI multi-agent systems",
     "cv.skills.dev": "Development",
     "cv.skills.tools": "Tools & Methods",
     "cv.section.edu": "Education",
@@ -918,9 +922,9 @@
     "cv.summary":
       "Ingeniero de Software Mainframe con más de 18 años de experiencia en sistemas financieros de misión crítica. Especialista en Assembler z/OS, COBOL, DB2 y CICS, con historial comprobado de reducción de tiempo de resolución de incidentes y crecimiento de ingresos. Profundo dominio de sistemas de tarjetas VISA y Elo basados en ISO 8583, operando en entornos de alta disponibilidad y volumen.",
     "cv.section.exp": "Experiencia Profesional",
-    "cv.current": "Actual",
 
-    // Job 0 - Banco Bradesco (Abr 2024 - Actual)
+    // Job 0 - Banco Bradesco (abr 2024 - Actual)
+    "cv.job0.period": "abr 2024 - Actual",
     "cv.job0.role": "Software Engineer III",
     "cv.job0.company":
       "Uno de los mayores bancos privados de América Latina, con más de 70 millones de clientes e infraestructura Mainframe de misión crítica.",
@@ -934,6 +938,7 @@
       "Creó macros de automatización para tareas repetitivas del equipo, reduciendo significativamente el tiempo dedicado a actividades operativas recurrentes.",
     "cv.job0.h5":
       "Desarrolló un sistema multiagente de IA para optimizar el flujo de desarrollo y análisis, reduciendo el tiempo de entrega en hasta 40%.",
+    "cv.job1.period": "nov 2023 - abr 2024",
 
     // Job 1 - Capgemini (Nov 2023 - Abr 2024)
     "cv.job1.role": "Consultor de Soluciones IV",
@@ -945,6 +950,7 @@
       "Reconocido como referencia en Assembler z/OS en el equipo, realizando análisis de dumps y traces para resolución de problemas de difícil diagnóstico.",
     "cv.job1.h3":
       "Índice de productividad 22% por encima del promedio del equipo: 19,52h por incidente (promedio: 25h), con enfoque en análisis de causa raíz y prevención de recurrencia.",
+    "cv.job2.period": "oct 2010 - nov 2023",
 
     // Job 2 - Prover Soluciones (Oct 2010 - Nov 2023)
     "cv.job2.role":
@@ -957,6 +963,7 @@
       "Lideró la implementación de metodologías ágiles (Scrum) en el equipo Mainframe, optimizando entregas y ahorrando cerca de R$ 20.000 anuales en horas de retrabajo.",
     "cv.job2.h3":
       "Actuación hands-on en el ciclo completo de desarrollo: levantamiento de requisitos, análisis, codificación, pruebas e implementación en producción.",
+    "cv.job3.period": "jul 2007 - oct 2010",
 
     // Job 3 - INFOserver (Jul 2007 - Oct 2010)
     "cv.job3.role": "Analista y Desarrollador de Sistemas",
@@ -968,6 +975,7 @@
       "Implementación de rutinas de conciliación financiera e interfaces con redes de pagos basadas en ISO 8583.",
 
     "cv.section.skills": "Habilidades Técnicas",
+    "cv.skill.aiMulti": "IA multiagente",
     "cv.skills.dev": "Desarrollo",
     "cv.skills.tools": "Herramientas y Métodos",
     "cv.section.edu": "Formación Académica",
@@ -1547,6 +1555,7 @@
     // -- CERTIFICATIONS PAGE ELEMENTS --
     t(q(".cert-breadcrumb-current"), "cert.breadcrumb.current", dict);
     t(q(".cert-header-desc"), "cert.header.desc", dict);
+    t(q(".cert-note p"), "cert.note", dict);
 
     // Cert back link
     const certBackLink = q(".cert-back-link");

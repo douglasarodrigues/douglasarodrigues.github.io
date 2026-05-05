@@ -59,6 +59,9 @@
 
   const LANG_MAP = { cobol: "cobol", hlasm: "hlasm", jcl: "jcl", cics: "cobol", db2: "cobol", ims: "cobol", vsam: "cobol" };
 
+  /** Atualiza estado das setas de scroll do tablist (definido em initLabTabsScroll). */
+  let updateLabTabsScroll = function () {};
+
   // ── Helpers ─────────────────────────────────────────────────────────────
 
   const qs  = (s, ctx) => (ctx || document).querySelector(s);
@@ -563,6 +566,45 @@
 
   // ── Interactions ────────────────────────────────────────────────────────
 
+  function initLabTabsScroll() {
+    const scroller = qs(".lab-tabs-scroller");
+    const prev = qs(".lab-tabs-scroll--prev");
+    const next = qs(".lab-tabs-scroll--next");
+    if (!scroller || !prev || !next) return;
+
+    function update() {
+      const { scrollLeft, scrollWidth, clientWidth } = scroller;
+      const maxScroll = Math.max(0, scrollWidth - clientWidth);
+      const eps = 2;
+      const overflow = scrollWidth > clientWidth + eps;
+      prev.hidden = !overflow;
+      next.hidden = !overflow;
+      if (!overflow) return;
+      prev.disabled = scrollLeft <= eps;
+      next.disabled = scrollLeft >= maxScroll - eps;
+    }
+
+    updateLabTabsScroll = update;
+
+    function scrollByStep(direction) {
+      const delta = Math.max(140, Math.floor(scroller.clientWidth * 0.65)) * direction;
+      const reduce =
+        typeof window.matchMedia === "function" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      scroller.scrollBy({ left: delta, behavior: reduce ? "auto" : "smooth" });
+    }
+
+    prev.addEventListener("click", () => scrollByStep(-1));
+    next.addEventListener("click", () => scrollByStep(1));
+    scroller.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", () => requestAnimationFrame(update));
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(() => update());
+      ro.observe(scroller);
+    }
+    update();
+  }
+
   function initTabSwitching() {
     const tablist = qs("#lab-tablist");
     if (!tablist) return;
@@ -622,8 +664,9 @@
       labContainer.setAttribute("data-lab-active-tab", short);
     }
 
-    // Scroll nav tab into view if needed
+    // Scroll nav tab into view if needed (ancestor: .lab-tabs-scroller)
     button.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    requestAnimationFrame(() => updateLabTabsScroll());
 
     /* Referência fica abaixo de stats/busca no HTML; sem scroll o utilizador não vê as tabelas */
     if (targetId === "panel-ref") {
@@ -994,6 +1037,7 @@
     renderTabs(groups);
     renderProgramPanels(groups);
 
+    initLabTabsScroll();
     initTabSwitching();
     initCodeToggle();
     initCopyCode();
